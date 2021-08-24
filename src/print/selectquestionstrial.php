@@ -116,7 +116,7 @@ if(isset($_POST['hidden-trialid']))
 
                 $htmlInside .= "
                 <span style=\" white-space: nowrap;\">
-                  <input type='radio' name='choices_qid_$qid' value='$answerID'>
+                  <input type='radio' name='range_qid_$qid' value='$answerID'>
                   <label class='my-label'>$answerText</label>
                 </span>
                 ";

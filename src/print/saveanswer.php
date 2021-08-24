@@ -28,19 +28,71 @@ global $USER, $DB;
 if(isset($_POST['hidden-questid']))
 {
     $question_id = $_POST['hidden-questid'];
-    $sector_id = $_POST['hidden-qsector'];
+    $sector_id = $_POST['hidden-qsector']; //probably wont be used
     $answer_txt = $_POST['hidden-qanswer'];
     $trial_id = $_POST['hidden-qtrialid'];
     $answeredby_id = $_POST['hidden-answeredby'];
 
-    echo "alo";
+    $sqlVerificar = "SELECT * FROM mdl_local_pdi_answer_trial x
+    WHERE x.answeredbyid = '$answeredby_id' and x.idquestion = '$question_id' and x.idtrial = '$trial_id'";
+    $resVerificar = $DB->get_records_sql($sqlVerificar);
 
-    //fazer uma consulta de algo e salvar
+    //se já existir, update deverá ser feito
+    if(count($resVerificar) > 0){
+        
+        //update on each sector
+        $status = 0;
+        foreach($resVerificar as $rv){
+            $addAnswerTrial = new stdClass();
+            $addAnswerTrial->id = $rv->id;            
+            $addAnswerTrial->answer = $answer_txt;
+            $addAnswerTrial->timemodified = time();
 
-    /*SELECT sm.sectorid, q.id qid, q.name, sm.trialid FROM mdl_local_pdi_sector_member sm 
-LEFT JOIN mdl_local_pdi_question q 
-ON sm.trialid = '1'
-WHERE q.id='6'*/
+            $status = $DB->update_record('local_pdi_answer_trial', $addAnswerTrial);
+        }
+
+        if($status){
+            echo "ok atualizado";
+            die;
+        }
+
+    }
+    else{
+
+        //fazer uma consulta para ver se essa pergunta deve ser salvo em outro setor dessa trial
+
+        $sql = "SELECT sm.sectorid, smdb.dbid , q.id qid, q.name, sm.trialid FROM mdl_local_pdi_sector_member sm 
+        LEFT JOIN mdl_local_pdi_sect_mem_db smdb
+        ON smdb.smemberid = sm.id
+        LEFT JOIN mdl_local_pdi_questindb qindb
+        ON qindb.databaseid = smdb.dbid
+        LEFT JOIN mdl_local_pdi_question q
+        ON q.id = qindb.questionid
+        WHERE q.id = '$question_id' and sm.trialid = '$trial_id'";
+
+        $res = $DB->get_records_sql($sql);
+
+        $status=0;
+        //for each question duplicate, insert the answer in the respective sector
+        //if theres no duplicate, it will happen just once
+        foreach($res as $r){
+            $addAnswerTrial = new stdClass();
+            $addAnswerTrial->answeredbyid = $answeredby_id;
+            $addAnswerTrial->idquestion = $question_id;
+            $addAnswerTrial->idtrial = $trial_id;
+            $addAnswerTrial->sectorid = $r->sectorid;
+            $addAnswerTrial->answer = $answer_txt;
+            $addAnswerTrial->timecreated = time();
+            $addAnswerTrial->timemodified = time();
+
+            $status = $DB->insert_record('local_pdi_answer_trial', $addAnswerTrial);
+        }
+
+        if($status>0){
+            echo "ok";
+            die;
+        }
     
+    }
 }
 

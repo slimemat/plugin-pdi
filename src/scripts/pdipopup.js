@@ -30,22 +30,42 @@ $("#btn_salvar").on("click", function(){
 
     //para os escritos
     $(".answer").each(function(){
-        var txtAnswer = $(this).val();
+        var txtAnswer = ""+ $(this).val() + "";
         var inputID = $(this).attr("id");
         var setorID = $(this).attr("data-sector");
         //alert("Conteúdo escrito: " + txtAnswer + "\nQuestão id: "+ inputID);
 
-        saveDaAnswer(txtAnswer, inputID, setorID);
+        if(txtAnswer.length < 1){
+            $(this).focus();
+
+            return false;
+
+        }else{
+
+            saveDaAnswer(txtAnswer, inputID, setorID);
+        }
+
 
     });
     //para os de escolha
     $(".answer-choice").each(function(){
         var formID = $(this).attr("id"); //também é o id da questão
         var setorID = $(this).attr("data-sector");
-        var radioVal = $("#"+formID+" input[type='radio']:checked").val();
+        var radioVal = ""+ $("#"+formID+" input[type='radio']:checked").val() + "";
         //alert("Conteúdo escolhido: " + radioVal + "\nQuestão id: "+ formID);
 
-        saveDaAnswer(radioVal, formID, setorID);
+        if(radioVal == "undefined"){
+            $(this).focus();
+
+            alert('preencher questões de escolha');
+
+            return false;
+
+        }else{
+            saveDaAnswer(radioVal, formID, setorID);
+
+        }
+
 
     });
 
@@ -74,10 +94,10 @@ function saveDaAnswer(txtanswer, questid, setorid) {
 
     })
     .done(function(msg){
-        //alert('foi: '+ msg);
+        alert("DONE: "+ msg);
     })
     .fail(function(){
-        //alert('não foi');
+        alert('Algo deu errado!');
     });
 }
 
