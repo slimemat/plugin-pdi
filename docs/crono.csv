@@ -1,0 +1,31 @@
+﻿Task ID,Created At,Completed At,Last Modified,Name,Section/Column,Assignee,Assignee Email,Start Date,Due Date,Tags,Notes,Projects,Parent Task
+1200455672526506,2021-06-10,2021-06-11,2021-06-11,Testes de criação de plugins,Pré-dev (10/06 - 16/06),Matheus Bueno Garrido,bueno@hubway.com.br,,2021-06-11,Em andamento,Aprender e testar a criação de plugins para moodle.,[KAPTIVA] PDI,
+1200455672526512,2021-06-10,,2021-06-10,Preparar uma apresentação de um plugin criado por nós (simples) para mostrarmos ao Luciano,,,,,,,,,Testes de criação de plugins
+1200455672526515,2021-06-10,2021-06-15,2021-06-15,Criação das documentações,Pré-dev (10/06 - 16/06),Matheus Alvarenga,matheus@hubway.com.br,,2021-06-14,Em andamento,,[KAPTIVA] PDI,
+1200455672526517,2021-06-10,2021-06-11,2021-06-11,Sitemap,,,,,,,,,Criação das documentações
+1200455672526519,2021-06-10,2021-06-15,2021-06-15,Wireframe,,,,,,,,,Criação das documentações
+1200460812410654,2021-06-11,2021-06-11,2021-06-11,Use flow,,,,,,,,,Criação das documentações
+1200455672526521,2021-06-10,2021-06-15,2021-06-15,Testes de exportação e instalação,Pré-dev (10/06 - 16/06),Matheus Bueno Garrido,bueno@hubway.com.br,,2021-06-15,,Realizar testes de como um plugin deve ser exportado para que possa ser instalado sem problemas em qualquer moodle.,[KAPTIVA] PDI,
+1200455672526525,2021-06-10,2021-06-16,2021-06-16,Criação de um cronograma,Pré-dev (10/06 - 16/06),Matheus Alvarenga,matheus@hubway.com.br,,2021-06-15,,,[KAPTIVA] PDI,
+1200455672526528,2021-06-10,,2021-06-16,Criação da interface,Pré-dev (10/06 - 16/06),Matheus Alvarenga,matheus@hubway.com.br,,2021-06-16,,,[KAPTIVA] PDI,
+1200475873271443,2021-06-15,,2021-06-15,Criação das telas de configuração inicial,Sprint 1 (16/06 - 30/06),,,,,,,[KAPTIVA] PDI,
+1200475873271451,2021-06-15,,2021-06-15,Funcionalidades da configuração inicial,Sprint 1 (16/06 - 30/06),,,,,,,[KAPTIVA] PDI,
+1200475873271453,2021-06-15,,2021-06-15,Definição dos PDI Admin,Sprint 1 (16/06 - 30/06),,,,,,,[KAPTIVA] PDI,
+1200479409567612,2021-06-16,,2021-06-16,Novo processo - Telas,Sprint 2 (01/07 - 14/07),,,,,,,[KAPTIVA] PDI,
+1200475873271449,2021-06-15,,2021-06-16,Criação da interface do dashboard,Sprint 2 (01/07 - 14/07),,,,,,,[KAPTIVA] PDI,
+1200479409567614,2021-06-16,,2021-06-16,Novo processo - Etapa 1,Sprint 3 (15/07 - 28/07),,,,,,,[KAPTIVA] PDI,
+1200479409567616,2021-06-16,,2021-06-16,Novo processo - Etapa 2,Sprint 3 (15/07 - 28/07),,,,,,,[KAPTIVA] PDI,
+1200479409567618,2021-06-16,,2021-06-16,Novo processo - Etapa 3,Sprint 3 (15/07 - 28/07),,,,,,,[KAPTIVA] PDI,
+1200479409567622,2021-06-16,,2021-06-16,Novo processo - Etapa 4,Sprint 4 (29/07 - 11/08),,,,,,,[KAPTIVA] PDI,
+1200479409567624,2021-06-16,,2021-06-16,Novo processo - Etapa 5,Sprint 4 (29/07 - 11/08),,,,,,,[KAPTIVA] PDI,
+1200479409567628,2021-06-16,,2021-06-16,Pop up de preenchimento,Sprint 5 (12/08 - 25/08),,,,,,,[KAPTIVA] PDI,
+1200479409567630,2021-06-16,,2021-06-16,Notificações,Sprint 5 (12/08 - 25/08),,,,,,,[KAPTIVA] PDI,
+1200479409567632,2021-06-16,,2021-06-16,Preenchimento de Checkpoint,Sprint 5 (12/08 - 25/08),,,,,,,[KAPTIVA] PDI,
+1200479409567634,2021-06-16,,2021-06-16,Preenchimento de PDI,Sprint 5 (12/08 - 25/08),,,,,,,[KAPTIVA] PDI,
+1200479409567636,2021-06-16,,2021-06-16,Listagem de processos,Sprint 6 (26/08 - 08/09),,,,,,,[KAPTIVA] PDI,
+1200479409567638,2021-06-16,,2021-06-16,Pesquisa de processos,Sprint 6 (26/08 - 08/09),,,,,,,[KAPTIVA] PDI,
+1200479409567640,2021-06-16,,2021-06-16,Processo individual - Status,Sprint 6 (26/08 - 08/09),,,,,,,[KAPTIVA] PDI,
+1200479409567646,2021-06-16,,2021-06-16,Processo individual - Ranking,Sprint 6 (26/08 - 08/09),,,,,,,[KAPTIVA] PDI,
+1200479409567642,2021-06-16,,2021-06-16,Processo individual - Relatórios,Sprint 7 (09/09 - 22/09),,,,,,,[KAPTIVA] PDI,
+1200479409567648,2021-06-16,,2021-06-16,Processo individual - Bancos de Questões,Sprint 7 (09/09 - 22/09),,,,,,,[KAPTIVA] PDI,
+1200479409567650,2021-06-16,,2021-06-16,Processo individual - Configurações,Sprint 7 (09/09 - 22/09),,,,,,,[KAPTIVA] PDI,

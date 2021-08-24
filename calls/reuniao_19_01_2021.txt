@@ -1,0 +1,26 @@
+• Alteração dos menus de dentro dos cursos
+• Alteração dos relatórios*
+
+• Menus
+	• Usuários
+		• Cadastro, apenas a primeira parte + foto *
+		• Carregar, simplificar *
+		• Ações em lote
+		• Listagem de Usuários, facilitar a pesquisa e mais campos/selecionar campos *
+		• Campos de Perfil, (Nome, obrigatório, único e quem pode ver) *
+		• Grupos de Usuários(Coorte), (Nome) *
+ 
+	• Cursos
+		• Gerenciar categorias e cursos, deixar mais clean
+			• Cadastrar curso, (Nome, Categoria, Não visível, Datas, Descrição, Thumbnail, Coorte, Tags)
+			• Cadastrar categoria, (Categoria pai, Nome)
+		• Solitação de curso e pendentes*
+		• Administração do curso
+		• Matrículas
+
+	• Customização
+		• Posição dos menus
+		• Cores e logo
+	
+	• Relatórios*
+		

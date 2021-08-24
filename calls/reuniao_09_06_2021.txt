@@ -1,0 +1,33 @@
+• Usabilidade
+• Peso nas questões
+
+• Notificações
+
+• Atruir os avaliadores a um setor
+
+• Tipos de questões
+	• Escala
+	• Dissetativa
+	• Multipla escolha
+
+• Ter bancos separados para cada setor ou avaliador
+
+• Categorias (Competências)
+
+• Atruibuo os bancos aos setores
+
+• Atribuir prazo inicial e final
+
+• Responder os questionarios
+
+• Agendar reunião
+
+• Na reunião, verão as notas que um deu para o outro
+
+• Supervisor responde as questões do PDI
+
+• Ele responde o parecer final
+
+• Todos os dados vão aparecer num relatório, tem que haver um ranking
+
+• Deve haver uma tela para o funcionário consultar seus PDI e preencher o que foi melhorado/feito e o gestor deve ter acesso e ser notificado dessas alterações.
