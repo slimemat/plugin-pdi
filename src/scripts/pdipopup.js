@@ -26,19 +26,27 @@ $("#btn-minimize-pop").on("click", function(){
 
 
 $("#btn_salvar").on("click", function(){
-    alert('salvar');
+    //alert('salvar');
 
     //para os escritos
     $(".answer").each(function(){
         var txtAnswer = $(this).val();
         var inputID = $(this).attr("id");
-        alert("Conteúdo escrito: " + txtAnswer + "\nQuestão id: "+ inputID);
+        var setorID = $(this).attr("data-sector");
+        //alert("Conteúdo escrito: " + txtAnswer + "\nQuestão id: "+ inputID);
+
+        saveDaAnswer(txtAnswer, inputID, setorID);
+
     });
     //para os de escolha
     $(".answer-choice").each(function(){
         var formID = $(this).attr("id"); //também é o id da questão
+        var setorID = $(this).attr("data-sector");
         var radioVal = $("#"+formID+" input[type='radio']:checked").val();
-        alert("Conteúdo escolhido: " + radioVal + "\nQuestão id: "+ formID);
+        //alert("Conteúdo escolhido: " + radioVal + "\nQuestão id: "+ formID);
+
+        saveDaAnswer(radioVal, formID, setorID);
+
     });
 
 
@@ -46,6 +54,32 @@ $("#btn_salvar").on("click", function(){
 
 
 });
+
+function saveDaAnswer(txtanswer, questid, setorid) {
+    $("#hidden-questid").val(questid);
+    $("#hidden-qsector").val(setorid);
+    $("#hidden-qanswer").val(txtanswer);
+
+    //ajax
+    var dados = $("#frm-quest-answer").serialize();
+
+    $.ajax({
+        method: 'POST',
+        url: '../local/pdi/print/saveanswer.php',
+        data: dados,
+
+        beforeSend: function(){
+            //do nothing 
+        }
+
+    })
+    .done(function(msg){
+        //alert('foi: '+ msg);
+    })
+    .fail(function(){
+        //alert('não foi');
+    });
+}
 
 
 //elemento que ainda não existe na criação

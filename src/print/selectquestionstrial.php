@@ -133,6 +133,15 @@ if(isset($_POST['hidden-trialid']))
 
     $htmlBlock .= $htmlInside;
     $htmlBlock .= "</div>";
+    //form oculto
+    $htmlBlock .= "
+    <form id='frm-quest-answer' name='frm-quest-answer' class='my-hidden' method='POST' action=''>
+    <input type=\"hidden\" name=\"hidden-questid\" id=\"hidden-questid\" value=\"\">
+    <input type=\"hidden\" name=\"hidden-answeredby\" id=\"hidden-answeredby\" value=\"$USER->id\">
+    <input type=\"hidden\" name=\"hidden-qtrialid\" id=\"hidden-qtrialid\" value=\"$trialid\">
+    <input type=\"hidden\" name=\"hidden-qsector\" id=\"hidden-qsector\" value=\"\">
+    <input type=\"hidden\" name=\"hidden-qanswer\" id=\"hidden-qanswer\" value=\"\">
+    </form>";
 
     echo $htmlBlock;
 }
