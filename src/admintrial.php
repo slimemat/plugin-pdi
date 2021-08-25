@@ -113,7 +113,25 @@ echo "<h1>This Trial Name</h1>";
 echo "<footer class='my-belowh1'>01/07/2021 - 08/07/2021</footer>";
 
 
-echo "<div id='my-tab1' class='my-inside-container my-hidden'>reports</div>";
+echo "<div id='my-tab1' class='my-inside-container my-hidden'>
+
+Nome de quem respondeu <br>
+Data que finalizou <br>
+<b style='cursor: pointer;'>clicar para responder</b><br><br><br>
+
+Nome de quem respondeu <br>
+Data que finalizou <br>
+<b style='cursor: pointer;'>clicar para responder</b><br><br><br>
+
+Nome de quem respondeu <br>
+Data que finalizou <br>
+<b style='cursor: pointer;'>clicar para responder</b><br><br><br>
+
+Nome de quem respondeu <br>
+Data que finalizou <br>
+<b style='cursor: pointer;'>clicar para responder</b><br><br><br>
+
+</div>";
 echo "<div id='my-tab2' class='my-inside-container my-hidden'>status</div>";
 echo "<div id='my-tab3' class='my-inside-container my-hidden'>ranking</div>";
 echo "<div id='my-tab4' class='my-inside-container my-hidden'>questions db</div>";

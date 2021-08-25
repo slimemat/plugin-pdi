@@ -36,9 +36,10 @@ $("#btn_salvar").on("click", function(){
         //alert("Conteúdo escrito: " + txtAnswer + "\nQuestão id: "+ inputID);
 
         if(txtAnswer.length < 1){
-            $(this).focus();
+            //$(this).focus();
+            //return false;
 
-            return false;
+            //não salvar esse
 
         }else{
 
@@ -55,11 +56,11 @@ $("#btn_salvar").on("click", function(){
         //alert("Conteúdo escolhido: " + radioVal + "\nQuestão id: "+ formID);
 
         if(radioVal == "undefined"){
-            $(this).focus();
+            //$(this).focus();
+            //alert('preencher questões de escolha');
+            //return false;
 
-            alert('preencher questões de escolha');
-
-            return false;
+            //não fazer nada
 
         }else{
             saveDaAnswer(radioVal, formID, setorID);
@@ -69,12 +70,58 @@ $("#btn_salvar").on("click", function(){
 
     });
 
-
-    ///PEGAR O VALOR DOS SETORES
-
-
 });
 
+$("#btn_finalizar").on("click", function(){
+
+    var restantes = 0;
+   
+    //para os escritos
+    $(".answer").each(function(){
+        var txtAnswer = ""+ $(this).val() + "";
+        var inputID = $(this).attr("id");
+        var setorID = $(this).attr("data-sector");
+        //alert("Conteúdo escrito: " + txtAnswer + "\nQuestão id: "+ inputID);
+
+        if(txtAnswer.length < 1){
+            $(this).focus();
+            restantes++;
+            return false;
+        }else{
+            saveDaAnswer(txtAnswer, inputID, setorID);
+        }
+
+
+    });
+    //para os de escolha
+    $(".answer-choice").each(function(){
+        var formID = $(this).attr("id"); //também é o id da questão
+        var setorID = $(this).attr("data-sector");
+        var radioVal = ""+ $("#"+formID+" input[type='radio']:checked").val() + "";
+        //alert("Conteúdo escolhido: " + radioVal + "\nQuestão id: "+ formID);
+
+        if(radioVal == "undefined"){
+            $(this).focus();
+            //alert('preencher questões de escolha');
+            restantes++;
+            return false;
+
+        }else{
+            saveDaAnswer(radioVal, formID, setorID);
+        }
+
+    });
+
+    if(restantes == 0){
+        finishDaForm();
+    }else{
+        alert("Responda todas as questões para finalizar!");
+    }
+    
+});
+
+
+//each call saves each answer
 function saveDaAnswer(txtanswer, questid, setorid) {
     $("#hidden-questid").val(questid);
     $("#hidden-qsector").val(setorid);
@@ -94,7 +141,42 @@ function saveDaAnswer(txtanswer, questid, setorid) {
 
     })
     .done(function(msg){
-        alert("DONE: "+ msg);
+        var resposta = msg;
+        var originalColor = $("#btn_salvar").css("background");
+
+        //mudar a cor
+        $("#btn_salvar").attr('style', 'background-color: var(--mysuccess) !important');
+        $("#btn_salvar").attr('value', 'Salvando');
+
+        //esperar para voltar
+        setTimeout(function(){
+            $("#btn_salvar").attr('style', 'background-color: originalColor !important');
+            $("#btn_salvar").attr('value', 'Salvar');
+          }, 1000);
+
+    })
+    .fail(function(){
+        alert('Algo deu errado!');
+    });
+}
+
+
+function finishDaForm(){
+    //ajax
+    var dados = $("#frm-quest-answer").serialize();
+
+    $.ajax({
+        method: 'POST',
+        url: '../local/pdi/print/finishform.php',
+        data: dados,
+
+        beforeSend: function(){  }
+    })
+    .done(function(msg){
+        var resposta = msg;
+        if (window.confirm("Finalizado com sucesso!")) {
+            window.location.reload();
+        }
     })
     .fail(function(){
         alert('Algo deu errado!');

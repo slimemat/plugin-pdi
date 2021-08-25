@@ -106,41 +106,63 @@
             $xuserid_sector_member ="$r->userid_sector_member";
             $xfullevaluatorname = "$r->firstname" . " ". "$r->lastname";
 
-            if($xtrialid != $lastTrialid){
-               $blocoHtml .= "</span>";
+            
+            //verificar se esse está marcado como respondido
+            //não importa o setor, então está agrupado
+            $respondido = 0;
 
-               $lastFullevaluatorname = 'null';
+            $respSQL = "SELECT * FROM mdl_local_pdi_answer_status pas
+                        WHERE pas.userid = '$USER->id'
+                        and pas.idtrial = '$xtrialid'
+                        GROUP BY pas.userid";
+            $respRes = $DB->get_records_sql($respSQL);
+
+            if(count($respRes)>0){
+               foreach($respRes as $rs){ $respondido = $rs->isfinished; }
             }
             
-            if($xtrialid != $lastTrialid){
 
-               $blocoHtml .= "<span class='my-round-card' data-idtrial='$xtrialid' id='trial_$xtrialid'>";
-               $blocoHtml .= "<h5 class='my-font-family' title='nome do processo'>$xtrialtitle</h5>";
-               $blocoHtml .= "<span class='my-label'>Avaliadores:</span><br>";
-      
-               $count_trial++;
-            }
-
-            if($xfullevaluatorname != $lastFullevaluatorname){
-               $blocoHtml .= "<span class='my-mention'>$xfullevaluatorname</span>";
-            }
-
-            $blocoHtml .= "
-            <span class='my-hidden' id='data-block-$xtrialid'>
-               <span class='processo-id-$xtrialid'>$xtrialid</span> 
-               <span class='responder-db-id-$xtrialid'>$xdbid</span> 
-               <span class='setor-id-$xtrialid'>$xsectorid</span>
-               <span class='avaliador-id-$xtrialid'>$xuserid_sector_member</span>
-            </span>";
-
-            //guardar os valores anteriores
-            $lastTrialid = $xtrialid;
-            $lastFullevaluatorname = $xfullevaluatorname;
+            if($respondido == 0){
             
-            $count_i++;
+               if($xtrialid != $lastTrialid){
+                  $blocoHtml .= "</span>";
+
+                  $lastFullevaluatorname = 'null';
+               }
+               
+               if($xtrialid != $lastTrialid){
+
+                  $blocoHtml .= "<span class='my-round-card' data-idtrial='$xtrialid' id='trial_$xtrialid'>";
+                  $blocoHtml .= "<h5 class='my-font-family' title='nome do processo'>$xtrialtitle</h5>";
+                  $blocoHtml .= "<span class='my-label'>Avaliadores:</span><br>";
+         
+                  $count_trial++;
+               }
+
+               if($xfullevaluatorname != $lastFullevaluatorname){
+                  $blocoHtml .= "<span class='my-mention'>$xfullevaluatorname</span>";
+               }
+
+               $blocoHtml .= "
+               <span class='my-hidden' id='data-block-$xtrialid'>
+                  <span class='processo-id-$xtrialid'>$xtrialid</span> 
+                  <span class='responder-db-id-$xtrialid'>$xdbid</span> 
+                  <span class='setor-id-$xtrialid'>$xsectorid</span>
+                  <span class='avaliador-id-$xtrialid'>$xuserid_sector_member</span>
+               </span>";
+
+               //guardar os valores anteriores
+               $lastTrialid = $xtrialid;
+               $lastFullevaluatorname = $xfullevaluatorname;
+               
+               $count_i++;
+            }
          }
 
-         $blocoHtml .= "</span>";
+         if($respondido == 0){
+
+            $blocoHtml .= "</span>";
+         }
          
 
          return "
@@ -150,7 +172,7 @@
             
                <div id='myblue-bg'>
                   <span class='mylogo'>PDI</span>
-                  <div class='mypush my-marginr' style='color: var(--white);'><span>mensagem aqui</span></div>
+                  <div class='mypush my-marginr' style='color: var(--white);'><span>tela de processos</span></div>
                   <span id='btn-minimize-pop' class='pdi-nostyle'><i class=\"fas fa-minus\"></i></span>
                </div>
                

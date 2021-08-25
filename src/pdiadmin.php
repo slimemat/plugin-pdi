@@ -102,7 +102,7 @@ echo "</div><br>";
 echo "<div id='mygrey-bg'>"; //grey bg starts
 
 echo "<h1>Dashboard</h1>";
-echo "<footer class='my-belowh1'>List of trials</footer>";
+echo "<footer class='my-belowh1'>List of trials you evaluate</footer>";
 
 //create new btn link
 echo "<div id='my-steps'>"; //steps
@@ -210,6 +210,29 @@ echo "<br><br>";
 echo "<div id='div-save-buttons'>";
 echo "<input type='button' id='id_show_btn' class='div-save-btn my-primary-btn my-marginlauto'
 value='Show all'>";
+echo "</div>";
+
+
+///parte de responder
+echo "<div id='my-centralizadora'>";
+echo "<div id='div-dashboard-list'>"; //div dashboard list
+
+echo "<br><br>";
+echo "<h4>Processos para responder</h4>";
+echo "<footer class='my-belowh1'>Lista de processos para responder</footer>";
+echo "<br><br>";
+
+echo "<div class='my-margin-box'>
+<span class=\"my-circle\" style=\"background-color: var(--myerror); color: var(--myblack);\">✖</span>
+<div class='my-sidetext'>
+<span class='my-circle-title'>Title with max of 25 or so</span>
+<p>07/07/2021 - 10/07/2021</p>
+<p>12/30 forms not answered</p>
+</div>
+</div>";
+
+echo "<br>";
+echo "</div>";
 echo "</div>";
 
 echo "</div>"; //div mygrey-bg ends

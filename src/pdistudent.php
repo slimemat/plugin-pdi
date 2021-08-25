@@ -54,8 +54,8 @@ echo "</div><br>";
 
 echo "<div id='mygrey-bg'>"; //grey bg starts
 
-echo "<h4>Your trials list</h4>";
-echo "<footer>Pick one to see more details</footer>";
+echo "<h4>Seus processos de pdi</h4>";
+echo "<footer>Clique em um para mais detalhes</footer>";
 echo "<br>";
 
 ///////
@@ -67,7 +67,6 @@ echo "<div class='my-margin-box'>
 <div class='my-sidetext'>
 <span class='my-circle-title'>IT Trial</span>
 <p>07/07/2021 - 10/07/2021</p>
-<p>12/30 forms not answered</p>
 </div>
 </div>";
 
@@ -76,7 +75,6 @@ echo "<div class='my-margin-box'>
 <div class='my-sidetext'>
 <span class='my-circle-title'>Title with max of 25 chara</span>
 <p>07/07/2021 - 10/07/2021</p>
-<p>12/30 forms not answered</p>
 </div>
 </div>";
 
@@ -85,7 +83,6 @@ echo "<div class='my-margin-box'>
 <div class='my-sidetext'>
 <span class='my-circle-title'>Title with max of 25 or so</span>
 <p>07/07/2021 - 10/07/2021</p>
-<p>12/30 forms not answered</p>
 </div>
 </div>";
 
@@ -103,8 +100,8 @@ echo "</div>"; //centralizadora
 
 echo "<br>";
 
-echo "<h4>Your groups</h4>";
-echo "<footer>The Admin has to add you in a group</footer>";
+echo "<h4>Para você avaliar</h4>";
+echo "<footer>Os processos que você avalia aparecerão aqui</footer>";
 
 echo "<br><br>";
 

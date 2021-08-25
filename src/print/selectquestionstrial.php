@@ -73,10 +73,42 @@ if(isset($_POST['hidden-trialid']))
         ";
 
         if($qtype == "shortanswer"){
-            $htmlInside .=  "<input type='text' class='form-control answer' data-sector='$qsector' id='$qid'> <br>";
+
+            //see if theres an answer saved
+            $savedSQL = "SELECT * FROM mdl_local_pdi_answer_trial ant 
+                            WHERE ant.answeredbyid = '$currentuserid' AND ant.idquestion = '$qid' AND ant.idtrial = '$trialid'";
+            $savedRES = $DB->get_records_sql($savedSQL);
+            
+            //caso já tenha sido respondido
+            if(count($savedRES)> 0){
+                $valorSalvo = '--';
+                foreach($savedRES as $res){$valorSalvo = $res->answer;}
+
+                $htmlInside .=  "<input type='text' class='form-control answer' data-sector='$qsector' id='$qid' value='$valorSalvo'> <br>";
+
+            }else{
+                $htmlInside .=  "<input type='text' class='form-control answer' data-sector='$qsector' id='$qid'> <br>";
+            }
+            
         }
         else if($qtype == "essay"){
-            $htmlInside .=  "<textarea class=\"form-control answer\" data-sector='$qsector' id=\"$qid\" rows=\"6\"></textarea> <br>";
+
+            //see if theres an answer saved
+            $savedSQL = "SELECT * FROM mdl_local_pdi_answer_trial ant 
+                            WHERE ant.answeredbyid = '$currentuserid' AND ant.idquestion = '$qid' AND ant.idtrial = '$trialid'";
+            $savedRES = $DB->get_records_sql($savedSQL);
+            
+            //caso já tenha sido respondido
+            if(count($savedRES)>0){
+                $valorSalvo = '--';
+                foreach($savedRES as $res){$valorSalvo = $res->answer;}
+
+                $htmlInside .=  "<textarea class=\"form-control answer\" data-sector='$qsector' id=\"$qid\" rows=\"6\">$valorSalvo</textarea> <br>";    
+            }
+            else{
+                $htmlInside .=  "<textarea class=\"form-control answer\" data-sector='$qsector' id=\"$qid\" rows=\"6\"></textarea> <br>";
+            }
+
         }
         else if($qtype == "multichoice"){
             
@@ -87,16 +119,45 @@ if(isset($_POST['hidden-trialid']))
             $htmlInside .= "
             <form action='' class='answer-choice' method='post' data-sector='$qsector' id='$qid'>";
 
-            foreach($mcRES as $mc){
+            //see if theres an answer saved
+            $savedSQL = "SELECT * FROM mdl_local_pdi_answer_trial ant 
+                            WHERE ant.answeredbyid = '$currentuserid' AND ant.idquestion = '$qid' AND ant.idtrial = '$trialid'";
+            $savedRES = $DB->get_records_sql($savedSQL);
 
+            $i = 0;
+            foreach($mcRES as $mc){
+                
                 $answerID = $mc->id;
                 $answerText = $mc->answer;
 
-                $htmlInside .= "
-                  <input type='radio' name='choices_qid_$qid' value='$answerID'>
-                  <label>$answerText</label><br>
-                ";
+                if(count($savedRES)>0){
+                    $valorSalvo = '--';
+                    foreach($savedRES as $res){$valorSalvo = $res->answer;}
 
+                    if($answerID == $valorSalvo){
+                        $htmlInside .= "
+                          <input type='radio' name='choices_qid_$qid' id='$qid-opt-$i' value='$answerID' checked>
+                          <label for='$qid-opt-$i'>$answerText</label><br>
+                        ";
+                    }
+                    else{
+                        $htmlInside .= "
+                            <input type='radio' name='choices_qid_$qid' id='$qid-opt-$i' value='$answerID'>
+                            <label for='$qid-opt-$i'>$answerText</label><br>
+                        ";    
+                    }
+
+                }else{
+                    $htmlInside .= "
+                      <input type='radio' name='choices_qid_$qid' id='$qid-opt-$i' value='$answerID'>
+                      <label for='$qid-opt-$i'>$answerText</label><br>
+                    ";
+
+                }
+
+
+
+                $i++;
             }
             
            $htmlInside .= "</form>";
@@ -110,16 +171,49 @@ if(isset($_POST['hidden-trialid']))
             $htmlInside .= "
             <form action='' class='answer-choice' method='post' data-sector='$qsector' id='$qid'>";
 
+            //see if theres an answer saved
+            $savedSQL = "SELECT * FROM mdl_local_pdi_answer_trial ant 
+                            WHERE ant.answeredbyid = '$currentuserid' AND ant.idquestion = '$qid' AND ant.idtrial = '$trialid'";
+            $savedRES = $DB->get_records_sql($savedSQL);
+
+            $i = 0;
             foreach($rRES as $r){
                 $answerID = $r->id;
                 $answerText = $r->answer;
 
-                $htmlInside .= "
-                <span style=\" white-space: nowrap;\">
-                  <input type='radio' name='range_qid_$qid' value='$answerID'>
-                  <label class='my-label'>$answerText</label>
-                </span>
-                ";
+                if(count($savedRES)>0){
+                    $valorSalvo = '--';
+                    foreach($savedRES as $res){$valorSalvo = $res->answer;}
+
+                    if($answerID == $valorSalvo){
+                        $htmlInside .= "
+                        <span style=\" white-space: nowrap;\">
+                          <input type='radio' id='$qid-opt-$i' name='range_qid_$qid' value='$answerID' checked>
+                          <label for='$qid-opt-$i' class='my-label'>$answerText</label>
+                        </span>
+                        ";
+                    }
+                    else{
+                        $htmlInside .= "
+                        <span style=\" white-space: nowrap;\">
+                          <input type='radio' id='$qid-opt-$i' name='range_qid_$qid' value='$answerID'>
+                          <label for='$qid-opt-$i' class='my-label'>$answerText</label>
+                        </span>
+                        "; 
+                    }
+
+
+                }else{
+
+                    $htmlInside .= "
+                    <span style=\" white-space: nowrap;\">
+                      <input type='radio' id='$qid-opt-$i' name='range_qid_$qid' value='$answerID'>
+                      <label for='$qid-opt-$i' class='my-label'>$answerText</label>
+                    </span>
+                    ";
+                }
+
+                $i++;
             }
 
             $htmlInside .= "</form>";
