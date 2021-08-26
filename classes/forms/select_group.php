@@ -1,0 +1,62 @@
+<?php
+// This file is part of Moodle Course Rollover Plugin
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
+/**
+ * @package     local_pdi
+ * @author      Matheus
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
+//moodleform is defined in formslib.php
+require_once("$CFG->libdir/formslib.php");
+ 
+class select_group extends moodleform {
+    //Add elements to form
+    public function definition() {
+        global $CFG, $DB, $USER;
+ 
+        $mform = $this->_form; // Don't forget the underscore! 
+
+        //receber valores do nome do grupo dessa pessoa
+        $sql_sg = "SELECT mdl_local_pdi_group.groupname FROM mdl_local_pdi_group 
+                    INNER JOIN mdl_local_pdi_user 
+                    ON mdl_local_pdi_group.userid = mdl_local_pdi_user.id
+                    WHERE mdl_local_pdi_user.username = '$USER->username'";
+
+        $res_sg = $DB->get_records_sql($sql_sg);
+        
+        $choices = array();
+        foreach($res_sg as $r){
+            $groupname_sg = $r->groupname;
+            
+            $choices[$groupname_sg] = "$groupname_sg";
+        }
+
+        $mform->addElement('select', 'gselector', "Group:", $choices); // Add elements to your form
+        $mform->setDefault('gselector', '0');
+
+        //normally you use add_action_buttons instead of this code
+        //$buttonarray=array();
+        //$buttonarray[] = $mform->createElement('submit', 'btnsubmitsg', "see");
+        //$mform->addGroup($buttonarray, 'buttonar', '', ' ', false);
+
+        
+    }
+    //Custom validation should be added here
+    function validation($data, $files) {
+        return array();
+    }
+}
