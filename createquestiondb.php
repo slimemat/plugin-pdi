@@ -617,7 +617,7 @@ echo "
                         <option value=\"1\">short answer</option>
                         <option value=\"2\" selected>essay answer</option>
                         <option value=\"3\">multiple choice</option>
-                        <option value=\"4\">range answer (1 - 10)</option>
+                        <option value=\"4\">range answer (0 - 10)</option>
                     </select>
                 </form>
 

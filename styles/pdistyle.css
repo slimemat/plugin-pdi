@@ -473,7 +473,7 @@ li paginate_button{
 .my-margin-box{
     display: inline-block;
     width: 300px;
-    height: 100px;
+    height: fit-content;
     vertical-align: middle;
     margin-bottom: 8px;
     margin-left: 8px;

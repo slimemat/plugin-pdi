@@ -58,6 +58,7 @@
       if($var == "page-my-index"){
 
 
+         notificarAvaliador();
          //esse abaixo retorna o setor que o avaliador do corte participa, busca por id de membro
          //no coorte
 
@@ -218,6 +219,38 @@
    
  }
 
+function notificarAvaliador(){
+   //verificar se é avaliador de algum processo
+   /** Toda pessoa que avalia tem dados na tabela avaliador */
+   global $USER, $DB;
+
+   $sql = "SELECT * FROM {local_pdi_evaluator} ev
+            WHERE ev.mdlid = '$USER->id'";
+   $res = $DB->get_records_sql($sql);
+
+   //pessoa está como avaliador
+   if(count($res)>0){
+
+      $sql= "SELECT ans.id anstatus, sm.userid as evaluatorid, sm.sectorid, sm.trialid ,ans.userid answeredby, ans.isfinished 
+      FROM {local_pdi_sector_member} sm
+      INNER JOIN {local_pdi_answer_status} ans
+      ON ans.idtrial = sm.trialid and ans.sectorid = sm.sectorid
+      WHERE sm.userid = '$USER->id' and ans.isfinished = '1'";
+      $res = $DB->get_records_sql($sql);
+
+      $count_answered_forms = count($res);
+      $strMessage = "Você tem ". $count_answered_forms . " questionário(s) <a href='../local/pdi/' class='my-logo-font'>PDI</a> para avaliar";
+
+      if($count_answered_forms > 0){
+         \core\notification::info($strMessage);
+      }
+
+   }
+
+}
+
+
+/*
  function randomPassword() {
    $alphabet = 'abcdefghijklmnopqrstuvwxyz1234567890';
    $randompass = array(); 
@@ -228,6 +261,7 @@
    }
    return implode($randompass); //turn the array into a string
 }
+*/
 
 function verifyAdm($usernameAdm){
    global $DB;

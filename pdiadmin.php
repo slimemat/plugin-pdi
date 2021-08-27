@@ -41,6 +41,7 @@
 require_once('../../config.php');
 require_once('lib.php');
 require_once('print/outputmoodleusers.php');
+require_once('print/fetchforevaluator.php');
 require_login();
 
 $PAGE->set_url(new moodle_url('/local/pdi/pdiadmin.php'));
@@ -58,16 +59,13 @@ global $USER, $DB;
 verifyAdm($USER->username);
 
 
-//students available table
-/*$sql_students = "SELECT mdl_local_pdi_student.id, 
-                        mdl_local_pdi_student.studname,
-                        mdl_local_pdi_student.studemail,
-                        mdl_user.institution,
-                        mdl_user.firstname,
-                        mdl_user.lastname
-                        FROM mdl_local_pdi_student INNER JOIN mdl_user 
-                        ON mdl_local_pdi_student.studname = mdl_user.username";
-*/
+//programação antes da página
+
+$retornoBlocos = "";
+$retornoBlocos = fetchTrials();
+
+
+///
 
 
 //page STARTS HERE
@@ -119,86 +117,17 @@ echo "<br><br>";
 echo "<div id='my-centralizadora'>";
 echo "<div id='div-dashboard-list'>"; //div dashboard list
 
-echo "<div class='my-margin-box'>
-<span class=\"my-circle\" style=\"background-color: var(--mysuccess); color: var(--myblack);\">✔</span>
-<div class='my-sidetext'>
-<span class='my-circle-title'>IT Trial</span>
-<p>07/07/2021 - 10/07/2021</p>
-<p>12/30 forms not answered</p>
-</div>
-</div>";
 
-echo "<div class='my-margin-box'>
-<span class=\"my-circle\" style=\"background-color: var(--mysuccess); color: var(--myblack);\">✔</span>
-<div class='my-sidetext'>
-<span class='my-circle-title'>Title with max of 25 char</span>
-<p>07/07/2021 - 10/07/2021</p>
-<p>12/30 forms not answered</p>
-</div>
-</div>";
+/////////////////
+/////////////printar aqui com o conteudo dinamico criado em cima dessa página
 
-echo "<div class='my-margin-box'>
-<span class=\"my-circle\" style=\"background-color: var(--myerror); color: var(--myblack);\">✖</span>
-<div class='my-sidetext'>
-<span class='my-circle-title'>Title with max of 25 or so</span>
-<p>07/07/2021 - 10/07/2021</p>
-<p>12/30 forms not answered</p>
-</div>
-</div>";
 
-echo "<div class='my-margin-box'>
-<span class=\"my-circle\" style=\"background-color: var(--myerror); color: var(--myblack);\">✖</span>
-<div class='my-sidetext'>
-<span class='my-circle-title'>Title with max of 25 or so</span>
-<p>07/07/2021 - 10/07/2021</p>
-<p>12/30 forms not answered</p>
-</div>
-</div>";
+echo $retornoBlocos;
 
-echo "<div class='my-margin-box'>
-<span class=\"my-circle\" style=\"background-color: var(--myerror); color: var(--myblack);\">✖</span>
-<div class='my-sidetext'>
-<span class='my-circle-title'>Title with max of 25 or so</span>
-<p>07/07/2021 - 10/07/2021</p>
-<p>12/30 forms not answered</p>
-</div>
-</div>";
+////////////////////////////
 
-echo "<div class='my-margin-box'>
-<span class=\"my-circle\" style=\"background-color: var(--myerror); color: var(--myblack);\">✖</span>
-<div class='my-sidetext'>
-<span class='my-circle-title'>Title with max of 25 or so</span>
-<p>07/07/2021 - 10/07/2021</p>
-<p>12/30 forms not answered</p>
-</div>
-</div>";
 
-echo "<div class='my-margin-box'>
-<span class=\"my-circle\" style=\"background-color: var(--myerror); color: var(--myblack);\">✖</span>
-<div class='my-sidetext'>
-<span class='my-circle-title'>Title with max of 25 or so</span>
-<p>07/07/2021 - 10/07/2021</p>
-<p>12/30 forms not answered</p>
-</div>
-</div>";
 
-echo "<div class='my-margin-box'>
-<span class=\"my-circle\" style=\"background-color: var(--myerror); color: var(--myblack);\">✖</span>
-<div class='my-sidetext'>
-<span class='my-circle-title'>Title with max of 25 or so</span>
-<p>07/07/2021 - 10/07/2021</p>
-<p>12/30 forms not answered</p>
-</div>
-</div>";
-
-echo "<div class='my-margin-box'>
-<span class=\"my-circle\" style=\"background-color: var(--myerror); color: var(--myblack);\">✖</span>
-<div class='my-sidetext'>
-<span class='my-circle-title'>Title with max of 25 or so</span>
-<p>07/07/2021 - 10/07/2021</p>
-<p>12/30 forms not answered</p>
-</div>
-</div>";
 
 echo "</div>"; //</div dashboard list
 echo "</div>"; //centralizadora
@@ -234,6 +163,15 @@ echo "<div class='my-margin-box'>
 echo "<br>";
 echo "</div>";
 echo "</div>";
+
+
+//
+//hidden-form
+echo "<form id=\"frm-trial-id\" name=\"frm-trial-id\" class='hidden' method=\"post\" action=\"\">";
+echo "<input type=\"hidden\" name=\"trial-id\" id=\"trial-id\" value=\"\">";
+echo "</form>";
+
+
 
 echo "</div>"; //div mygrey-bg ends
 

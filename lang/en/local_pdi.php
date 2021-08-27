@@ -29,7 +29,7 @@ $string['web_adm_not_set'] = 'Hi, moodle admin! It seems like you have not added
 $string['web_manage_adm'] = 'Manage plugin admins';
 $string['user_wait_adm'] = 'Wait for your admin instructions';
 $string['user_acc_disabled'] = 'Your admin account was disabled';
-$string['stud_register_msg'] = 'You are registered as a student';
+$string['stud_register_msg'] = 'You are registered as a regular user';
 $string['current_admins'] = "Current admins";
 $string['new_admins'] = "New admins";
 $string['if_you_dont_know'] = "If you don't know the user's info you can check on Settings > Site administration > Users > Accounts > <a href='/moodle/admin/user.php'>Browse list of users</a>";

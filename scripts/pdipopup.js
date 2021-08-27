@@ -74,50 +74,52 @@ $("#btn_salvar").on("click", function(){
 
 $("#btn_finalizar").on("click", function(){
 
-    var restantes = 0;
-   
-    //para os escritos
-    $(".answer").each(function(){
-        var txtAnswer = ""+ $(this).val() + "";
-        var inputID = $(this).attr("id");
-        var setorID = $(this).attr("data-sector");
-        //alert("Conteúdo escrito: " + txtAnswer + "\nQuestão id: "+ inputID);
+    if (window.confirm("Finalizar\nVocê não poderá alterar mais!")) {    
 
-        if(txtAnswer.length < 1){
-            $(this).focus();
-            restantes++;
-            return false;
-        }else{
-            saveDaAnswer(txtAnswer, inputID, setorID);
-        }
-
-
-    });
-    //para os de escolha
-    $(".answer-choice").each(function(){
-        var formID = $(this).attr("id"); //também é o id da questão
-        var setorID = $(this).attr("data-sector");
-        var radioVal = ""+ $("#"+formID+" input[type='radio']:checked").val() + "";
-        //alert("Conteúdo escolhido: " + radioVal + "\nQuestão id: "+ formID);
-
-        if(radioVal == "undefined"){
-            $(this).focus();
-            //alert('preencher questões de escolha');
-            restantes++;
-            return false;
-
-        }else{
-            saveDaAnswer(radioVal, formID, setorID);
-        }
-
-    });
-
-    if(restantes == 0){
-        finishDaForm();
-    }else{
-        alert("Responda todas as questões para finalizar!");
-    }
+        var restantes = 0;
     
+        //para os escritos
+        $(".answer").each(function(){
+            var txtAnswer = ""+ $(this).val() + "";
+            var inputID = $(this).attr("id");
+            var setorID = $(this).attr("data-sector");
+            //alert("Conteúdo escrito: " + txtAnswer + "\nQuestão id: "+ inputID);
+
+            if(txtAnswer.length < 1){
+                $(this).focus();
+                restantes++;
+                return false;
+            }else{
+                saveDaAnswer(txtAnswer, inputID, setorID);
+            }
+
+
+        });
+        //para os de escolha
+        $(".answer-choice").each(function(){
+            var formID = $(this).attr("id"); //também é o id da questão
+            var setorID = $(this).attr("data-sector");
+            var radioVal = ""+ $("#"+formID+" input[type='radio']:checked").val() + "";
+            //alert("Conteúdo escolhido: " + radioVal + "\nQuestão id: "+ formID);
+
+            if(radioVal == "undefined"){
+                $(this).focus();
+                //alert('preencher questões de escolha');
+                restantes++;
+                return false;
+
+            }else{
+                saveDaAnswer(radioVal, formID, setorID);
+            }
+
+        });
+
+        if(restantes == 0){
+            finishDaForm();
+        }else{
+            alert("Responda todas as questões para finalizar!");
+        }
+    }
 });
 
 
@@ -174,9 +176,7 @@ function finishDaForm(){
     })
     .done(function(msg){
         var resposta = msg;
-        if (window.confirm("Finalizado com sucesso!")) {
-            window.location.reload();
-        }
+        window.location.reload();
     })
     .fail(function(){
         alert('Algo deu errado!');

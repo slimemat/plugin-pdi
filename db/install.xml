@@ -130,7 +130,7 @@
       </KEYS>
 </TABLE>
 
-<TABLE NAME="local_pdi_answer_status" COMMENT="each record is the status of an answered form">
+<TABLE NAME="local_pdi_answer_status" COMMENT="each record is the status of an answered form (userid is who answered)">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
         <FIELD NAME="userid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false"/>
