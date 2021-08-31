@@ -82,8 +82,8 @@ if(isset($_POST['hidden-ids'])){
       $trialID;
       foreach($resultado as $t){$trialID = $t->id;}
 
-      $cSQL = "SELECT tv.id, tv.timemod, ev.id as evID, ev.mdlid, tv.trialid ,tv.cohortid FROM mdl_local_pdi_evaluator ev
-              LEFT JOIN mdl_local_pdi_trial_evaluator tv
+      $cSQL = "SELECT tv.id, tv.timemod, ev.id as evID, ev.mdlid, tv.trialid ,tv.cohortid FROM {local_pdi_evaluator} ev
+              LEFT JOIN {local_pdi_trial_evaluator} tv
               ON tv.evaluatorid = ev.id
               LEFT JOIN mdl_user
               ON mdl_user.id = ev.mdlid

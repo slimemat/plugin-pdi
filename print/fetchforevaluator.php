@@ -27,7 +27,8 @@ function fetchTrials(){
 
     global $USER, $DB;
 
-    $sql = "SELECT t.id, t.title, t.timecreated, t.timemod, td.startdate, td.enddate, td.evtype, td.isstarted, ev.mdlid FROM mdl_local_pdi_trial t
+    $sql = "SELECT t.id, t.title, t.timecreated, t.timemod, td.startdate, td.enddate, td.evtype, td.isstarted, ev.mdlid 
+            FROM {local_pdi_trial} t
             LEFT JOIN {local_pdi_trial_detail} td
             ON td.trialid = t.id
             LEFT JOIN {local_pdi_trial_evaluator} tev
@@ -36,6 +37,7 @@ function fetchTrials(){
             ON tev.evaluatorid = ev.id
             WHERE ev.mdlid = '$USER->id'";
     $res = $DB->get_records_sql($sql);
+
 
     $blocoHtml = "";
     foreach($res as $r){
@@ -56,7 +58,7 @@ function fetchTrials(){
         //se for verdade, o ícone é VERDE (--mySUCCESS)
         if($is_started == '1'){
             $blocoHtml .= 
-            "<div class='my-margin-box' id='youev-$trialid' data-id='$trialid'>
+            "<div class='my-margin-box my-youev' id='youev-$trialid' data-id='$trialid'>
                 <span class=\"my-circle\" style=\"background-color: var(--mysuccess); color: var(--myblack);\">✔</span>
                 <div class='my-sidetext'>
                     <span class='my-circle-title'>$titulo</span>
@@ -66,7 +68,7 @@ function fetchTrials(){
             </div>";
         }else{
             $blocoHtml .= 
-            "<div class='my-margin-box' id='youev-$trialid' data-id='$trialid'>
+            "<div class='my-margin-box my-youev' id='youev-$trialid' data-id='$trialid'>
                 <span class=\"my-circle\" style=\"background-color: var(--myerror); color: var(--myblack);\">✖</span>
                 <div class='my-sidetext'>
                     <span class='my-circle-title'>$titulo</span>
@@ -80,5 +82,63 @@ function fetchTrials(){
     return $blocoHtml;
 
     
+}
+
+function getTrialById($id){
+    global $USER, $DB;
+
+    $sql = "SELECT t.id, t.title, t.timecreated, t.timemod, td.startdate, td.enddate, td.evtype, td.isstarted, ev.mdlid 
+    FROM {local_pdi_trial} t
+    LEFT JOIN {local_pdi_trial_detail} td
+    ON td.trialid = t.id
+    LEFT JOIN {local_pdi_trial_evaluator} tev
+    ON tev.trialid = t.id
+    LEFT JOIN {local_pdi_evaluator} ev
+    ON tev.evaluatorid = ev.id
+    WHERE t.id = '$id' and ev.mdlid = '$USER->id'";
+
+    $res = $DB->get_records_sql($sql);
+
+    return $res;
+}
+
+function getWhoAnsweredByTrial($evaid, $trialid){
+
+    global $USER, $DB;
+
+    $sql = "SELECT ans.*, sm.userid evaid, u.username answeruname, u.firstname answerfname, u.lastname answerlname 
+    FROM {local_pdi_answer_status} ans
+    LEFT JOIN {local_pdi_sector_member} sm
+    ON sm.sectorid = ans.sectorid
+    LEFT JOIN {user} u
+    ON u.id = ans.userid
+    WHERE ans.idtrial = '$trialid' and sm.trialid = '$trialid' and sm.userid = '$evaid'
+    ";
+
+    $res = $DB->get_records_sql($sql);
+
+    $blocoHtml = '';
+    foreach($res as $r){
+
+        //se for verdade, acrescentar no bloco
+        $is_finished = $r->isfinished;
+        if($is_finished == '1'){
+
+            $whoAnsFullname = "$r->answerfname" . " " . "$r->answerlname";
+            $ansDate = gmdate("d/m/y", $r->timecreated);
+
+            $blocoHtml .= "
+            <div class='my-margin-box my-padding-sm my-answer-this' data-anstatusid='$r->id' >
+                <span class='my-label-bg'>$whoAnsFullname</span> <br>
+                <span class='my-label'><span class='my-disabled'>terminou:</span> $ansDate</span> <br>
+                <span class='my-label my-pointer'><b>Clicar para responder</b></span> <br><br>
+            </div>
+            ";
+
+        }
+    }
+
+    return $blocoHtml;
+
 }
 

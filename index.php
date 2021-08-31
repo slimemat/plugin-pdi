@@ -99,7 +99,7 @@ else{
                 die;
             }
             else{
-                $sql_check = "SELECT `email`, `username` FROM `mdl_user` WHERE email = '$USER->email' and username = '$USER->username'";
+                $sql_check = "SELECT `email`, `username` FROM {user} WHERE email = '$USER->email' and username = '$USER->username'";
                 $res_check = $DB->get_records_sql($sql_check);
 
                 $addStudent = new stdClass();

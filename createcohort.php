@@ -90,7 +90,7 @@ if(isset($_POST['hidden-ids']) and isset($_POST['hidden-gname'])){
   foreach($resgetcohort as $g){ $gid = $g->id; }
 
   foreach($idArray as $r){
-    $sql = "SELECT id, username, email FROM mdl_user WHERE id = '$r'";
+    $sql = "SELECT id, username, email FROM {user} WHERE id = '$r'";
     $res = $DB->get_records_sql($sql);
 
     foreach($res as $row){
@@ -232,7 +232,7 @@ echo "</div>";
 
 
 echo "<br>";
-echo "<span id='span-evaluators' class='my-label'>Evaluators selected: </span>";
+echo "<span id='span-evaluators' class='my-label'>Members selected: </span>";
 
 
 

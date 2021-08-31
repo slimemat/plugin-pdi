@@ -49,7 +49,7 @@ $PAGE->set_context(\context_system::instance());
 $PAGE->set_title("PDI Admin");
 $PAGE->set_heading('PDI Admin');
 $PAGE->requires->jquery();
-$PAGE->requires->js(new moodle_url($CFG->dirrroot . '/local/pdi/scripts/pdiscript.js'));
+//$PAGE->requires->js(new moodle_url($CFG->dirrroot . '/local/pdi/scripts/pdiscript.js'));
 
 global $USER, $DB;
 
@@ -168,7 +168,7 @@ echo "</div>";
 //
 //hidden-form
 echo "<form id=\"frm-trial-id\" name=\"frm-trial-id\" class='hidden' method=\"post\" action=\"\">";
-echo "<input type=\"hidden\" name=\"trial-id\" id=\"trial-id\" value=\"\">";
+echo "<input type=\"hidden\" name=\"hidden-trial-id\" id=\"hidden-trial-id\" value=\"\">";
 echo "</form>";
 
 
@@ -195,8 +195,14 @@ $( "#id_show_btn" ).on( "click", function() {
   window.location.href = "adminshowall.php";  
 });
 
-$( ".my-margin-box" ).on( "click", function() {
-  window.location.href = "admintrial.php";
+$(".my-youev").on("click", function(){
+
+  var trialid = $(this).attr("data-id");
+  $("#hidden-trial-id").val(trialid);
+
+  $("#frm-trial-id").attr("action", "admintrial.php");
+  $("#frm-trial-id").submit();
+
 });
 
 });

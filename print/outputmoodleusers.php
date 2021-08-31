@@ -24,7 +24,7 @@
 global $DB;
 
 //pré-página
-$outputmoodle_sql = "SELECT `id`, `username`, `firstname`, `lastname`, `email`,  `institution` FROM `mdl_user` WHERE `email` != 'root@localhost'";
+$outputmoodle_sql = "SELECT `id`, `username`, `firstname`, `lastname`, `email`,  `institution` FROM {user} WHERE `email` != 'root@localhost'";
 $outputmoodle_avUsers = $DB->get_records_sql($outputmoodle_sql);
 
 $outmoodle_lista;

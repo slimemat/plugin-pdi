@@ -55,6 +55,8 @@
       global $PAGE, $USER, $DB;
       $var = $PAGE->bodyid;
       
+      //echo "<script>alert('Essa página é $var')</script>";
+
       if($var == "page-my-index"){
 
 
@@ -62,20 +64,65 @@
          //esse abaixo retorna o setor que o avaliador do corte participa, busca por id de membro
          //no coorte
 
+         return mostrarPopup();
+   
+      }
+      
+   }
+   else{
+      return false;
+   }
+   
+ }
+
+function notificarAvaliador(){
+   //verificar se é avaliador de algum processo
+   /** Toda pessoa que avalia tem dados na tabela avaliador */
+   global $USER, $DB;
+
+   $sql = "SELECT * FROM {local_pdi_evaluator} ev
+            WHERE ev.mdlid = '$USER->id'";
+   $res = $DB->get_records_sql($sql);
+
+   //pessoa está como avaliador
+   if(count($res)>0){
+
+      $sql= "SELECT ans.id anstatus, sm.userid as evaluatorid, sm.sectorid, sm.trialid ,ans.userid answeredby, ans.isfinished 
+      FROM {local_pdi_sector_member} sm
+      INNER JOIN {local_pdi_answer_status} ans
+      ON ans.idtrial = sm.trialid and ans.sectorid = sm.sectorid
+      WHERE sm.userid = '$USER->id' and ans.isfinished = '1'";
+      $res = $DB->get_records_sql($sql);
+
+      $count_answered_forms = count($res);
+      $strMessage = "Você tem ". $count_answered_forms . " questionário(s) <a href='../local/pdi/' class='my-logo-font'>PDI</a> para avaliar";
+
+      if($count_answered_forms > 0){
+         \core\notification::info($strMessage);
+      }
+
+   }
+
+}
+
+function mostrarPopup(){
+   global $PAGE, $USER, $DB;
+
+
          //então, usar o setor para fazer outra pesquisa (sectorid)
          $sql = "SELECT mdb.timecreated, mdb.dbid, mdb.smemberid, sm.sectorid, sm.userid as userid_sector_member, sm.trialid,trev.cohortid, cm.userid as userid_cohort_member, t.title as trialtitle, td.isstarted as trialisstarted, td.startdate, td.enddate, us.firstname, us.lastname
-         FROM mdl_local_pdi_sect_mem_db mdb
-         LEFT JOIN mdl_local_pdi_sector_member sm
+         FROM {local_pdi_sect_mem_db} mdb
+         LEFT JOIN {local_pdi_sector_member} sm
          ON sm.id = mdb.smemberid
-         LEFT JOIN mdl_local_pdi_trial_evaluator trev
+         LEFT JOIN {local_pdi_trial_evaluator} trev
          ON trev.trialid = sm.trialid
-         LEFT JOIN mdl_cohort_members cm
+         LEFT JOIN {cohort_members} cm
          ON cm.cohortid = trev.cohortid
-         LEFT JOIN mdl_local_pdi_trial t
+         LEFT JOIN {local_pdi_trial} t
          ON t.id = sm.trialid
-         LEFT JOIN mdl_local_pdi_trial_detail td
+         LEFT JOIN {local_pdi_trial_detail} td
          ON td.trialid = t.id
-         LEFT JOIN mdl_user us
+         LEFT JOIN {user} us
          ON us.id = sm.userid
          WHERE cm.userid = \"$USER->id\"
          ";
@@ -112,7 +159,7 @@
             //não importa o setor, então está agrupado
             $respondido = 0;
 
-            $respSQL = "SELECT * FROM mdl_local_pdi_answer_status pas
+            $respSQL = "SELECT * FROM {local_pdi_answer_status} pas
                         WHERE pas.userid = '$USER->id'
                         and pas.idtrial = '$xtrialid'
                         GROUP BY pas.userid";
@@ -165,8 +212,7 @@
             $blocoHtml .= "</span>";
          }
          
-
-         return "
+         $blocoReturn = "
          <!--opened popup-->
          <div id='div-popup' class='r-popup-frame'>
             <div class='r-popup'>
@@ -209,43 +255,9 @@
                <span class=\"my-circle\">PDI</span>
             </div>
          </div>
-         ";   
-      }
-      
-   }
-   else{
-      return false;
-   }
-   
- }
+         ";
 
-function notificarAvaliador(){
-   //verificar se é avaliador de algum processo
-   /** Toda pessoa que avalia tem dados na tabela avaliador */
-   global $USER, $DB;
-
-   $sql = "SELECT * FROM {local_pdi_evaluator} ev
-            WHERE ev.mdlid = '$USER->id'";
-   $res = $DB->get_records_sql($sql);
-
-   //pessoa está como avaliador
-   if(count($res)>0){
-
-      $sql= "SELECT ans.id anstatus, sm.userid as evaluatorid, sm.sectorid, sm.trialid ,ans.userid answeredby, ans.isfinished 
-      FROM {local_pdi_sector_member} sm
-      INNER JOIN {local_pdi_answer_status} ans
-      ON ans.idtrial = sm.trialid and ans.sectorid = sm.sectorid
-      WHERE sm.userid = '$USER->id' and ans.isfinished = '1'";
-      $res = $DB->get_records_sql($sql);
-
-      $count_answered_forms = count($res);
-      $strMessage = "Você tem ". $count_answered_forms . " questionário(s) <a href='../local/pdi/' class='my-logo-font'>PDI</a> para avaliar";
-
-      if($count_answered_forms > 0){
-         \core\notification::info($strMessage);
-      }
-
-   }
+         return $blocoReturn;
 
 }
 
@@ -268,7 +280,7 @@ function verifyAdm($usernameAdm){
 
    $userLogado = $usernameAdm;
 
-   $sql2 = "SELECT `username`, `userrole` FROM `mdl_local_pdi_user` WHERE username = '$userLogado'";
+   $sql2 = "SELECT username, userrole FROM {local_pdi_user} WHERE username = '$userLogado'";
    $res2 = $DB->get_records_sql($sql2);
 
    $userSql = $res2["$userLogado"];

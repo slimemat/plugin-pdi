@@ -267,7 +267,7 @@ if(isset($_SESSION['authadm']) and $_SESSION['authadm'] == 'yes'){
 
 
   //sql de exclusão
-  $xSQL = "SELECT * FROM mdl_local_pdi_trial_evaluator
+  $xSQL = "SELECT * FROM {local_pdi_trial_evaluator}
             WHERE trialid = $trialID";
   $xRes = $DB->get_records_sql($xSQL);
 

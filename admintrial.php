@@ -41,6 +41,7 @@
 require_once('../../config.php');
 require_once('lib.php');
 require_once('print/outputmoodleusers.php');
+require_once('print/fetchforevaluator.php');
 require_login();
 
 $PAGE->set_url(new moodle_url('/local/pdi/admintrial.php'));
@@ -91,6 +92,39 @@ if($auth == "yes"){
 //para esconder o form
 if(isset($_SESSION['authadm']) and $_SESSION['authadm'] == 'yes'){
 
+//some before page coding
+  if(isset($_POST['hidden-trial-id'])){
+
+    //parte 1, dados do processo
+    $trialid = $_POST['hidden-trial-id'];
+
+    $resTrial = getTrialById($trialid);
+
+    $trialTitle = '';
+    $trialStart = '';
+    $trialEnd = '';
+    $trialEvType = '';
+
+    foreach($resTrial as $r){
+      $trialTitle = $r->title;
+      $trialStart = $r->startdate;
+      $trialEnd = $r->enddate;
+      $trialEvType = $r->evtype;
+    }
+
+    $dateInicioF = gmdate("d/m/y", $trialStart);
+    $dateFimF = gmdate("d/m/y", $trialEnd);
+
+    //parte 2, quem respondeu meu setor
+
+    $uid = $USER->id; 
+    $blocoResponderam = getWhoAnsweredByTrial($uid, $trialid);
+    
+  }
+
+
+
+
 //actual page for admin
 echo "<div id='myblue-bg'>";
 echo "<span><a href='pdiadmin.php' class='pdi-nostyle my-marginr'>back</a></span>";
@@ -109,33 +143,34 @@ echo "<div>
 
 echo "<div id='mygrey-bg'>"; //grey bg starts
 
-echo "<h1>This Trial Name</h1>";
-echo "<footer class='my-belowh1'>01/07/2021 - 08/07/2021</footer>";
+echo "<h1>$trialTitle</h1>";
+echo "<footer class='my-belowh1'>$dateInicioF - $dateFimF</footer>";
 
 
-echo "<div id='my-tab1' class='my-inside-container my-hidden'>
+//bloco com conteúdo gerado no começo da página
+echo "
+<div id='my-tab1' class='my-inside-container my-hidden'>
 
-Nome de quem respondeu <br>
-Data que finalizou <br>
-<b style='cursor: pointer;'>clicar para responder</b><br><br><br>
+<div id='my-tab1-inner'>
+  $blocoResponderam
+</div>
 
-Nome de quem respondeu <br>
-Data que finalizou <br>
-<b style='cursor: pointer;'>clicar para responder</b><br><br><br>
-
-Nome de quem respondeu <br>
-Data que finalizou <br>
-<b style='cursor: pointer;'>clicar para responder</b><br><br><br>
-
-Nome de quem respondeu <br>
-Data que finalizou <br>
-<b style='cursor: pointer;'>clicar para responder</b><br><br><br>
+<div id='my-tab1-inner-formdiv' class='my-hidden'>
+  Carregando...
+</div>
 
 </div>";
+
 echo "<div id='my-tab2' class='my-inside-container my-hidden'>status</div>";
 echo "<div id='my-tab3' class='my-inside-container my-hidden'>ranking</div>";
 echo "<div id='my-tab4' class='my-inside-container my-hidden'>questions db</div>";
 echo "<div id='my-tab5' class='my-inside-container my-hidden'>settings</div>";
+
+
+//hidden form
+echo "<form id=\"frm-anstatus-id\" name=\"frm-anstatus-id\" class='hidden' method=\"post\" action=\"\">";
+echo "<input type=\"hidden\" name=\"hidden-anstatus-id\" id=\"hidden-anstatus-id\" value=\"\">";
+echo "</form>";
 
 echo "</div>"; //div mygrey-bg ends
 
@@ -205,6 +240,40 @@ $( ".my-secondary-btn" ).on( "click", function() {
       break;
   }
 });
+
+
+$(".my-answer-this").on("click", function(){
+  
+  var blockID = $(this).attr('data-anstatusid');
+
+  $("#hidden-anstatus-id").val(blockID);
+
+  //$("#my-tab1-inner-formdiv").show();
+
+  //ajax
+  var dados = $("#frm-anstatus-id").serialize();
+
+  $.ajax({
+      method: 'POST',
+      url: 'print/fetchforevaluator.php',
+      data: dados,
+
+      beforeSend: function(){$("#my-tab1-inner-formdiv").show();}
+
+      //CRIAR UM ARQUIVO PHP QUE MANDA O FORM PRA RESPONDER
+  })
+  .done(function(msg){
+      $("#my-tab1-inner-formdiv").html(msg);
+  })
+  .fail(function(){
+      $("#my-tab1-inner-formdiv").html("Failed to reach database!");
+  });
+
+
+
+
+});
+
 
 });
 

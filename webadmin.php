@@ -71,7 +71,7 @@ else if($fromform = $mform->get_data()){
     $websql = "SELECT username, useremail FROM {local_pdi_user} WHERE username = '$fromform->username' or useremail = '$fromform->useremail'";
     $alreadyExist = $DB->get_records_sql($websql);
 
-    $sql = "SELECT `email`, `username` FROM `mdl_user` WHERE email = '$fromform->useremail' and username = '$fromform->username'";
+    $sql = "SELECT `email`, `username` FROM {user} WHERE email = '$fromform->useremail' and username = '$fromform->username'";
     $res = $DB->get_records_sql($sql);
 
     if(count($alreadyExist) > 0){
@@ -227,7 +227,7 @@ echo $btn_user_select_table;
 echo $btn_quick_add;
 
 echo "<div id='divdttable'>";
-echo "<table id=\"dt-select\" class=\"table mydark-table\" cellspacing=\"0\" width=\"100%\">
+echo "<table id=\"dt-select\" class=\"table mydark-table my-pointer\" cellspacing=\"0\" width=\"100%\">
 <thead>
   <tr>
     <th>ID</th>
@@ -305,6 +305,40 @@ table.rows().deselect();
 }
 ]
 });
+
+
+//eventos da tabela
+table
+.on( 'select', function ( e, dt, type, indexes ) {
+    var rowData = table.rows( indexes ).data().toArray();
+    console.log(rowData);
+    
+    var eArr = rowData.values();
+    var mArray = (eArr.next().value);
+    var obj = Object.assign({}, mArray);
+    
+    var id = obj[0];
+    var username = obj[1];
+    var email = obj[2];
+    var company = obj[3];
+    var fullname = obj[4];
+
+    $("#id_username").val(username);
+    $("#id_useremail").val(email);
+    $("#id_usercompany").val(company);
+
+    
+      $("#my-smallmsg").fadeIn(200);
+      $("#my-smallmsg").css("display", "flex");
+      $("#my-smallmsg").delay(1400).fadeOut(400);
+    
+    
+} )
+.on( 'deselect', function ( e, dt, type, indexes ) {
+    
+} );
+
+
 });
 
 //tabela dos grupos (simples)
@@ -318,8 +352,10 @@ $(document).ready(function() {
 
 $(document).ready(function() {
 
+  /*
   var click_state = false;
   $( "#dt-select tbody tr" ).on( "click", function() {
+
 
     var currentRow= $(this).closest("tr");      
     var col1= currentRow.find("td:eq(1)").text(); // get current row 1st TD value
@@ -344,6 +380,7 @@ $(document).ready(function() {
     }
     
   });
+  */
 
   //quick add
   $("#btn-quick-add").on("click", function() {

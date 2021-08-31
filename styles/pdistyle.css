@@ -554,6 +554,13 @@ li paginate_button{
     margin-right: 20px !important;
 }
 
+.my-label-bg{
+    font-family: "Poppins";
+    color: var(--myblack);
+    font-size: 20px;
+    margin-right: 20px !important;
+}
+
 .popover-header {
     color: var(--mywhite) !important;
     font-family: 'Poppins' !important;
