@@ -678,3 +678,43 @@ li paginate_button{
     margin-top: auto;
     padding: 6px 0 10px 0;
 }
+
+.my-mention{
+    color: var(--disabled-grey);
+    font-style: italic;
+    padding: 2px 8px 2px 4px;
+}
+
+.my-font-family{
+    font-family: "Poppins";
+}
+
+.my-qtitle{
+    font-family: "Poppins" !important;
+    font-size: 20px !important;
+}
+
+.my-label-resp{
+    font-family: "Poppins";
+    color: var(--disabled-grey);
+    font-style: italic;
+}
+
+.my-label-btn{
+    color: var(--myprimary);
+    cursor: pointer;
+    
+}
+
+.my-round-card{
+    display: inline-block;
+    border-radius: 20px;
+    background-color: var(--mywhite);
+    padding: 20px;
+    transition: ease 200ms;
+}
+.my-round-card:hover{
+    transition: ease 200ms;
+    background-color: var(--mygreylight);
+    cursor: pointer;
+}
