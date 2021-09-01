@@ -159,11 +159,11 @@ $dropdownCategory = "
 //short answer must have: question name, question text, right answer(s)
 $frmShortAns = "
 <form id='frmShortAns' name='frmlShortAns' method='post' action='#' class='myFrmAns'>
-    <label for='txtQname1'>Question name</label> <br>
-    <input type='text' id='txtQname1' name='txtQname1' placeholder='name you see'> <br>
+    <label for='txtQname1'>Enunciado questão (avaliador)</label> <br>
+    <textarea class='form-control' type='text' id='txtQname1' name='txtQname1' placeholder='pergunta (curta) que o avaliador lê'></textarea> <br>
 
-    <label for='txtQText1'>Question text</label> <br>
-    <textarea class=\"form-control\" id=\"txtQText1\" name='txtQText1' rows=\"6\" placeholder='Short answer question to be answered'></textarea> <br>
+    <label for='txtQText1'>Enunciado questão (funcionário)</label> <br>
+    <textarea class=\"form-control\" id=\"txtQText1\" name='txtQText1' rows=\"6\" placeholder='pergunta (curta) que o funcionário lê'></textarea> <br>
 
     <div>
      <div class='div-scroll' id='div-scroll-short'>
@@ -250,11 +250,11 @@ $frmShortAns = "
 //Essay answer must have: Nome e texto da questão
 $frmEssayAns = "
 <form id='frmEssayAns' name='frmlEssayAns' method='post' action='#' class='myFrmAns'>
-    <label for='txtQname2'>Question name</label> <br>
-    <input type='text' id='txtQname2' name='txtQname2' placeholder='name you see'> <br>
+    <label for='txtQname2'>Enunciado questão (avaliador)</label> <br>
+    <textarea class='form-control' type='text' id='txtQname2' name='txtQname2' placeholder='pergunta (dissertação) que o avaliador lê'></textarea> <br>
 
-    <label for='txtQText2'>Question text</label> <br>
-    <textarea class=\"form-control\" id=\"txtQText2\" name='txtQText2' rows=\"6\" placeholder='Write about something...'></textarea> <br>
+    <label for='txtQText2'>Enunciado questão (funcionário)</label> <br>
+    <textarea class=\"form-control\" id=\"txtQText2\" name='txtQText2' rows=\"6\" placeholder='pergunta (dissertação) que o funcionário lê'></textarea> <br>
 
 </form>
 ";
@@ -262,11 +262,11 @@ $frmEssayAns = "
 //multiple choice answer must have: nome, texto, opções com peso da nota
 $frmMultiAns = "
 <form id='frmMultiAns' name='frmlMultiAns' method='post' action='#' class='myFrmAns'>
-    <label for='txtQname3'>Question name</label> <br>
-    <input type='text' id='txtQname3' name='txtQname3' placeholder='name you see'> <br>
+    <label for='txtQname3'>Enunciado questão (avaliador)</label> <br>
+    <textarea class='form-control' type='text' id='txtQname3' name='txtQname3' placeholder='pergunta (multi) que o avaliador lê'></textarea> <br>
 
-    <label for='txtQText3'>Question text</label> <br>
-    <textarea class=\"form-control\" id=\"txtQText3\" name='txtQText3' rows=\"6\" placeholder='Mark the correct answer...'></textarea> <br>
+    <label for='txtQText3'>Enunciado questão (funcionário)</label> <br>
+    <textarea class=\"form-control\" id=\"txtQText3\" name='txtQText3' rows=\"6\" placeholder='pergunta (multi) que o funcionário lê'></textarea> <br>
 
     <div>
      <div class='div-scroll' id='div-scroll'>
@@ -418,11 +418,11 @@ $frmMultiAns = "
 //range question must have: name, text and radio buttons (will work as essay question, no correct answer)
 $frmRangeAns= "
 <form id='frmRangeAns' name='frmlRangeAns' method='post' action='#' class='myFrmAns'>
-    <label for='txtQname4'>Question name</label> <br>
-    <input type='text' id='txtQname4' name='txtQname4' placeholder='name you see'> <br>
+    <label for='txtQname4'>Enunciado questão (avaliador)</label> <br>
+    <textarea class='form-control' type='text' id='txtQname4' name='txtQname4' placeholder='pergunta (escala) que o avaliador lê'></textarea> <br>
 
-    <label for='txtQText4'>Question text</label> <br>
-    <textarea class=\"form-control\" id=\"txtQText4\" name='txtQText4' rows=\"6\" placeholder='Text for the question from 0 to ...'></textarea> <br>
+    <label for='txtQText4'>Enunciado questão (funcionário)</label> <br>
+    <textarea class=\"form-control\" id=\"txtQText4\" name='txtQText4' rows=\"6\" placeholder='pergunta (escala) que o funcionário lê\n\nDe 0 a 5, como VOCÊ se avalia?'></textarea> <br>
 
     <div>
      <div class='div-scroll' id='div-scroll-range'>

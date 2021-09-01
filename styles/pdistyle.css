@@ -534,6 +534,10 @@ li paginate_button{
     display: none;
 }
 
+.my-hidden-2{
+    display: none !important;
+}
+
 .my-horizontal-div{
     display: inline-block;
     background-color: var(--myprimary);
@@ -679,6 +683,16 @@ li paginate_button{
     padding: 6px 0 10px 0;
 }
 
+.grey-bottom-block{
+    background-color: var(--mygrey);
+    align-items: center;
+    height: 54px;
+    width: 70%;
+    margin: auto;
+    padding: 6px 0 10px 10px;
+    text-align: center;
+}
+
 .my-mention{
     color: var(--disabled-grey);
     font-style: italic;
@@ -717,4 +731,28 @@ li paginate_button{
     transition: ease 200ms;
     background-color: var(--mygreylight);
     cursor: pointer;
+}
+
+.my-scroll{
+    max-height: 480px;
+    padding: 8px 42px 8 42px;
+    overflow-y: auto;
+}
+
+.my-big-btn{
+    display: block; 
+    width: 70%; 
+    margin: auto;
+    box-shadow: 1px 1px 2px grey;
+    background-color: var(--myprimary) !important;
+    color: var(--white) !important;
+    font-family: "Poppins" !important;
+    font-size: 16px !important;
+    padding: 8px 8px 8px 32px;
+    cursor: pointer;
+}
+
+.my-big-btn:active{
+    background-color: var(--white) !important;
+    color: var(--mysecondary) !important;
 }

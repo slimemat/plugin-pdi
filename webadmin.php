@@ -11,6 +11,12 @@
 <!-- Font Awesome -->
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.11.2/css/all.css">
 
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"/>
+
+<meta http-equiv="Pragma" content="no-cache"/>
+
+<meta http-equiv="Expires" content="0"/>
+
 </head>
 </html>
 

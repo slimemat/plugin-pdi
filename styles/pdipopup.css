@@ -204,7 +204,7 @@
   }
 
 .my-closed-popup{
-    display: block !important;
+    display: block;
     position: fixed !important;
     bottom: 20px !important;
     right: 20px !important;
