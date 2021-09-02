@@ -75,7 +75,7 @@ if(isset($_POST['hidden-trialid']))
         if($qtype == "shortanswer"){
 
             //see if theres an answer saved
-            $savedSQL = "SELECT * FROM mdl_local_pdi_answer_trial ant 
+            $savedSQL = "SELECT * FROM {local_pdi_answer_trial} ant 
                             WHERE ant.answeredbyid = '$currentuserid' AND ant.idquestion = '$qid' AND ant.idtrial = '$trialid'";
             $savedRES = $DB->get_records_sql($savedSQL);
             

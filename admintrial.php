@@ -155,9 +155,25 @@ echo "
   $blocoResponderam
 </div>
 
-<div id='my-tab1-inner-formdiv' class='my-hidden'>
+<div id='big-back-btn' class='my-big-btn my-hidden-2'>Voltar para os processos</div>
+
+
+<div id='my-tab1-inner-formdiv' class='my-hidden my-scroll mx-auto' style='max-width: 70%; box-shadow: 1px 1px 5px grey;'>
   Carregando...
 </div>
+
+
+<div id='div-q-save-btns' class='mx-auto my-hidden'>
+
+<div class='grey-bottom-block'>
+  <input type='button' id='btn_salvar' class='my-grey-btn my-marginr btn my-large-input'
+      value='Salvar'>
+  <input type='button' id='btn_finalizar' class='my-primary-btn my-marginr btn'
+      value='Finalizar'>
+</div>
+
+</div>
+
 
 </div>";
 
@@ -243,7 +259,7 @@ $( ".my-secondary-btn" ).on( "click", function() {
 
 
 $(".my-answer-this").on("click", function(){
-  
+
   var blockID = $(this).attr('data-anstatusid');
 
   $("#hidden-anstatus-id").val(blockID);
@@ -255,14 +271,20 @@ $(".my-answer-this").on("click", function(){
 
   $.ajax({
       method: 'POST',
-      url: 'print/fetchforevaluator.php',
+      url: 'print/showevaluationform.php',
       data: dados,
 
-      beforeSend: function(){$("#my-tab1-inner-formdiv").show();}
+      beforeSend: function(){
+        $("#my-tab1-inner").hide(400);
+        $("#my-tab1-inner-formdiv").show();
+      }
 
       //CRIAR UM ARQUIVO PHP QUE MANDA O FORM PRA RESPONDER
+      //checar o php e ver se é possível criar a função lá
   })
   .done(function(msg){
+      $("#big-back-btn").removeClass("my-hidden-2");
+
       $("#my-tab1-inner-formdiv").html(msg);
   })
   .fail(function(){
@@ -272,6 +294,15 @@ $(".my-answer-this").on("click", function(){
 
 
 
+});
+
+
+//elementos perguntas
+$("#big-back-btn").on("click", function(){
+  $("#big-back-btn").addClass("my-hidden-2");
+  $("#my-tab1-inner-formdiv").hide(400);
+  $("#div-q-save-btns").hide();
+  $("#my-tab1-inner").show();
 });
 
 

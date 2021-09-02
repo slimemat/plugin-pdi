@@ -22,12 +22,13 @@
  */
 
 
+
 //função para retornar os blocos de processos para um avaliador
 function fetchTrials(){
 
     global $USER, $DB;
 
-    $sql = "SELECT t.id, t.title, t.timecreated, t.timemod, td.startdate, td.enddate, td.evtype, td.isstarted, ev.mdlid 
+    $sql = "SELECT t.id, t.title, t.timecreated, t.timemod, td.startdate, td.enddate, td.evtype, td.isstarted, ev.mdlid, ev.id as evid  
             FROM {local_pdi_trial} t
             LEFT JOIN {local_pdi_trial_detail} td
             ON td.trialid = t.id
@@ -54,6 +55,18 @@ function fetchTrials(){
         $dateInicioF = gmdate("d/m/y", $dataInicio);
         $dateFimF = gmdate("d/m/y", $dataFim);
 
+        $evaluatorID = $r->evid;
+
+        $sqlAvalidados = "SELECT cm.*, tev.trialid, tev.evaluatorid 
+                            FROM {cohort_members} cm
+                            LEFT JOIN {local_pdi_trial_evaluator} tev
+                            ON tev.cohortid = cm.cohortid
+                            WHERE tev.trialid = '$trialid' and tev.evaluatorid = '$evaluatorID'";
+        $resAvaliados = $DB->get_records_sql($sqlAvalidados);
+
+        $totalAvaliados = count($resAvaliados);
+
+        $totalRespondidos = howManyAnsweredByTrial($USER->id, $trialid);
 
         //se for verdade, o ícone é VERDE (--mySUCCESS)
         if($is_started == '1'){
@@ -63,7 +76,7 @@ function fetchTrials(){
                 <div class='my-sidetext'>
                     <span class='my-circle-title'>$titulo</span>
                     <p>$dateInicioF - $dateFimF</p>
-                    <p>12/30 forms not answered (exemplo)</p>
+                    <p>$totalRespondidos/$totalAvaliados respondidos</p>
                 </div>
             </div>";
         }else{
@@ -73,7 +86,7 @@ function fetchTrials(){
                 <div class='my-sidetext'>
                     <span class='my-circle-title'>$titulo</span>
                     <p>$dateInicioF - $dateFimF</p>
-                    <p>12/30 forms not answered (exemplo)</p>
+                    <p>$totalRespondidos/$totalAvaliados forms not answered (salvo)</p>
                 </div>
             </div>";
         }
@@ -105,6 +118,9 @@ function getTrialById($id){
 function getWhoAnsweredByTrial($evaid, $trialid){
 
     global $USER, $DB;
+
+    //returns html block
+    //evaid is the evaluator moodle id
 
     $sql = "SELECT ans.*, sm.userid evaid, u.username answeruname, u.firstname answerfname, u.lastname answerlname 
     FROM {local_pdi_answer_status} ans
@@ -141,4 +157,34 @@ function getWhoAnsweredByTrial($evaid, $trialid){
     return $blocoHtml;
 
 }
+
+function howManyAnsweredByTrial($evaid, $trialid){
+    global $USER, $DB;
+
+    //returns a number
+    //evaid is the evaluator moodle id
+
+    $sql = "SELECT ans.*, sm.userid evaid, u.username answeruname, u.firstname answerfname, u.lastname answerlname 
+    FROM {local_pdi_answer_status} ans
+    LEFT JOIN {local_pdi_sector_member} sm
+    ON sm.sectorid = ans.sectorid
+    LEFT JOIN {user} u
+    ON u.id = ans.userid
+    WHERE ans.idtrial = '$trialid' and sm.trialid = '$trialid' and sm.userid = '$evaid'
+    ";
+
+    $res = $DB->get_records_sql($sql);
+
+    $count = 0;
+
+    foreach($res as $r){
+
+        $count++;
+    }
+
+    return $count;
+
+}
+
+
 

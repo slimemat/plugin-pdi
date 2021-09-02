@@ -141,14 +141,14 @@ $( ".my-round-card" ).on( "click", function() {
 
         beforeSend: function(){
             $("#scroll-div-2").html("<h3>loading...</h3>");
-            $("#bloco-div-1").hide();
+            $("#bloco-div-1").hide(400);
         }
     })
     .done(function(msg){
         $("#big-back-btn").removeClass("my-hidden-2");
         $("#scroll-div-2").show(400);
         $("#scroll-div-2").html(msg);
-        $("#div-q-save-btns").show();
+        $("#div-q-save-btns").show(400);
 
         $("#btn_salvar").prop("disabled",false);
         $("#btn_finalizar").prop("disabled",false);

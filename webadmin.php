@@ -209,6 +209,9 @@ echo "</div><br>";
 
 echo "<div id='mygrey-bg'>"; //grey bg starts
 
+//mostrar para os adms do moodle apenas
+if(has_capability('moodle/site:config', context_system::instance())){
+
 echo "<h4>".get_string("current_admins", "local_pdi")."</h4>";
 echo $btn_adm_select_table;
 echo "<div id='hide_select_div'>" 
@@ -258,6 +261,8 @@ echo "<table id=\"dt-select\" class=\"table mydark-table my-pointer\" cellspacin
 echo "<div id='my-smallmsg'>Copied to form!</div>";
 echo "<div id ='my-smallmsg-error' class='my-smallmsg-error'>No one is selected!</div>";
 echo "<div id='my-emptymsg' class='my-smallmsg-error'>You must fill in this!</div>";
+
+} //fechando o if de capability
 
 echo "</div>"; //div mygrey-bg ends
 
