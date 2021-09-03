@@ -139,7 +139,7 @@ echo "<br><br>";
 
 //btn SHOW ALL
 echo "<div id='div-save-buttons'>";
-echo "<input type='button' id='id_show_btn' class='div-save-btn my-primary-btn my-marginlauto'
+echo "<input type='button' id='id_show_btn' class='my-large-input my-primary-btn my-marginlauto'
 value='Show all'>";
 echo "</div>";
 

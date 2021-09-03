@@ -94,7 +94,15 @@ function notificarAvaliador(){
       WHERE sm.userid = '$USER->id' and ans.isfinished = '1'";
       $res = $DB->get_records_sql($sql);
 
-      $count_answered_forms = count($res);
+      $count_answered_forms = 0;
+      foreach($res as $r){
+         $isfinished = $r->isfinished;
+
+         if($isfinished == '1'){
+            $count_answered_forms++;
+         }
+      }
+
       $strMessage = "Você tem ". $count_answered_forms . " questionário(s) <a href='../local/pdi/' class='my-logo-font'>PDI</a> para avaliar";
 
       if($count_answered_forms > 0){

@@ -756,3 +756,7 @@ li paginate_button{
     background-color: var(--white) !important;
     color: var(--mysecondary) !important;
 }
+
+.my-center {
+    text-align: center;
+  }

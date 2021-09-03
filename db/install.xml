@@ -146,7 +146,7 @@
 </TABLE>
 
 <!--answers to questions by evaluators-->
-<TABLE NAME="local_pdi_evanswer_trial" COMMENT="each record is answer to a question in a trial by and evaluator">
+<TABLE NAME="local_pdi_evanswer_trial" COMMENT="each record is answer to a question in a trial by and evaluator (idanstatus refers to the person that is being evaluated)">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
         <FIELD NAME="answeredbyid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false"/>

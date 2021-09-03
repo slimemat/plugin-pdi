@@ -44,10 +44,10 @@ require_once('print/outputmoodleusers.php');
 require_once('print/fetchforevaluator.php');
 require_login();
 
-$PAGE->set_url(new moodle_url('/local/pdi/admintrial.php'));
+$PAGE->set_url(new moodle_url('/local/pdi/admintrialalt.php'));
 $PAGE->set_context(\context_system::instance());
-$PAGE->set_title("PDI Admin - Trial");
-$PAGE->set_heading('PDI Admin');
+$PAGE->set_title("PDI Avaliador - Trial");
+$PAGE->set_heading('PDI Avaliador');
 $PAGE->requires->jquery();
 //$PAGE->requires->js(new moodle_url($CFG->dirrroot . '/local/pdi/scripts/pdiscript.js'));
 
@@ -56,41 +56,14 @@ global $USER, $DB;
 //form instance
 
 //verifica se o logado é adm
-verifyAdm($USER->username);
-
-
-//students available table
-/*$sql_students = "SELECT mdl_local_pdi_student.id, 
-                        mdl_local_pdi_student.studname,
-                        mdl_local_pdi_student.studemail,
-                        mdl_user.institution,
-                        mdl_user.firstname,
-                        mdl_user.lastname
-                        FROM mdl_local_pdi_student INNER JOIN mdl_user 
-                        ON mdl_local_pdi_student.studname = mdl_user.username";
-*/
+//verifyAdm($USER->username);
 
 
 //page STARTS HERE
 echo $OUTPUT->header();
 
-$auth = ($_SESSION['authadm']);
-if($auth == "yes"){
-    //do something if needed
-}else{
-  echo "<div id='myblue-bg'>";
-  echo "<span><a href='/moodle/index.php' class='pdi-nostyle'>back</a></span>";
-  echo "<div class='mypush'><span class='mylogo'>PDI</span></div>";
-  echo "</div><br>";
+//$auth = ($_SESSION['authadm']);
 
-    echo "<footer>That is a page for plugin admins only.</footer><br>";
-    \core\notification::add("You are not registered as a plugin admin!", \core\output\notification::NOTIFY_ERROR);
-    echo "<span><a href='index.php' class='pdi-nostyle'>back</a></span>";
-}
-
-
-//para esconder o form
-if(isset($_SESSION['authadm']) and $_SESSION['authadm'] == 'yes'){
 
 //some before page coding
   if(isset($_POST['hidden-trial-id'])){
@@ -127,9 +100,8 @@ if(isset($_SESSION['authadm']) and $_SESSION['authadm'] == 'yes'){
 
 //actual page for admin
 echo "<div id='myblue-bg'>";
-echo "<span><a href='pdiadmin.php' class='pdi-nostyle my-marginr'>back</a></span>";
-echo "<span><a href='pdiadmin.php' class='pdi-nostyle my-marginr'>dashboard</a></span>";
-echo "<span><a href='createtrial.php?newtrial=new' class='pdi-nostyle'>new trial</a></span>";
+echo "<span><a href='pdistudent.php' class='pdi-nostyle my-marginr'>back</a></span>";
+echo "<span><a href='pdistudent.php' class='pdi-nostyle my-marginr'>dashboard</a></span>";
 echo "<div class='mypush'><span class='mylogo'>PDI</span></div>";
 echo "</div><br>";
 
@@ -191,7 +163,7 @@ echo "</form>";
 
 echo "</div>"; //div mygrey-bg ends
 
-}
+
 
 //js do bootstrap
 echo "

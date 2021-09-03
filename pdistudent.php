@@ -33,6 +33,7 @@ require_once($CFG->dirroot . '/local/pdi/classes/forms/auth_student.php');
 require_login();
 
 require_once('print/trialsfunctions.php');
+require_once('print/fetchforevaluator.php');
 
 $PAGE->set_url(new moodle_url('/local/pdi/pdistudent.php'));
 $PAGE->set_context(\context_system::instance());
@@ -46,6 +47,11 @@ global $USER, $DB;
 //page setup
 
 $blocoHtml = mostrarBlocosTrial();
+
+
+//parte avaliar
+$retornoBlocos = "";
+$retornoBlocos = fetchTrials();
 
 ///
 
@@ -101,19 +107,33 @@ value='Show all'>";
 echo "</div>";
 echo "<hr>";
 
-echo "</div>"; //</div dashboard list
-echo "</div>"; //centralizadora
-///////////////////
+
 
 
 echo "<br>";
 
 echo "<h4>Para você avaliar</h4>";
-echo "<footer>Os processos que você avalia aparecerão aqui</footer>";
+echo "<footer>Os processos que você avalia aparecerão aqui</footer><br>";
+
+echo $retornoBlocos;
 
 echo "<br><br>";
 
+
+echo "</div>"; //</div dashboard list
+echo "</div>"; //centralizadora
+///////////////////
+
+
+//hidden-form
+echo "<form id=\"frm-trial-id-evaluate\" name=\"frm-trial-id-evaluate\" class='hidden' method=\"post\" action=\"\">";
+echo "<input type=\"hidden\" name=\"hidden-trial-id\" id=\"hidden-trial-id\" value=\"\">";
+echo "</form>";
+
+
 echo "</div>"; //end of bg-grey
+
+
 echo $OUTPUT->footer();
 
 ?>
@@ -345,6 +365,20 @@ $(document).on('click', '#btn_pop_voltar', function(){
   $("#div-q-save-btns").hide();
   $("#bloco-div-1").show();
 });
+
+
+//avaliação
+
+$(".my-youev").on("click", function(){
+
+var trialid = $(this).attr("data-id");
+$("#hidden-trial-id").val(trialid);
+
+$("#frm-trial-id-evaluate").attr("action", "admintrialalt.php");
+$("#frm-trial-id-evaluate").submit();
+
+});
+
 
 });
 

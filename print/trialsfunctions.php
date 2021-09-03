@@ -114,7 +114,7 @@ function mostrarBlocosTrial(){
              $blocoHtml .= "<span class='my-mention'>$xfullevaluatorname</span>";
           }
           else{
-             $blocoHtml .= "</div>";
+             $blocoHtml .= "</span>";
           }
 
           $blocoHtml .= "
