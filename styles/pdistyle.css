@@ -760,3 +760,26 @@ li paginate_button{
 .my-center {
     text-align: center;
   }
+
+.my-search-btn{
+    background-color: var(--white);
+}
+
+.my-search-btn:hover{
+    background-color: var(--myprimary);
+}
+.my-search-btn:active{
+    background-color: var(--white);
+}
+.my-search-btn:focus{
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+.my-clickable{
+    cursor: pointer;
+}
+.my-clickable:hover{
+    color: var(--myprimary);
+}

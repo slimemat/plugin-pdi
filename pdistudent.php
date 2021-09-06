@@ -51,7 +51,7 @@ $blocoHtml = mostrarBlocosTrial();
 
 //parte avaliar
 $retornoBlocos = "";
-$retornoBlocos = fetchTrials();
+$retornoBlocos = fetchTrials(0, 6);
 
 ///
 

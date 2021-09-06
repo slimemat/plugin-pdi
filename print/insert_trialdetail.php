@@ -29,12 +29,14 @@ if(isset($_POST['hidden-start']))
 {
 
   //trial
+
   $timeCreated = $_POST['hidden-mytime'];
   $rSQL = "SELECT * FROM {local_pdi_trial} WHERE createdby = '$USER->id' and timecreated = $timeCreated";
   $resultado = $DB->get_records_sql($rSQL);
   $trialID;
   foreach($resultado as $t){$trialID = $t->id;}
 
+  $trialName = $_POST['hidden-name'];
   $starttime = $_POST['hidden-start'];
   $endtime = $_POST['hidden-end'];
   $evtype = $_POST['hidden-type'];
@@ -50,11 +52,21 @@ if(isset($_POST['hidden-start']))
   $addTrialDetail->timecreated = $unix;
   $addTrialDetail->timemod = $unix;
 
+  //atualizar nome
+  $updName = new stdClass();
+  $updName->id = $trialID;
+  $updName->title = $trialName;
+
   //see if it already exists
   $sqlE = "SELECT * FROM {local_pdi_trial_detail} WHERE trialid = '$trialID'";
   $resE = $DB->get_records_sql($sqlE);
 
     if(count($resE) < 1){
+
+        //atualizar nome
+        $update = $DB->update_record('local_pdi_trial', $updName);
+
+        //detalhes
         $result = $DB->insert_record('local_pdi_trial_detail', $addTrialDetail);
         
         if($result > 0){
@@ -66,6 +78,12 @@ if(isset($_POST['hidden-start']))
         $detailID;
         foreach($resE as $re){$detailID = $re->id;}
 
+
+        //nome
+        //atualizar nome
+        $update = $DB->update_record('local_pdi_trial', $updName);
+
+        //detalhes
         $addTrialDetail->id = $detailID;
         $res = $DB->update_record('local_pdi_trial_detail', $addTrialDetail);
 

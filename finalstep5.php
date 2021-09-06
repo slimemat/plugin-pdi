@@ -141,14 +141,17 @@ echo "<br><br><br>";
 echo "
 <form class='larger-inputs text-center'>
 
-<label for=\"start-date\" class='my-label'>Start date:</label><br>
+<label for=\"final-name\" class='my-label'>Nome do processo:</label><br>
+<input class='my-large-input' type=\"text\" id=\"final-name\" name=\"final-name\" required placeholder='processo nome'> <br><br>
+
+<label for=\"start-date\" class='my-label'>Data inicial:</label><br>
 <input class='my-large-input' type=\"date\" id=\"start-date\" name=\"start-date\" required> <br><br>
 
-<label for=\"due-date\" class='my-label'>Due date:</label><br>
+<label for=\"due-date\" class='my-label'>Data final:</label><br>
 <input class='my-large-input' type=\"date\" id=\"due-date\" name=\"due-date\" required><br><br>    
 
 <div class='my-div-col'>
-    <label for='sel-ev-type' class='my-label'>Evaluation type:</label> <br>
+    <label for='sel-ev-type' class='my-label'>Tipo de avaliação:</label> <br>
 
     <select id=\"sel-ev-type\" name=\"sel-ev-type\" class=\"my-large-input\">
         <option value=\"1\" selected>90 degrees</option>
@@ -172,6 +175,7 @@ echo "<div id='div-save-buttons'>";
 
 echo "<form id=\"frm-hidden-trial\" name=\"frm-hidden-trial\" method=\"post\" action=\"\">";
 echo "<input type=\"hidden\" name=\"hidden-start\" id=\"hidden-start\" value=\"\">";
+echo "<input type=\"hidden\" name=\"hidden-name\" id=\"hidden-name\" value=\"\">";
 echo "<input type=\"hidden\" name=\"hidden-end\" id=\"hidden-end\" value=\"\">";
 echo "<input type=\"hidden\" name=\"hidden-type\" id=\"hidden-type\" value=\"\">";
 echo "<input type=\"hidden\" name=\"hidden-started\" id=\"hidden-started\" value=\"\">";
@@ -232,8 +236,13 @@ $('#id_save_btn').on('click', function(){
   var unixenddate =  ""+(date2.getTime()/ 1000) +"";
 
   var evtype = $("#sel-ev-type option:selected").text();
+  var trialname = ""+ $("#final-name").val() + "";
 
-  if(unixstartdate == "NaN"){
+  if(trialname.trim() == ""){
+    $("#final-name").focus();
+    return false;
+  }
+  else if(unixstartdate == "NaN"){
     $("#start-date").focus();
     return false;
   }
@@ -256,6 +265,7 @@ $('#id_save_btn').on('click', function(){
 
     var evtypeid = $("#sel-ev-type").val();
 
+    $("#hidden-name").val(trialname);
     $("#hidden-start").val(unixstartdate);
     $("#hidden-end").val(unixenddate);
     $("#hidden-type").val(evtypeid);
@@ -301,8 +311,13 @@ $('#id_save_next_btn').on('click', function(){
   var unixenddate =  ""+(date2.getTime()/ 1000) +"";
 
   var evtype = $("#sel-ev-type option:selected").text();
+  var trialname = "" + $("#final-name").val() + "";
 
-  if(unixstartdate == "NaN"){
+  if(trialname.trim() == ""){
+    $("#final-name").focus();
+    return false;
+  }
+  else if(unixstartdate == "NaN"){
     $("#start-date").focus();
     return false;
   }
@@ -318,6 +333,7 @@ $('#id_save_next_btn').on('click', function(){
   else{
     var evtypeid = $("#sel-ev-type").val();
 
+    $("#hidden-name").val(trialname);
     $("#hidden-start").val(unixstartdate);
     $("#hidden-end").val(unixenddate);
     $("#hidden-type").val(evtypeid);

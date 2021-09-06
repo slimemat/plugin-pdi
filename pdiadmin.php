@@ -63,7 +63,7 @@ verifyAdm($USER->username);
 //programação antes da página
 
 $retornoBlocos = "";
-$retornoBlocos = fetchTrials();
+$retornoBlocos = fetchTrials(0, 6);
 
 $blocoHtml = mostrarBlocosTrial();
 
@@ -103,7 +103,7 @@ echo "</div><br>";
 echo "<div id='mygrey-bg'>"; //grey bg starts
 
 echo "<h1>Dashboard</h1>";
-echo "<footer class='my-belowh1'>Lista de processos para avaliar</footer>";
+echo "<footer class='my-belowh1'>Lista de processos abertos para avaliar</footer>";
 
 //create new btn link
 echo "<div id='my-steps'>"; //steps

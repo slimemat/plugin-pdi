@@ -79,7 +79,7 @@ if($auth == "yes"){
     //do something if needed
 }else{
   echo "<div id='myblue-bg'>";
-  echo "<span><a href='/moodle/index.php' class='pdi-nostyle'>back</a></span>";
+  echo "<span><a href='../../my/index.php' class='pdi-nostyle'>back</a></span>";
   echo "<div class='mypush'><span class='mylogo'>PDI</span></div>";
   echo "</div><br>";
 
@@ -127,7 +127,6 @@ if(isset($_SESSION['authadm']) and $_SESSION['authadm'] == 'yes'){
 
 //actual page for admin
 echo "<div id='myblue-bg'>";
-echo "<span><a href='pdiadmin.php' class='pdi-nostyle my-marginr'>back</a></span>";
 echo "<span><a href='pdiadmin.php' class='pdi-nostyle my-marginr'>dashboard</a></span>";
 echo "<span><a href='createtrial.php?newtrial=new' class='pdi-nostyle'>new trial</a></span>";
 echo "<div class='mypush'><span class='mylogo'>PDI</span></div>";

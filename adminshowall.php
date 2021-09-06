@@ -41,6 +41,7 @@
 require_once('../../config.php');
 require_once('lib.php');
 require_once('print/outputmoodleusers.php');
+require_once('print/fetchforevaluator.php');
 require_login();
 
 $PAGE->set_url(new moodle_url('/local/pdi/adminshowall.php'));
@@ -48,26 +49,21 @@ $PAGE->set_context(\context_system::instance());
 $PAGE->set_title("PDI Admin - Dashboard");
 $PAGE->set_heading('PDI Admin');
 $PAGE->requires->jquery();
-$PAGE->requires->js(new moodle_url($CFG->dirrroot . '/local/pdi/scripts/pdiscript.js'));
+//$PAGE->requires->js(new moodle_url($CFG->dirrroot . '/local/pdi/scripts/pdiscript.js'));
 
 global $USER, $DB;
 
-//form instance
+//programação antes da página
 
 //verifica se o logado é adm
 verifyAdm($USER->username);
 
 
-//students available table
-/*$sql_students = "SELECT mdl_local_pdi_student.id, 
-                        mdl_local_pdi_student.studname,
-                        mdl_local_pdi_student.studemail,
-                        mdl_user.institution,
-                        mdl_user.firstname,
-                        mdl_user.lastname
-                        FROM mdl_local_pdi_student INNER JOIN mdl_user 
-                        ON mdl_local_pdi_student.studname = mdl_user.username";
-*/
+$retornoBlocos = "";
+$retornoBlocos = fetchTrials(0, 6);
+
+
+/////////////////////
 
 
 //page STARTS HERE
@@ -78,7 +74,7 @@ if($auth == "yes"){
     //do something if needed
 }else{
   echo "<div id='myblue-bg'>";
-  echo "<span><a href='/moodle/index.php' class='pdi-nostyle'>back</a></span>";
+  echo "<span><a href='../../my/index.php' class='pdi-nostyle'>back</a></span>";
   echo "<div class='mypush'><span class='mylogo'>PDI</span></div>";
   echo "</div><br>";
 
@@ -107,108 +103,42 @@ echo "<footer class='my-belowh1'>List of all trials</footer>";
 //
 echo "<br>";
 
-echo "<input type='text' id='my-searchbar' class='my-large-input' placeholder='Name of the trial...'>";
-echo "<input type='button' id='my-searchbtn' class='btn my-primary-btn' value='search'>";
+echo "<div class=\"input-group\" style='max-width: 30%;'>
+<input type=\"text\" id='my-searchbar' class=\"form-control\" placeholder=\"Pesquisar por nome\" aria-label=\"Recipient's username\" aria-describedby=\"button-addon2\">
+<button class=\"btn my-search-btn\" id='my-searchbtn' type=\"button\" id=\"button-addon2\"><i class=\"fas fa-search\"></i></button>
+</div>";
 
 echo "<br><br>";
 
 echo "<div id='my-centralizadora'>";
 echo "<div id='div-dashboard-list'>"; //div dashboard list
 
-echo "<div class='my-margin-box'>
-<span class=\"my-circle\" style=\"background-color: var(--mysuccess); color: var(--myblack);\">✔</span>
-<div class='my-sidetext'>
-<span class='my-circle-title'>IT Trial</span>
-<p>07/07/2021 - 10/07/2021</p>
-<p>12/30 forms not answered</p>
-</div>
-</div>";
 
-echo "<div class='my-margin-box'>
-<span class=\"my-circle\" style=\"background-color: var(--mysuccess); color: var(--myblack);\">✔</span>
-<div class='my-sidetext'>
-<span class='my-circle-title'>Title with max of 25 chara</span>
-<p>07/07/2021 - 10/07/2021</p>
-<p>12/30 forms not answered</p>
-</div>
-</div>";
+//printar todos os processos de maneira dinâmica aqui
+echo "<div id='div-padrao'>";
+echo $retornoBlocos;
+echo "</div>";
 
-echo "<div class='my-margin-box'>
-<span class=\"my-circle\" style=\"background-color: var(--myerror); color: var(--myblack);\">✖</span>
-<div class='my-sidetext'>
-<span class='my-circle-title'>Title with max of 25 or so</span>
-<p>07/07/2021 - 10/07/2021</p>
-<p>12/30 forms not answered</p>
-</div>
-</div>";
-
-echo "<div class='my-margin-box'>
-<span class=\"my-circle\" style=\"background-color: var(--myerror); color: var(--myblack);\">✖</span>
-<div class='my-sidetext'>
-<span class='my-circle-title'>Title with max of 25 or so</span>
-<p>07/07/2021 - 10/07/2021</p>
-<p>12/30 forms not answered</p>
-</div>
-</div>";
-
-echo "<div class='my-margin-box'>
-<span class=\"my-circle\" style=\"background-color: var(--myerror); color: var(--myblack);\">✖</span>
-<div class='my-sidetext'>
-<span class='my-circle-title'>Title with max of 25 or so</span>
-<p>07/07/2021 - 10/07/2021</p>
-<p>12/30 forms not answered</p>
-</div>
-</div>";
-
-echo "<div class='my-margin-box'>
-<span class=\"my-circle\" style=\"background-color: var(--myerror); color: var(--myblack);\">✖</span>
-<div class='my-sidetext'>
-<span class='my-circle-title'>Title with max of 25 or so</span>
-<p>07/07/2021 - 10/07/2021</p>
-<p>12/30 forms not answered</p>
-</div>
-</div>";
-
-echo "<div class='my-margin-box'>
-<span class=\"my-circle\" style=\"background-color: var(--myerror); color: var(--myblack);\">✖</span>
-<div class='my-sidetext'>
-<span class='my-circle-title'>Title with max of 25 or so</span>
-<p>07/07/2021 - 10/07/2021</p>
-<p>12/30 forms not answered</p>
-</div>
-</div>";
-
-echo "<div class='my-margin-box'>
-<span class=\"my-circle\" style=\"background-color: var(--myerror); color: var(--myblack);\">✖</span>
-<div class='my-sidetext'>
-<span class='my-circle-title'>Title with max of 25 or so</span>
-<p>07/07/2021 - 10/07/2021</p>
-<p>12/30 forms not answered</p>
-</div>
-</div>";
-
-echo "<div class='my-margin-box'>
-<span class=\"my-circle\" style=\"background-color: var(--myerror); color: var(--myblack);\">✖</span>
-<div class='my-sidetext'>
-<span class='my-circle-title'>Title with max of 25 or so</span>
-<p>07/07/2021 - 10/07/2021</p>
-<p>12/30 forms not answered</p>
-</div>
-</div>";
+//printar de acordo com a pesquisa
+echo "<div id='div-pesquisados'></div>";
 
 echo "</div>"; //</div dashboard list
 
+echo "<br>";
+
 echo "<div class='my-pagination-div'>
-<span><a href='#'>1</a></span>
-<span><a href='#'>2</a></span>
-<span><a href='#'>3</a></span>
-<span><a href='#'> >> </a></span>
-<span><a href='#'> More </a></span>
+<span class='my-clickable my-hidden' id='btn-ver-menos'> << </span>
+<span class='my-clickable' id='btn-ver-mais'> próxima >> </span>
 </div>";
 
 echo "</div>"; //centralizadora
 //
 
+
+//hidden-form
+echo "<form id=\"frm-trial-id-evaluate\" name=\"frm-trial-id-evaluate\" class='hidden' method=\"post\" action=\"\">";
+echo "<input type=\"hidden\" name=\"hidden-trial-id\" id=\"hidden-trial-id\" value=\"\">";
+echo "</form>";
 
 echo "</div>"; //div mygrey-bg ends
 
@@ -228,9 +158,124 @@ echo $OUTPUT->footer();
 
 $(document).ready(function() {
 
-$( ".my-margin-box" ).on( "click", function() {
-  window.location.href = "admintrial.php";  
+$(".my-youev").on("click", function(){
+
+var trialid = $(this).attr("data-id");
+$("#hidden-trial-id").val(trialid);
+
+$("#frm-trial-id-evaluate").attr("action", "admintrial.php");
+$("#frm-trial-id-evaluate").submit();
+
 });
+
+
+//pesquisa
+$("#my-searchbar").on("keyup", function(){
+  buscarProcessos();
+});
+
+$("#my-searchbtn").on("click", function(){
+  buscarProcessos();
+});
+
+
+function buscarProcessos() {
+  var txtPesquisa = "" + $("#my-searchbar").val() + "";
+  txtPesquisa = txtPesquisa.trim();
+
+  if(txtPesquisa != ""){
+      var values = {
+              'pesquisa': txtPesquisa
+      };
+      $.ajax({
+          method: "POST",
+          url: "print/searchtrials.php",
+          data: values,
+      })
+      .done(function(msg){
+        $("#div-padrao").hide();
+        $("#div-pesquisados").html(msg);
+
+      })
+      .fail(function(){
+        $("#div-pesquisados").html("Não foi possível acessar os dados.");
+      });
+  }
+  else{
+    $("#div-padrao").show();
+    $("#div-pesquisados").html("");
+  }
+}
+
+
+
+//ver mais
+var maisRows = 6;
+var maisOffset = 0;
+$("#btn-ver-mais").on("click", function(){
+
+  maisRows = 6;
+  maisOffset += 6;
+  
+  var values = {
+              'function': 0, 
+              'rows': maisRows,
+              'offset': maisOffset
+      };
+      $.ajax({
+          method: "POST",
+          url: "print/callphpfunctions.php",
+          data: values,
+      })
+      .done(function(msg){
+        if(msg == ""){
+          $("#btn-ver-mais").hide();
+        }
+
+        $("#div-padrao").hide();
+        $("#div-pesquisados").html(msg);
+        $("#btn-ver-menos").show();
+
+      })
+      .fail(function(){
+        $("#div-pesquisados").html("Não foi possível acessar os dados.");
+      });
+
+});
+
+$("#btn-ver-menos").on("click", function(){
+
+maisRows = 6;
+maisOffset -= 6;
+
+if(maisOffset < 1){
+  $("#btn-ver-menos").hide();
+}
+else{
+  $("#btn-ver-mais").show();
+}
+
+var values = {
+            'function': 0, 
+            'rows': maisRows,
+            'offset': maisOffset
+    };
+    $.ajax({
+        method: "POST",
+        url: "print/callphpfunctions.php",
+        data: values,
+    })
+    .done(function(msg){
+      $("#div-padrao").hide();
+      $("#div-pesquisados").html(msg);
+
+    })
+    .fail(function(){
+      $("#div-pesquisados").html("Não foi possível acessar os dados.");
+    });
+
+});
+
 
 });
 
