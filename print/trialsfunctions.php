@@ -22,11 +22,11 @@
  */
 
 
-function mostrarBlocosTrial(){
+function mostrarBlocosTrial($offset, $rows){
     global $USER, $DB;
 
     //então, usar o setor para fazer outra pesquisa (sectorid)
-    $sql = "SELECT mdb.timecreated, mdb.dbid, mdb.smemberid, sm.sectorid, sm.userid as userid_sector_member, sm.trialid,trev.cohortid, cm.userid as userid_cohort_member, t.title as trialtitle, td.isstarted as trialisstarted, td.startdate, td.enddate, us.firstname, us.lastname
+    $sql = "SELECT sm.id, mdb.timecreated, mdb.dbid, mdb.smemberid, sm.sectorid, sm.userid as userid_sector_member, sm.trialid,trev.cohortid, cm.userid as userid_cohort_member, t.title as trialtitle, td.isstarted as trialisstarted, td.startdate, td.enddate, us.firstname, us.lastname
     FROM {local_pdi_sect_mem_db} mdb
     LEFT JOIN {local_pdi_sector_member} sm
     ON sm.id = mdb.smemberid
@@ -40,8 +40,7 @@ function mostrarBlocosTrial(){
     ON td.trialid = t.id
     LEFT JOIN {user} us
     ON us.id = sm.userid
-    WHERE cm.userid = \"$USER->id\"
-    ";
+    WHERE cm.userid = \"$USER->id\"";
 
     $res = $DB->get_records_sql($sql);
     //var_dump($res);
@@ -152,6 +151,229 @@ function mostrarBlocosTrial(){
 
     return $blocoReturn;
 
+
+}
+
+
+function mostrarTodosTrials($offset, $rows){
+   global $USER, $DB;
+
+   $blocoHtml = '';
+   $blocoReturn = '';
+
+   $sql = "SELECT t.id, t.title as trialtitle, td.isstarted as trialisstarted, td.startdate, td.enddate
+   FROM {local_pdi_sect_mem_db} mdb
+   LEFT JOIN {local_pdi_sector_member} sm
+   ON sm.id = mdb.smemberid
+   LEFT JOIN {local_pdi_trial_evaluator} trev
+   ON trev.trialid = sm.trialid
+   LEFT JOIN {cohort_members} cm
+   ON cm.cohortid = trev.cohortid
+   LEFT JOIN {local_pdi_trial} t
+   ON t.id = sm.trialid
+   LEFT JOIN {local_pdi_trial_detail} td
+   ON td.trialid = t.id
+   LEFT JOIN {user} us
+   ON us.id = sm.userid
+   WHERE cm.userid = \"$USER->id\"
+   GROUP BY t.id
+   LIMIT $offset, $rows";
+
+   $res = $DB->get_records_sql($sql);
+   //var_dump($res);
+
+
+   //foreach trial
+   foreach($res as $r){
+      $tid = $r->id;
+      $ttitle = $r->trialtitle;
+      $tisstarted = $r->trialisstarted;
+      $tstartdate = $r->startdate;
+      $tenddate = $r->enddate;
+
+      $avaliadores = '';
+
+      //verificar se esse está marcado como respondido
+       $respondido = 0;
+       $respSQL = "SELECT * FROM {local_pdi_answer_status} pas
+                   WHERE pas.userid = '$USER->id'
+                   and pas.idtrial = '$tid'
+                   GROUP BY pas.userid";
+       $respRes = $DB->get_records_sql($respSQL);
+       if(count($respRes)>0){
+          foreach($respRes as $rs){ $respondido = $rs->isfinished; }
+       }
+
+      //consultar os avaliadores
+      $avaSQL = "SELECT tev.id, us.firstname, us.lastname FROM {local_pdi_trial_evaluator} tev
+      LEFT JOIN {local_pdi_evaluator} ev
+      ON ev.id = tev.evaluatorid
+      LEFT JOIN {user} us
+      ON us.id = ev.mdlid
+      WHERE tev.trialid = '$tid'";
+      $avaRES = $DB->get_records_sql($avaSQL);
+      foreach($avaRES as $rx){
+         $firstname = $rx->firstname;
+         $lastname = $rx->lastname;
+
+         $avaliadores .= "<span class='my-mention'>$firstname $lastname</span>";
+      }
+
+      if($respondido == 0){
+
+         $blocoHtml .= "  
+             
+             <span class='my-round-card' id='trial_$tid' data-idtrial='$tid'>
+             <span class=\"my-circle\" style=\"background-color: var(--myerror); color: var(--myblack);\">✖</span>
+             
+             ";
+   
+             $blocoHtml .= "<span class='my-sidetext'>
+             <h5 class='my-font-family' title='nome do processo'>$ttitle</h5>";
+             $blocoHtml .= "<span class='my-label'>Avaliadores:</span><br>";
+
+             $blocoHtml .= "$avaliadores </span></span>";
+      }
+      else{
+         
+         $blocoHtml .= "  
+             
+             <span class='my-round-card' id='trial_$tid' data-idtrial='$tid'>
+             <span class=\"my-circle\" style=\"background-color: var(--mysuccess); color: var(--myblack);\">✔</span>
+             
+             ";
+   
+             $blocoHtml .= "<span class='my-sidetext'>
+             <h5 class='my-font-family' title='nome do processo'>$ttitle</h5>";
+             $blocoHtml .= "<span class='my-label'>Avaliadores:</span><br>";
+
+             $blocoHtml .= "$avaliadores </span></span>";
+      }
+
+   }
+
+   $blocoReturn = "$blocoHtml";
+
+    return $blocoReturn;
+
+}
+
+
+function searchStudentTrials($pesquisa){
+   global $USER, $DB;
+
+   $blocoHtml = '';
+   $blocoReturn = '';
+
+   $sql = "SELECT t.id, t.title as trialtitle, td.isstarted as trialisstarted, td.startdate, td.enddate
+   FROM {local_pdi_sect_mem_db} mdb
+   LEFT JOIN {local_pdi_sector_member} sm
+   ON sm.id = mdb.smemberid
+   LEFT JOIN {local_pdi_trial_evaluator} trev
+   ON trev.trialid = sm.trialid
+   LEFT JOIN {cohort_members} cm
+   ON cm.cohortid = trev.cohortid
+   LEFT JOIN {local_pdi_trial} t
+   ON t.id = sm.trialid
+   LEFT JOIN {local_pdi_trial_detail} td
+   ON td.trialid = t.id
+   LEFT JOIN {user} us
+   ON us.id = sm.userid
+   WHERE cm.userid = \"$USER->id\" AND t.title LIKE '%$pesquisa%'
+   GROUP BY t.id
+   LIMIT 0, 6";
+
+   $res = $DB->get_records_sql($sql);
+   //var_dump($res);
+
+
+   //foreach trial
+   foreach($res as $r){
+      $tid = $r->id;
+      $ttitle = $r->trialtitle;
+      $tisstarted = $r->trialisstarted;
+      $tstartdate = $r->startdate;
+      $tenddate = $r->enddate;
+
+      $avaliadores = '';
+
+      //verificar se esse está marcado como respondido
+       $respondido = 0;
+       $respSQL = "SELECT * FROM {local_pdi_answer_status} pas
+                   WHERE pas.userid = '$USER->id'
+                   and pas.idtrial = '$tid'
+                   GROUP BY pas.userid";
+       $respRes = $DB->get_records_sql($respSQL);
+       if(count($respRes)>0){
+          foreach($respRes as $rs){ $respondido = $rs->isfinished; }
+       }
+
+      //consultar os avaliadores
+      $avaSQL = "SELECT tev.id, us.firstname, us.lastname FROM {local_pdi_trial_evaluator} tev
+      LEFT JOIN {local_pdi_evaluator} ev
+      ON ev.id = tev.evaluatorid
+      LEFT JOIN {user} us
+      ON us.id = ev.mdlid
+      WHERE tev.trialid = '$tid'";
+      $avaRES = $DB->get_records_sql($avaSQL);
+      foreach($avaRES as $rx){
+         $firstname = $rx->firstname;
+         $lastname = $rx->lastname;
+
+         $avaliadores .= "<span class='my-mention'>$firstname $lastname</span>";
+      }
+
+      if($respondido == 0){
+
+         $blocoHtml .= "  
+             
+             <span class='my-round-card' id='trial_$tid' data-idtrial='$tid'>
+             <span class=\"my-circle\" style=\"background-color: var(--myerror); color: var(--myblack);\">✖</span>
+             
+             ";
+   
+             $blocoHtml .= "<span class='my-sidetext'>
+             <h5 class='my-font-family' title='nome do processo'>$ttitle</h5>";
+             $blocoHtml .= "<span class='my-label'>Avaliadores:</span><br>";
+
+             $blocoHtml .= "$avaliadores </span></span>";
+      }
+      else{
+         
+         $blocoHtml .= "  
+             
+             <span class='my-round-card' id='trial_$tid' data-idtrial='$tid'>
+             <span class=\"my-circle\" style=\"background-color: var(--mysuccess); color: var(--myblack);\">✔</span>
+             
+             ";
+   
+             $blocoHtml .= "<span class='my-sidetext'>
+             <h5 class='my-font-family' title='nome do processo'>$ttitle</h5>";
+             $blocoHtml .= "<span class='my-label'>Avaliadores:</span><br>";
+
+             $blocoHtml .= "$avaliadores </span></span>";
+      }
+
+   }
+
+   $blocoReturn = "$blocoHtml";
+
+    return $blocoReturn;
+
+}
+
+function getOneStudentTrial($trialid){
+   global $DB;
+
+   $sql = "SELECT t.*, td.startdate, td.enddate, td.evtype, td.isstarted 
+   FROM {local_pdi_trial} t
+   LEFT JOIN {local_pdi_trial_detail} td
+   ON td.trialid = t.id
+   WHERE t.id = '$trialid'";
+
+   $res = $DB->get_records_sql($sql);
+
+   return $res;
 
 }
 

@@ -46,7 +46,7 @@ global $USER, $DB;
 
 //page setup
 
-$blocoHtml = mostrarBlocosTrial();
+$blocoHtml = mostrarBlocosTrial(0, 6);
 
 
 //parte avaliar
@@ -117,6 +117,11 @@ echo "<footer>Os processos que você avalia aparecerão aqui</footer><br>";
 
 echo $retornoBlocos;
 
+echo "<div class='div-save-buttons'>";
+echo "<input type='button' id='id_show_btn2' class='my-large-input my-primary-btn my-marginlauto'
+value='Show all'>";
+echo "</div>";
+
 echo "<br><br>";
 
 
@@ -141,6 +146,11 @@ echo $OUTPUT->footer();
 <script>
 
 $(document).ready(function() {
+
+//ver todos que avalia
+$( "#id_show_btn2" ).on( "click", function() {
+  window.location.href = "evalushowall.php";  
+});
 
 
 $( ".my-round-card" ).on( "click", function() {

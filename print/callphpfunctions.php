@@ -23,6 +23,7 @@
 
 require_once('../../../config.php');
 require_once('fetchforevaluator.php');
+require_once('trialsfunctions.php');
 
 if(isset($_POST['function'])){
 
@@ -37,6 +38,21 @@ if(isset($_POST['function'])){
 
 
         $return = fetchTrials($offset, $rows);
+
+        echo $return;
+    }
+    else if($myfunction == 1){
+        $offset = $_POST['offset'];
+        $rows = $_POST['rows'];
+
+        $return = mostrarTodosTrials($offset, $rows);
+
+        echo $return;
+    }
+    else if($myfunction == 2){
+        $pesquisa = $_POST['pesquisa'];
+
+        $return = searchStudentTrials($pesquisa);
 
         echo $return;
     }

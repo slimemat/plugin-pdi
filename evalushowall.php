@@ -44,10 +44,10 @@ require_once('print/outputmoodleusers.php');
 require_once('print/fetchforevaluator.php');
 require_login();
 
-$PAGE->set_url(new moodle_url('/local/pdi/adminshowall.php'));
+$PAGE->set_url(new moodle_url('/local/pdi/evalushowall.php'));
 $PAGE->set_context(\context_system::instance());
-$PAGE->set_title("PDI Admin - Dashboard");
-$PAGE->set_heading('PDI Admin');
+$PAGE->set_title("Avaliador - Dashboard");
+$PAGE->set_heading('PDI Avaliador');
 $PAGE->requires->jquery();
 //$PAGE->requires->js(new moodle_url($CFG->dirrroot . '/local/pdi/scripts/pdiscript.js'));
 
@@ -56,7 +56,8 @@ global $USER, $DB;
 //programação antes da página
 
 //verifica se o logado é adm
-verifyAdm($USER->username);
+//verifyAdm($USER->username);
+//this return a strig with "yes" or "no"
 
 
 $retornoBlocos = "";
@@ -69,6 +70,7 @@ $retornoBlocos = fetchTrials(0, 6);
 //page STARTS HERE
 echo $OUTPUT->header();
 
+/*
 $auth = ($_SESSION['authadm']);
 if($auth == "yes"){
     //do something if needed
@@ -82,16 +84,13 @@ if($auth == "yes"){
     \core\notification::add("You are not registered as a plugin admin!", \core\output\notification::NOTIFY_ERROR);
     echo "<span><a href='index.php' class='pdi-nostyle'>back</a></span>";
 }
+*/
 
-
-//para esconder o form
-if(isset($_SESSION['authadm']) and $_SESSION['authadm'] == 'yes'){
 
 //actual page for admin
 echo "<div id='myblue-bg'>";
-echo "<span><a href='pdiadmin.php' class='pdi-nostyle my-marginr'>back</a></span>";
-echo "<span><a href='pdiadmin.php' class='pdi-nostyle my-marginr'>dashboard</a></span>";
-echo "<span><a href='createtrial.php?newtrial=new' class='pdi-nostyle'>new trial</a></span>";
+echo "<span><a href='pdistudent.php' class='pdi-nostyle my-marginr'>back</a></span>";
+echo "<span><a href='pdistudent.php' class='pdi-nostyle my-marginr'>dashboard</a></span>";
 echo "<div class='mypush'><span class='mylogo'>PDI</span></div>";
 echo "</div><br>";
 
@@ -142,7 +141,6 @@ echo "</form>";
 
 echo "</div>"; //div mygrey-bg ends
 
-}
 
 //js do bootstrap
 echo "
@@ -163,7 +161,7 @@ $(".my-youev").on("click", function(){
 var trialid = $(this).attr("data-id");
 $("#hidden-trial-id").val(trialid);
 
-$("#frm-trial-id-evaluate").attr("action", "admintrial.php");
+$("#frm-trial-id-evaluate").attr("action", "admintrialalt.php");
 $("#frm-trial-id-evaluate").submit();
 
 });
@@ -171,11 +169,11 @@ $("#frm-trial-id-evaluate").submit();
 //elemento gerado depois
 $("#div-pesquisados").on("click", ".my-youev", function(){
 
-  var trialid = $(this).attr("data-id");
-  $("#hidden-trial-id").val(trialid);
+var trialid = $(this).attr("data-id");
+$("#hidden-trial-id").val(trialid);
 
-  $("#frm-trial-id-evaluate").attr("action", "admintrial.php");
-  $("#frm-trial-id-evaluate").submit();
+$("#frm-trial-id-evaluate").attr("action", "admintrialalt.php");
+$("#frm-trial-id-evaluate").submit();
 
 });
 
@@ -228,6 +226,8 @@ $("#btn-ver-mais").on("click", function(){
 
   maisRows = 6;
   maisOffset += 6;
+
+  console.log("proxi: \nmaisROW {" + maisRows + "}\nmaisOffset {" + maisOffset + "}");
   
   var values = {
               'function': 0, 
@@ -259,6 +259,8 @@ $("#btn-ver-menos").on("click", function(){
 
 maisRows = 6;
 maisOffset -= 6;
+
+console.log("proxi: \nmaisROW {" + maisRows + "}\nmaisOffset {" + maisOffset + "}");
 
 if(maisOffset < 1){
   $("#btn-ver-menos").hide();

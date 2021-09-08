@@ -65,7 +65,7 @@ verifyAdm($USER->username);
 $retornoBlocos = "";
 $retornoBlocos = fetchTrials(0, 6);
 
-$blocoHtml = mostrarBlocosTrial();
+$blocoHtml = mostrarBlocosTrial(0, 6);
 
 
 ///
