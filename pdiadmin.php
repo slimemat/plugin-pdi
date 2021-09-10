@@ -96,7 +96,8 @@ if(isset($_SESSION['authadm']) and $_SESSION['authadm'] == 'yes'){
 echo "<div id='myblue-bg'>";
 echo "<span><a href='../../my/index.php' class='pdi-nostyle my-marginr'>back</a></span>";
 echo "<span><a href='index.php' class='pdi-nostyle my-marginr'>dashboard</a></span>";
-echo "<span><a href='createtrial.php?newtrial=new' class='pdi-nostyle'>new trial</a></span>";
+echo "<span><a href='createtrial.php?newtrial=new' class='pdi-nostyle my-marginr'>new trial</a></span>";
+echo "<span><a href='questions.php' class='pdi-nostyle'>questions</a></span>";
 echo "<div class='mypush'><span class='mylogo'>PDI</span></div>";
 echo "</div><br>";
 
@@ -182,6 +183,13 @@ echo "<div id='div-q-save-btns' class='mx-auto my-hidden'>
 
 echo "<br>";
 echo "</div>";
+echo "</div>";
+
+
+//btn SHOW ALL
+echo "<div id='div-save-buttons'>";
+echo "<input type='button' id='id_show_btn2' class='my-large-input my-primary-btn my-marginlauto'
+value='Show all'>";
 echo "</div>";
 
 
@@ -449,6 +457,12 @@ $(document).on('click', '#btn_pop_voltar', function(){
 });
 
 ////////////
+
+$( "#id_show_btn2" ).on( "click", function() {
+  window.location.href = "studentshowall.php";  
+});
+
+
 
 });
 
