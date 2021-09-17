@@ -11,7 +11,6 @@
 
 <!-- Font Awesome -->
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.11.2/css/all.css">
-
 </head>
 </html>
 
@@ -40,7 +39,7 @@
 
 require_once('../../config.php');
 require_once('lib.php');
-require_once('print/outputmoodleusers.php');
+require_once('print/outrankingtrial.php');
 require_once('print/fetchforevaluator.php');
 require_login();
 
@@ -53,22 +52,23 @@ $PAGE->requires->jquery();
 
 global $USER, $DB;
 
-//form instance
+//código
 
 //verifica se o logado é adm
 verifyAdm($USER->username);
 
+//preparação para a lista da tabela
+$trialid = $_POST['hidden-trial-id'];
+$currentuid = $USER->id;
 
-//students available table
-/*$sql_students = "SELECT mdl_local_pdi_student.id, 
-                        mdl_local_pdi_student.studname,
-                        mdl_local_pdi_student.studemail,
-                        mdl_user.institution,
-                        mdl_user.firstname,
-                        mdl_user.lastname
-                        FROM mdl_local_pdi_student INNER JOIN mdl_user 
-                        ON mdl_local_pdi_student.studname = mdl_user.username";
-*/
+//rankings
+$lista_rank = fetchRankings($trialid, $currentuid);
+
+//questionários
+$html_quest = fetchDataQuestions($trialid, $currentuid);
+
+//status
+$html_status = fetchStatusAvaliados($trialid, $currentuid);
 
 
 //page STARTS HERE
@@ -137,7 +137,6 @@ echo "<div>
 <input type='button' value='status' class='my-secondary-btn my-btn-pad' id='btn-status'>
 <input type='button' value='ranking' class='my-secondary-btn my-btn-pad' id='btn-ranking'>
 <input type='button' value='questions database' class='my-secondary-btn my-btn-pad' id='btn-questions'>
-<input type='button' value='settings' class='my-secondary-btn my-btn-pad' id='btn-settings'>
 </div>";
 
 echo "<div id='mygrey-bg'>"; //grey bg starts
@@ -177,10 +176,56 @@ echo "
 
 </div>";
 
-echo "<div id='my-tab2' class='my-inside-container my-hidden'>status</div>";
-echo "<div id='my-tab3' class='my-inside-container my-hidden'>ranking</div>";
-echo "<div id='my-tab4' class='my-inside-container my-hidden'>questions db</div>";
-echo "<div id='my-tab5' class='my-inside-container my-hidden'>settings</div>";
+///////////////////////////////trabalhando nessa tela
+///////////////////////////////////////////////////////
+///////////////////////////////////
+$userid_pic = '4';
+$imgURL = new moodle_url('/user/pix.php/'.$userid_pic.'/f1.jpg');
+
+///TESTE COM IMAGENS
+///////////////////////
+
+echo "<div id='my-tab2' class='my-inside-container my-hidden'>
+
+<div id='my-tab2-inner'>
+
+$html_status
+
+
+
+</div>
+
+</div>";
+echo "<div id='my-tab3' class='my-inside-container my-hidden'>
+
+  <h5 class='my-font-family my-padding-sm'>Ranking dos avaliados</h5>
+  <div id='my-tab3-inner' class='my-padding-sm my-margin-lados my-bg-light shadow-sm p-3 mb-5 rounded'>
+  
+    <table id=\"dt-ranking\" class=\"table my-highlight\" cellspacing=\"0\" width=\"100%\">
+    <thead>
+      <tr>
+        <th class='col-8'>Nome avaliado</th>
+        <th class='col-4'>Média</th>
+      </tr>
+    </thead>
+    
+    </table>
+
+
+  </div>
+
+
+</div>";
+echo "<div id='my-tab4' class='my-inside-container my-hidden'>
+
+<div id='my-tab4-inner'>
+
+  $html_quest
+
+</div>
+
+</div>";
+
 
 
 //hidden form
@@ -205,6 +250,30 @@ echo $OUTPUT->footer();
 <script>
 
 $(document).ready(function() {
+
+//tabela
+
+var dataSet = <?= $lista_rank ?>; //valor chamado do php
+
+//tabela dinamica
+var table = $('#dt-ranking').DataTable({
+data: dataSet,
+"pageLength": 25,
+columns: [
+{
+title: "Nome avaliado"
+},  
+{
+title: "Média"
+}
+],
+dom: 'Bfrtip',
+
+});
+
+
+///fim tabela
+
 
 //valor padrão
 var blockID;
