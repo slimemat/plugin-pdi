@@ -616,7 +616,7 @@ echo "<input type=\"hidden\" name=\"hidden-qtype\" id=\"hidden-qtype\" value=\"\
 echo "<input type=\"hidden\" name=\"hidden-qcat\" id=\"hidden-qcat\" value=\"\">";
 echo "<input type=\"hidden\" name=\"hidden-qanswers\" id=\"hidden-qanswers\" value=\"\">";
 echo "<input type=\"hidden\" name=\"hidden-qvalues\" id=\"hidden-qvalues\" value=\"\">";
-echo "<input type=\"hidden\" name=\"hidden-mytime\" id=\"hidden-mytime\" value=\"".$_SESSION['mytime']."\">";
+echo "<input type=\"hidden\" name=\"hidden-mytime\" id=\"hidden-mytime\" value=\"".time()."\">";
 echo "<input type=\"hidden\" name=\"hidden-qdbname\" id=\"hidden-qdbname\" value=\"\">";
 echo "<input type=\"hidden\" name=\"hidden-qdbid\" id=\"hidden-qdbid\" value=\"0\">";
 echo "</form>";
@@ -1077,6 +1077,7 @@ $(".btn-create-question").on("click", function(){
 
                 //ajax
                 var dados = $("#my-hidden-qform").serialize();
+                
 
                 $.ajax({
                     method: 'POST',

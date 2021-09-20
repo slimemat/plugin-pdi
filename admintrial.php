@@ -70,6 +70,9 @@ $html_quest = fetchDataQuestions($trialid, $currentuid);
 //status
 $html_status = fetchStatusAvaliados($trialid, $currentuid);
 
+//report das notas
+$html_notas = fetchTablesGrades($trialid, $currentuid);
+
 
 //page STARTS HERE
 echo $OUTPUT->header();
@@ -156,11 +159,9 @@ echo "
 <div id='nome-do-avaliado' class='my-padding-sm my-qtitle my-hidden my-center'></div>
 <div id='big-back-btn' class='my-big-btn my-hidden-2'>Voltar para os processos</div>
 
-
 <div id='my-tab1-inner-formdiv' class='my-hidden my-scroll mx-auto' style='max-width: 70%; box-shadow: 1px 1px 5px grey;'>
   Carregando...
 </div>
-
 
 <div id='div-q-save-btns' class='mx-auto my-hidden'>
 
@@ -171,8 +172,74 @@ echo "
       value='Finalizar'>
 </div>
 
+
 </div>
 
+<hr>
+<h5 class='my-font-family my-padding-sm'>Notas</h5>
+<footer class='my-padding-sm my-footer2'>Apenas as questões que já tem uma escala recebem uma nota.</footer>
+
+<div id='my-tab1-inner2'>
+
+    <div class=\"my-padding-sm my-margin-lados shadow-sm p-3 mb-5 rounded\"'>
+    <table class=\"table table-sm\">
+      <tbody>
+        <tr>
+          <th scope=\"row\">Avaliador</th>
+          <th scope=\"row\"></th>
+          <th scope=\"row\">Média</th>
+          <th scope=\"row\">Resposta em</th>
+        </tr>
+        <tr>
+          <td colspan=\"2\"><img src=\"#\" class='my-circle-sm'>Nome do avaliador grande aqui escrito</td>
+          <td><img class='my-v-bar-sm'>Thorntona</td>
+          <td><img class='my-v-bar-sm'>@fat</td>
+        </tr>
+        <tr>
+          <th scope=\"row\">Avaliado</th>
+          <th scope=\"row\"></th>
+          <th scope=\"row\">Média</th>
+          <th scope=\"row\">Resposta em</th>
+        </tr>
+        <tr>
+          <td colspan=\"2\"><img src=\"#\" class='my-circle-sm'>Nome do avaliado grande aqui escrito</td>
+          <td><img class='my-v-bar-sm'>Thorntona</td>
+          <td><img class='my-v-bar-sm'>@fat</td>
+        </tr>
+      </tbody>
+    </table>
+
+    </div>
+
+    <div class='my-padding-sm my-margin-lados'>
+    <table class=\"table table-sm table-hover\">
+      <tbody>
+        <tr>
+          <th scope=\"row\">#</th>
+          <th scope=\"row\">Questões</th>
+          <th scope=\"row\"></th>
+          <th scope=\"row\">Notas avaliado</th>
+          <th scope=\"row\">Notas avaliador</th>
+          <th scope=\"row\">Média</th>
+        </tr>
+        <tr>
+          <td scope=\"row\">1.</td>
+          <td colspan=\"2\">Nome do qeustão grande aqui escrito aaa djosidjo dlore lorem ipsum</td>
+          <td>Thorntona</td>
+          <td>@fat</td>
+          <td>medi</td>
+        </tr>
+        <tr>
+          <td scope=\"row\">2.</td>
+          <td colspan=\"2\">Nome do outra questão grande aqui escrito aaa djosidjo dlore lorem ipsum dolor lorem ipsu sl eorm emoe</td>
+          <td>Thorntona</td>
+          <td>@fat</td>
+          <td>medi</td>
+        </tr>
+      </tbody>
+    </table>
+    </div>
+</div>
 
 </div>";
 

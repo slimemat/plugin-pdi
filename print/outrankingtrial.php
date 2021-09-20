@@ -250,3 +250,52 @@ function fetchStatusAvaliados($trialid, $currentuid){
     return $htmlBlock;
 }
 
+function fetchTablesGrades($trialid, $currentuid){
+    global $DB, $USER;
+
+    //returns an html block with tables
+
+    //VAR
+    $htmlBlock = "";
+    $imgAvaliador = new moodle_url('/user/pix.php/'.$USER->id.'/f1.jpg');
+
+    //
+
+    $sql = "SELECT cm.userid evaluatedid, u.id currentuid
+    FROM {user} u
+    LEFT JOIN {local_pdi_evaluator} ev
+    ON ev.mdlid = u.id
+    LEFT JOIN {local_pdi_trial_evaluator} tev
+    ON tev.evaluatorid = ev.id
+    LEFT JOIN {cohort_members} cm
+    ON cm.cohortid = tev.cohortid
+    WHERE u.id = '$currentuid' and tev.trialid = '$trialid'
+    ";
+
+    $res = $DB->get_records_sql($sql);
+
+    //foreach person under evaluation by current user in this trial
+    foreach($res as $r){
+
+        
+
+        $htmlBlock .= "
+        <div class=\"my-padding-sm my-margin-lados shadow-sm p-3 mb-5 rounded\"'>
+        <table class=\"table table-sm\">
+          <tbody>
+            <tr>
+              <th scope=\"row\">Avaliador</th>
+              <th scope=\"row\"></th>
+              <th scope=\"row\">Média</th>
+              <th scope=\"row\">Resposta em</th>
+            </tr>
+            <tr>
+              <td colspan=\"2\"><img src=\"$imgAvaliador\" class='my-circle-sm'>$USER->firstname $USER->lastname</td>
+              <td><img class='my-v-bar-sm'>Thorntona</td>
+              <td><img class='my-v-bar-sm'>@fat</td>
+            </tr>";
+
+    }
+
+}
+

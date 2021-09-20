@@ -287,6 +287,36 @@ li paginate_button{
     margin-top: -50px;
 }
 
+.my-v-bar-sm{
+    display: inline-flex;
+    height: 40px;
+    width: 2px;
+    justify-content: center;
+    align-items: center;
+    color: var(--mygreylight);
+    font-size: 10px;
+    font-family: 'Poppins';
+    font-weight: 400;
+    font-style: italic;
+    
+}
+
+.my-circle-sm{
+    display: inline-flex;
+    height: 40px;
+    width: 40px;
+    background-color: var(--mygrey);
+    border-radius: 50%;
+    justify-content: center;
+    align-items: center;
+    color: var(--mygreylight);
+    font-size: 10px;
+    font-family: 'Poppins';
+    font-weight: 400;
+    font-style: italic;
+    cursor: pointer;
+}
+
 .my-circle{
   display: inline-flex;
   height: 70px;
@@ -721,6 +751,12 @@ li paginate_button{
     color: var(--disabled-grey);
     font-style: italic;
     padding: 2px 8px 2px 4px;
+}
+
+.my-footer2{
+    margin-top: -40px;
+    font-family: "Poppins";
+    color: var(--disabled-grey);
 }
 
 .my-font-family{
