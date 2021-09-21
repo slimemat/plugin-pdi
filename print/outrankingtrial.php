@@ -30,6 +30,7 @@ function fetchRankings($trialid, $currentuid){
 
     //var
     $ListaReturn = null;
+    $sectorid = null;
 
     $sql = "SELECT cm.userid evaluatedid, u.id currentuid 
     FROM {user} u
@@ -54,15 +55,23 @@ function fetchRankings($trialid, $currentuid){
 
         //foreach para um único obj
         foreach($resAvaliado as $ra){
+            $avaliadoid = $ra->id;
             $fname = $ra->firstname;
             $lname = $ra->lastname;
             $fullname = "$fname $lname";
         }
 
-        $ListaReturn[] = array("$fullname", "-");
+        //////////////////******************************parte MÉDIA */
+        
+        //FAZER UMA FUNÇÃO QUE CALCULE A MÉDIA DOS DOIS LADOS
+
+        
+
+
+        $ListaReturn[] = array("$fullname", "CALCULAR média dos dois lados");
     }
 
-    return json_encode($ListaReturn, JSON_UNESCAPED_UNICODE);;
+    return json_encode($ListaReturn, JSON_UNESCAPED_UNICODE);
 }
 
 function fetchDataQuestions($trialid, $currentuid){
@@ -258,9 +267,18 @@ function fetchTablesGrades($trialid, $currentuid){
     //VAR
     $htmlBlock = "";
     $imgAvaliador = new moodle_url('/user/pix.php/'.$USER->id.'/f1.jpg');
+    $sectorid = null;
 
-    //
+    //quick query to get sector
+    $sqlSec = "SELECT * FROM mdl_local_pdi_sector_member sm
+    WHERE sm.userid = '$currentuid' AND sm.trialid = '$trialid'";
+    $resSec = $DB->get_records_sql($sqlSec);
+    foreach($resSec as $rsc){
+        $sectorid = $rsc->sectorid;
+    }
 
+
+    //get each person under evaluation
     $sql = "SELECT cm.userid evaluatedid, u.id currentuid
     FROM {user} u
     LEFT JOIN {local_pdi_evaluator} ev
@@ -274,28 +292,146 @@ function fetchTablesGrades($trialid, $currentuid){
 
     $res = $DB->get_records_sql($sql);
 
+    //var_dump($res);
+
     //foreach person under evaluation by current user in this trial
     foreach($res as $r){
+        //inside var
+        $evaluatedid = $r->evaluatedid;
+        $imgFunc = new moodle_url('/user/pix.php/'.$evaluatedid.'/f1.jpg');
 
-        
+        $sqlEvaluated = "SELECT id, firstname, lastname FROM {user} where id = '$evaluatedid'";
+        $resEvaluated = $DB->get_records_sql($sqlEvaluated);
+        $fullnameFunc = $resEvaluated[$evaluatedid]->firstname . " " . $resEvaluated[$evaluatedid]->lastname;
+
+        //notas que o funcionario se deu
+        $sqlFunc = "SELECT anstri.id, anstri.idquestion, anstri.answer, anstri.sectorid, anstri.timecreated, q.name qname, q.questiontext, q.qtype, qa.answer qa_answer, qa.fraction nota
+        FROM {local_pdi_answer_trial} anstri
+        LEFT JOIN {local_pdi_question} q
+        ON q.id = anstri.idquestion
+        LEFT JOIN {local_pdi_question_answers} qa
+        ON qa.id = anstri.answer
+        WHERE anstri.answeredbyid = '$evaluatedid' and anstri.idtrial = '$trialid' and anstri.sectorid = '$sectorid'
+        ";
+
+        $resFunc = $DB->get_records_sql($sqlFunc);
+
+        //var_dump($resFunc);
+
+        //resFunc var
+        $qname = null;
+        $qtext = null;
+        $qanswer = null;
+        $qnota = null;
+        $respTimecreated = null;
+
+        //foreach question that was already answered
+        //get data from the evaluated pov
+        $q = 0; $somaNota = 0; $mediaNota = 0;
+        foreach($resFunc as $rs){
+            $qname = $rs->qname;
+            $qtext = $rs->questiontext;
+            $qanswer = $rs->answer;
+            $qnota = $rs->nota;
+            $qtype = $rs->qtype;
+            $respTimecreated = $rs->timecreated;
+
+            //apenas esse tipo tira-se a média
+            if($qtype == "range"){
+                $somaNota += $qnota;
+                $q++;
+            }
+        }
+
+        $mediaNota = $somaNota / $q;
+        $mediaNota = number_format($mediaNota, 2, ',', '.');
+
+        if($respTimecreated != null){
+            $respTimecreated = gmdate("d/m/Y", $respTimecreated);
+        }
+        else{
+            $respTimecreated = "-";
+            $mediaNota = "-" ;
+        }
+
+        //**********Média que o avaliador deu pro aluno */
+
+        //pega os valores referentes ao avaliado do each que o AVALIADOR respondeu
+        $sqlAvaliador = "SELECT eatr.id, eatr.answeredbyid answer_by_evaluator, eatr.timemodified, q.name, q.qtype, qa.fraction nota, qa.answer, ans.userid evaluatedid, ans.idtrial, ans.sectorid, ans.isfinished
+        FROM mdl_local_pdi_evanswer_trial eatr
+        LEFT JOIN mdl_local_pdi_question q
+        ON q.id = eatr.idquestion
+        LEFT JOIN mdl_local_pdi_question_answers qa
+        ON qa.id = eatr.answer
+        LEFT JOIN mdl_local_pdi_answer_status ans
+        ON ans.id = eatr.idanstatus
+        WHERE eatr.answeredbyid = '$currentuid' AND ans.idtrial = '$trialid' AND ans.userid = '$evaluatedid'";
+
+        $resAvaliador = $DB->get_records_sql($sqlAvaliador);
+
+        $qnota_av = null;
+        $qtype_av = null;
+        $respTimemod = null;
+        //get data from the evaluatOR pov
+        $q = 0; $somaNota = 0; $mediaNota_av = 0;
+        foreach($resAvaliador as $ra){
+            $qnota_av = $ra->nota;
+            $qtype_av = $ra->qtype;
+            $respTimemod = $ra->timemodified;
+
+            //apenas esse tipo tira-se a média
+            if($qtype_av == "range"){
+                $somaNota += $qnota_av;
+                $q++;
+            }
+        }
+
+        $mediaNota_av = $somaNota / $q;
+        $mediaNota_av = number_format($mediaNota_av, 2, ',', '.');
+
+        if($respTimemod != null){
+            $respTimemod = gmdate("d/m/Y", $respTimemod);
+        }
+        else{
+            $respTimemod = "-";
+            $mediaNota_av = "-" ;
+        }
+        //
 
         $htmlBlock .= "
-        <div class=\"my-padding-sm my-margin-lados shadow-sm p-3 mb-5 rounded\"'>
-        <table class=\"table table-sm\">
-          <tbody>
-            <tr>
-              <th scope=\"row\">Avaliador</th>
-              <th scope=\"row\"></th>
-              <th scope=\"row\">Média</th>
-              <th scope=\"row\">Resposta em</th>
-            </tr>
-            <tr>
-              <td colspan=\"2\"><img src=\"$imgAvaliador\" class='my-circle-sm'>$USER->firstname $USER->lastname</td>
-              <td><img class='my-v-bar-sm'>Thorntona</td>
-              <td><img class='my-v-bar-sm'>@fat</td>
-            </tr>";
+            <div class=\"my-padding-sm my-margin-lados shadow-sm p-3 mb-5 rounded\"'>
+            <table class=\"table table-sm\">
+                <tbody>
+                <tr>
+                    <th scope=\"row\">Avaliador</th>
+                    <th scope=\"row\"></th>
+                    <th scope=\"row\">Média</th>
+                    <th scope=\"row\">Resposta em</th>
+                </tr>
+                <tr>
+                    <td colspan=\"2\"><img src=\"$imgAvaliador\" class='my-circle-sm'>$USER->firstname $USER->lastname</td>
+                    <td><img class='my-v-bar-sm'>$mediaNota_av</td>
+                    <td><img class='my-v-bar-sm'>$respTimemod</td>
+                </tr>
+                <tr>
+                    <th scope=\"row\">Avaliado</th>
+                    <th scope=\"row\"></th>
+                    <th scope=\"row\">Média</th>
+                    <th scope=\"row\">Resposta em</th>
+                    </tr>
+                    <tr>
+                    <td colspan=\"2\"><img src=\"$imgFunc\" class='my-circle-sm'>$fullnameFunc</td>
+                    <td><img class='my-v-bar-sm'>$mediaNota</td>
+                    <td><img class='my-v-bar-sm'>$respTimecreated</td>
+                    </tr>
+                </tbody>
+            </table>
+            </div>";
+        
 
     }
+
+    return $htmlBlock;
 
 }
 

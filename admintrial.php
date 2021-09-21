@@ -241,6 +241,8 @@ echo "
     </div>
 </div>
 
+$html_notas
+
 </div>";
 
 ///////////////////////////////trabalhando nessa tela
