@@ -64,11 +64,11 @@ function fetchRankings($trialid, $currentuid){
         //////////////////******************************parte MÉDIA */
         
         //FAZER UMA FUNÇÃO QUE CALCULE A MÉDIA DOS DOIS LADOS
-
+        $mediageral = calcularMediaGeral($trialid, $currentuid, $avaliadoid);
         
 
 
-        $ListaReturn[] = array("$fullname", "CALCULAR média dos dois lados");
+        $ListaReturn[] = array("$fullname", $mediageral);
     }
 
     return json_encode($ListaReturn, JSON_UNESCAPED_UNICODE);
@@ -242,14 +242,14 @@ function fetchStatusAvaliados($trialid, $currentuid){
             $avaliado_content = "-";
         }
 
-        $htmlBlock .= "<div class=\"my-margin-box my-youev\" id=\"youev-1\" data-uid=\"$personid\">
+        $htmlBlock .= "<div class=\"my-margin-box my-youev\" data-uid=\"$personid\" data-sector=\"$sector\" data-trial=\"$trialid\">
         <img src=\"$imgURL\" class='my-circle'>
           <div class=\"my-sidetext\">
               <span class=\"my-label-bg\">$personFullname</span> <br>
               <span class=\"my-label\"><span class=\"my-disabled\">respondido:</span> $respondido_content</span> <br>
               <span class=\"my-label\"><span class=\"my-disabled\">avaliado:</span> $avaliado_content</span> <br>
               <span class=\"my-label\"><span class=\"my-disabled\">PDI completo:</span> NÃO</span> <br>
-              <span class=\"my-label my-pointer\"><b>Clicar</b></span> <br><br>
+              <span class=\"my-label my-pointer\"><b>Clique para abrir</b></span> <br><br>
           </div>
       </div>";
 
@@ -266,8 +266,12 @@ function fetchTablesGrades($trialid, $currentuid){
 
     //VAR
     $htmlBlock = "";
+    $htmlDentro = ""; 
+    $htmlConteudoTable = "";
+
     $imgAvaliador = new moodle_url('/user/pix.php/'.$USER->id.'/f1.jpg');
     $sectorid = null;
+    $listaNotasAluno = null;
 
     //quick query to get sector
     $sqlSec = "SELECT * FROM mdl_local_pdi_sector_member sm
@@ -299,6 +303,10 @@ function fetchTablesGrades($trialid, $currentuid){
         //inside var
         $evaluatedid = $r->evaluatedid;
         $imgFunc = new moodle_url('/user/pix.php/'.$evaluatedid.'/f1.jpg');
+        $htmlDentro = "";
+        $htmlConteudoTable = "";
+        $listaNotasAluno = null;
+        
 
         $sqlEvaluated = "SELECT id, firstname, lastname FROM {user} where id = '$evaluatedid'";
         $resEvaluated = $DB->get_records_sql($sqlEvaluated);
@@ -336,8 +344,10 @@ function fetchTablesGrades($trialid, $currentuid){
             $qtype = $rs->qtype;
             $respTimecreated = $rs->timecreated;
 
-            //apenas esse tipo tira-se a média
+            //apenas esse tipo tira-se a média e mostra ali
             if($qtype == "range"){
+                $listaNotasAluno[] = array($qnota); //usando no próximo foreach (abaixo) os valores 
+
                 $somaNota += $qnota;
                 $q++;
             }
@@ -371,16 +381,33 @@ function fetchTablesGrades($trialid, $currentuid){
 
         $qnota_av = null;
         $qtype_av = null;
+        $qname_av = null;
         $respTimemod = null;
         //get data from the evaluatOR pov
         $q = 0; $somaNota = 0; $mediaNota_av = 0;
         foreach($resAvaliador as $ra){
+            $qname_av = $ra->name;
             $qnota_av = $ra->nota;
             $qtype_av = $ra->qtype;
             $respTimemod = $ra->timemodified;
 
-            //apenas esse tipo tira-se a média
+            //apenas esse tipo tira-se a média e mostra ali
             if($qtype_av == "range"){
+
+                $indexTbl = $q + 1;
+
+                $notaAluno = $listaNotasAluno[$q][0];
+                $mediaDuas = ($notaAluno + $qnota_av) / 2;
+
+                $htmlConteudoTable .= "
+                <tr>
+                    <td scope=\"row\">$indexTbl.</td>
+                    <td colspan=\"2\">$qname_av</td>
+                    <td>$notaAluno</td>
+                    <td>$qnota_av</td>
+                    <td>$mediaDuas</td>
+                </tr>";
+
                 $somaNota += $qnota_av;
                 $q++;
             }
@@ -398,8 +425,29 @@ function fetchTablesGrades($trialid, $currentuid){
         }
         //
 
+        if($htmlConteudoTable != ""){
+            //iniciar div e table
+            $htmlDentro .= "
+            <div class='my-padding-sm my-margin-lados shadow-sm rounded mb-5'>
+            <table class=\"table table-sm table-hover table-bordered\">
+                <tbody>
+                <tr>
+                    <th scope=\"row\">#</th>
+                    <th scope=\"row\">Questões</th>
+                    <th scope=\"row\"></th>
+                    <th scope=\"row\">Notas avaliado</th>
+                    <th scope=\"row\">Notas avaliador</th>
+                    <th scope=\"row\">Média</th>
+                </tr>
+                $htmlConteudoTable
+                </tbody>
+            </table>
+            </div>
+            <hr class='my-padding-sm my-margin-lados'>";
+        }
+
         $htmlBlock .= "
-            <div class=\"my-padding-sm my-margin-lados shadow-sm p-3 mb-5 rounded\"'>
+            <div class=\"my-padding-sm my-margin-lados shadow-sm p-3 mb-8 rounded\"'>
             <table class=\"table table-sm\">
                 <tbody>
                 <tr>
@@ -409,7 +457,7 @@ function fetchTablesGrades($trialid, $currentuid){
                     <th scope=\"row\">Resposta em</th>
                 </tr>
                 <tr>
-                    <td colspan=\"2\"><img src=\"$imgAvaliador\" class='my-circle-sm'>$USER->firstname $USER->lastname</td>
+                    <td colspan=\"2\"><img src=\"$imgAvaliador\" class='my-circle-sm'><span class='my-padding-sm my-font-family'>$USER->firstname $USER->lastname</span></td>
                     <td><img class='my-v-bar-sm'>$mediaNota_av</td>
                     <td><img class='my-v-bar-sm'>$respTimemod</td>
                 </tr>
@@ -420,18 +468,121 @@ function fetchTablesGrades($trialid, $currentuid){
                     <th scope=\"row\">Resposta em</th>
                     </tr>
                     <tr>
-                    <td colspan=\"2\"><img src=\"$imgFunc\" class='my-circle-sm'>$fullnameFunc</td>
+                    <td colspan=\"2\"><img src=\"$imgFunc\" class='my-circle-sm'><span class='my-padding-sm my-font-family'>$fullnameFunc</span></td>
                     <td><img class='my-v-bar-sm'>$mediaNota</td>
                     <td><img class='my-v-bar-sm'>$respTimecreated</td>
                     </tr>
                 </tbody>
             </table>
             </div>";
-        
 
+        $htmlBlock .= $htmlDentro;
+        
     }
 
     return $htmlBlock;
 
 }
 
+
+//função interna
+function calcularMediaGeral($trialid, $currentuid, $evaluatedid){
+    global $DB;
+
+    //quick query to get sector
+    $sqlSec = "SELECT * FROM {local_pdi_sector_member} sm
+    WHERE sm.userid = '$currentuid' AND sm.trialid = '$trialid'";
+    $resSec = $DB->get_records_sql($sqlSec);
+    foreach($resSec as $rsc){
+        $sectorid = $rsc->sectorid;
+    }
+
+    //notas que o funcionario se deu
+    $sqlFunc = "SELECT anstri.id, anstri.idquestion, anstri.answer, anstri.sectorid, anstri.timecreated, q.name qname, q.questiontext, q.qtype, qa.answer qa_answer, qa.fraction nota
+    FROM {local_pdi_answer_trial} anstri
+    LEFT JOIN {local_pdi_question} q
+    ON q.id = anstri.idquestion
+    LEFT JOIN {local_pdi_question_answers} qa
+    ON qa.id = anstri.answer
+    WHERE anstri.answeredbyid = '$evaluatedid' and anstri.idtrial = '$trialid' and anstri.sectorid = '$sectorid'
+    ";
+
+    $resFunc = $DB->get_records_sql($sqlFunc);
+
+    //get data from the evaluated pov
+    $q = 0; $somaNota = 0; $mediaNota = 0;
+    foreach($resFunc as $rs){
+        $qnota = $rs->nota;
+        $qtype = $rs->qtype;
+        $respTimecreated = $rs->timecreated;
+
+        //apenas esse tipo tira-se a média e mostra ali
+        if($qtype == "range"){
+            $somaNota += $qnota;
+            $q++;
+        }
+    }
+
+    $mediaNota = $somaNota / $q;
+
+    if($respTimecreated == null){
+        //do nothing 
+        $mediaNota = "-" ;
+    }
+
+    //var_dump("média aluno: $mediaNota");
+
+    ///////////////////
+
+    //pega os valores referentes ao avaliado do each que o AVALIADOR respondeu
+    $sqlAvaliador = "SELECT eatr.id, eatr.answeredbyid answer_by_evaluator, eatr.timemodified, q.name, q.qtype, qa.fraction nota, qa.answer, ans.userid evaluatedid, ans.idtrial, ans.sectorid, ans.isfinished
+    FROM mdl_local_pdi_evanswer_trial eatr
+    LEFT JOIN mdl_local_pdi_question q
+    ON q.id = eatr.idquestion
+    LEFT JOIN mdl_local_pdi_question_answers qa
+    ON qa.id = eatr.answer
+    LEFT JOIN mdl_local_pdi_answer_status ans
+    ON ans.id = eatr.idanstatus
+    WHERE eatr.answeredbyid = '$currentuid' AND ans.idtrial = '$trialid' AND ans.userid = '$evaluatedid'";
+
+    $resAvaliador = $DB->get_records_sql($sqlAvaliador);
+
+    $q = 0; $somaNota = 0; $mediaNota_av = 0;
+    foreach($resAvaliador as $ra){
+        $qnota_av = $ra->nota;
+        $qtype_av = $ra->qtype;
+        $respTimemod = $ra->timemodified;
+
+        //apenas esse tipo tira-se a média e mostra ali
+        if($qtype_av == "range"){
+            $somaNota += $qnota_av;
+            $q++;
+        }
+    }
+
+    $mediaNota_av = $somaNota / $q;
+
+    if($respTimemod == null){
+        //do nothing
+        $mediaNota_av = "-" ;
+    }
+
+    //var_dump("média avaliador: $mediaNota_av");
+
+    if($mediaNota == "-"){
+        return "não respondeu";
+    }
+    else if($mediaNota_av == "-"){
+        return "não foi avaliado";
+    }
+
+    /////////////////
+    $media_dasMedias = null;
+
+    $media_dasMedias = ($mediaNota + $mediaNota_av) / 2;
+
+    $media_dasMedias = number_format($media_dasMedias, 2, ',', '.');
+
+    return $media_dasMedias;
+         
+}

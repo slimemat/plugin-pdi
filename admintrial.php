@@ -181,67 +181,11 @@ echo "
 
 <div id='my-tab1-inner2'>
 
-    <div class=\"my-padding-sm my-margin-lados shadow-sm p-3 mb-5 rounded\"'>
-    <table class=\"table table-sm\">
-      <tbody>
-        <tr>
-          <th scope=\"row\">Avaliador</th>
-          <th scope=\"row\"></th>
-          <th scope=\"row\">Média</th>
-          <th scope=\"row\">Resposta em</th>
-        </tr>
-        <tr>
-          <td colspan=\"2\"><img src=\"#\" class='my-circle-sm'>Nome do avaliador grande aqui escrito</td>
-          <td><img class='my-v-bar-sm'>Thorntona</td>
-          <td><img class='my-v-bar-sm'>@fat</td>
-        </tr>
-        <tr>
-          <th scope=\"row\">Avaliado</th>
-          <th scope=\"row\"></th>
-          <th scope=\"row\">Média</th>
-          <th scope=\"row\">Resposta em</th>
-        </tr>
-        <tr>
-          <td colspan=\"2\"><img src=\"#\" class='my-circle-sm'>Nome do avaliado grande aqui escrito</td>
-          <td><img class='my-v-bar-sm'>Thorntona</td>
-          <td><img class='my-v-bar-sm'>@fat</td>
-        </tr>
-      </tbody>
-    </table>
-
-    </div>
-
-    <div class='my-padding-sm my-margin-lados'>
-    <table class=\"table table-sm table-hover\">
-      <tbody>
-        <tr>
-          <th scope=\"row\">#</th>
-          <th scope=\"row\">Questões</th>
-          <th scope=\"row\"></th>
-          <th scope=\"row\">Notas avaliado</th>
-          <th scope=\"row\">Notas avaliador</th>
-          <th scope=\"row\">Média</th>
-        </tr>
-        <tr>
-          <td scope=\"row\">1.</td>
-          <td colspan=\"2\">Nome do qeustão grande aqui escrito aaa djosidjo dlore lorem ipsum</td>
-          <td>Thorntona</td>
-          <td>@fat</td>
-          <td>medi</td>
-        </tr>
-        <tr>
-          <td scope=\"row\">2.</td>
-          <td colspan=\"2\">Nome do outra questão grande aqui escrito aaa djosidjo dlore lorem ipsum dolor lorem ipsu sl eorm emoe</td>
-          <td>Thorntona</td>
-          <td>@fat</td>
-          <td>medi</td>
-        </tr>
-      </tbody>
-    </table>
-    </div>
+$html_notas
+    
 </div>
 
-$html_notas
+
 
 </div>";
 
@@ -260,7 +204,78 @@ echo "<div id='my-tab2' class='my-inside-container my-hidden'>
 
 $html_status
 
+</div>
 
+<div id='my-tab2-inner2' style='background-color: white; padding: 0 10% 0 10%;'>
+
+  <div class=\"d-flex bd-highlight\">
+
+    <div class='flex-grow-1' style='background-color: brown'>
+      <img src=\"http://localhost/moodle/user/pix.php/7/f1.jpg\" class=\"my-circle\">
+      <h5 class='my-label-bg'>Nome Completo</h5>
+    </div>
+    <div class='' style='background-color: lightblue'>
+      <span>Avaliador: nome avaliador</span> <br>
+      <span>Status PDI: em progresso</span>
+    </div>
+
+  </div>
+
+  <div class=\"shadow-sm p-3 mb-5 bg-body rounded\">
+    <span class='my-label'>Comparar respostas</span> <br>
+
+    <div class='d-flex'>
+
+      <div class='my-scroll2 border-top border-bottom' style='background-color: blue;'>
+
+        <div class=\"my-margin-l qblock2 shadow-sm p-3 mb-5 rounded\"> 
+              <h6 class='my-label my-bold'>Pergunta:</h6>
+              <p>NOME DA QUESTÃO</p>
+              <hr>
+              <div class='d-flex'>
+                <div class=\"flex-fill\"><span class='my-label my-mention'>resposta avaliador:</span></div>
+                <div class=\"w-100\"><span>texto da resposta texto texto resposta no nonon nonon nonono no no</span></div>
+              </div>
+              <hr>
+              <div class='d-flex'>
+                <div class=\"flex-fill\"><span class='my-label my-mention'>resposta avaliado:</span></div>
+                <div class=\"w-100\"><span>texto da resposta texto texto resposta</span></div>
+              </div>
+              <span class='my-mention' 
+                  style='display: block; 
+                  margin-top: -10px; 
+                  text-align: right;'>categoria</span>
+        </div>
+
+        <div class=\"my-margin-l qblock2 shadow-sm p-3 mb-5 rounded\"> 
+              <h6 class='my-label my-bold'>Pergunta:</h6>
+              <p>NOME DA QUESTÃO</p>
+              <hr>
+              <div class='d-flex'>
+                <div class=\"flex-fill\"><span class='my-label my-mention'>resposta avaliador:</span></div>
+                <div class=\"w-100\"><span>texto da resposta texto texto resposta no nonon nonon nonono no no</span></div>
+              </div>
+              <hr>
+              <div class='d-flex'>
+                <div class=\"flex-fill\"><span class='my-label my-mention'>resposta avaliado:</span></div>
+                <div class=\"w-100\"><span>texto da resposta texto texto resposta</span></div>
+              </div>
+              <span class='my-mention' 
+                  style='display: block; 
+                  margin-top: -10px; 
+                  text-align: right;'>categoria</span>
+        </div>
+
+      </div>
+
+      <div class='p-5 mx-auto' style=\"background-color: lightblue;\">
+        <button type=\"button\" class=\"btn btn-primary btn-lg\">Marcar reunião</button> <br><br>
+        <button type=\"button\" class=\"btn btn-primary btn-lg\">Anotar objetivos</button> <br><br>
+        <button type=\"button\" class=\"btn btn-primary btn-lg\">Concluir</button> <br><br>
+      </div>
+
+    </div>
+  </div>
 
 </div>
 
@@ -619,7 +634,38 @@ function finishDaForm(){
     });
 }
 
+$(".my-youev").on("click", function(){
+  var alunoid = $(this).attr("data-uid");
+  var sectorid = $(this).attr("data-sector");
+  var trialid = $(this).attr("data-trial");
+  var functionid = 3; //verificar callphpfunctions.php para ver qual é a três
 
+  var values = {
+        'alunoid'  : alunoid,
+        'sectorid' : sectorid,
+        'trialid'  : trialid,
+        'function' : functionid
+  };
+
+  $.ajax({
+        method: 'POST',
+        url: 'print/callphpfunctions.php',
+        data: values,
+
+        beforeSend: function(){  }
+    })
+    .done(function(msg){
+        var resposta = msg;
+
+        $("#my-tab2-inner2").html(resposta);
+        
+    })
+    .fail(function(){
+        alert('Algo deu errado!');
+    });
+
+
+});
 
 });
 

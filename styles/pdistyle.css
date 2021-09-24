@@ -799,6 +799,13 @@ li paginate_button{
     overflow-y: auto;
 }
 
+.my-scroll2{
+    max-height: 520px;
+    padding: 1px 4px 1px 4px;
+    overflow-y: auto;
+}
+
+
 .my-big-btn{
     display: block; 
     width: 70%; 

@@ -24,6 +24,7 @@
 require_once('../../../config.php');
 require_once('fetchforevaluator.php');
 require_once('trialsfunctions.php');
+require_once('statusfunctions.php');
 
 if(isset($_POST['function'])){
 
@@ -55,6 +56,16 @@ if(isset($_POST['function'])){
         $return = searchStudentTrials($pesquisa);
 
         echo $return;
+    }
+    else if($myfunction == 3){
+        $alunoid = $_POST['alunoid'];
+        $sectorid = $_POST['sectorid'];
+        $trialid = $_POST['trialid'];
+
+        $return = stsPrimeiroBloco($alunoid, $trialid, $sectorid);
+
+        echo $return;
+
     }
 
 
