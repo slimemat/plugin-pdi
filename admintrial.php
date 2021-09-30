@@ -206,80 +206,81 @@ $html_status
 
 </div>
 
-<div id='my-tab2-inner2' style='background-color: white; padding: 0 10% 0 10%;'>
+<div id='my-tab2-inner2' style='padding: 0 10% 0 10%;'>
 
-  <div class=\"d-flex bd-highlight\">
 
-    <div class='flex-grow-1' style='background-color: brown'>
-      <img src=\"http://localhost/moodle/user/pix.php/7/f1.jpg\" class=\"my-circle\">
-      <h5 class='my-label-bg'>Nome Completo</h5>
-    </div>
-    <div class='' style='background-color: lightblue'>
-      <span>Avaliador: nome avaliador</span> <br>
-      <span>Status PDI: em progresso</span>
-    </div>
+</div>
 
-  </div>
-
-  <div class=\"shadow-sm p-3 mb-5 bg-body rounded\">
-    <span class='my-label'>Comparar respostas</span> <br>
-
-    <div class='d-flex'>
-
-      <div class='my-scroll2 border-top border-bottom' style='background-color: blue;'>
-
-        <div class=\"my-margin-l qblock2 shadow-sm p-3 mb-5 rounded\"> 
-              <h6 class='my-label my-bold'>Pergunta:</h6>
-              <p>NOME DA QUESTÃO</p>
-              <hr>
-              <div class='d-flex'>
-                <div class=\"flex-fill\"><span class='my-label my-mention'>resposta avaliador:</span></div>
-                <div class=\"w-100\"><span>texto da resposta texto texto resposta no nonon nonon nonono no no</span></div>
-              </div>
-              <hr>
-              <div class='d-flex'>
-                <div class=\"flex-fill\"><span class='my-label my-mention'>resposta avaliado:</span></div>
-                <div class=\"w-100\"><span>texto da resposta texto texto resposta</span></div>
-              </div>
-              <span class='my-mention' 
-                  style='display: block; 
-                  margin-top: -10px; 
-                  text-align: right;'>categoria</span>
+<div id='my-tab2-inner3' style='padding: 0 10% 0 10%;'>
+    <!--Archor points-->
+    <div id='div-reuniao'>
+        <div class=\"my-bg-secondary my-padding-xsm\"><span class='my-font-family my-qtitle my-white'>
+          <i class=\"fas fa-video mx-3\"></i>Marcar reunião</span>
         </div>
-
-        <div class=\"my-margin-l qblock2 shadow-sm p-3 mb-5 rounded\"> 
-              <h6 class='my-label my-bold'>Pergunta:</h6>
-              <p>NOME DA QUESTÃO</p>
-              <hr>
-              <div class='d-flex'>
-                <div class=\"flex-fill\"><span class='my-label my-mention'>resposta avaliador:</span></div>
-                <div class=\"w-100\"><span>texto da resposta texto texto resposta no nonon nonon nonono no no</span></div>
-              </div>
-              <hr>
-              <div class='d-flex'>
-                <div class=\"flex-fill\"><span class='my-label my-mention'>resposta avaliado:</span></div>
-                <div class=\"w-100\"><span>texto da resposta texto texto resposta</span></div>
-              </div>
-              <span class='my-mention' 
-                  style='display: block; 
-                  margin-top: -10px; 
-                  text-align: right;'>categoria</span>
+        <div class=\"card-body shadow-sm p-3 mb-5 bg-body rounded\">
+            <div class=\"\">
+              conteúdo aqui
+            </div>
         </div>
+    </div>
+
+    <div id='div-objetivos'>
+      <div class=\"my-bg-secondary my-padding-xsm\"><span class='my-font-family my-qtitle my-white'>
+         <i class=\"fas fa-rocket mx-3\"></i>Objetivos</span>
+      </div>
+      <div class=\"card-body shadow-sm p-3 mb-5 bg-body rounded\">
+          <div class=\"\">
+              <form id='form-goal'>
+                <div class=\"mb-3\">
+                  <label for=\"input-nome-goal\" class=\"form-label\">Nome do objetivo</label>
+                  <input type=\"text\" class=\"form-control rounded\" id=\"input-nome-goal\" placeholder=\"Competência exemplo...\" autocomplete=\"off\">
+                </div>
+                <div class=\"mb-3\">
+                  <label for=\"input-desc-goal\" class=\"form-label\">Descrição</label>
+                  <textarea class=\"form-control rounded\" id=\"input-desc-goal\" rows=\"3\"></textarea>
+                </div>
+                <button type=\"button\" class=\"btn btn-primary\">Adicionar objetivo</button>
+              </form>
+          </div>
+
+
+          <div id=\"horizontal-scroll\" class='my-scroll-h row my-bg-light'>
+
+            <div class=\"bg-white mb-2 mr-2 my-padding-sm\" style=\"width: 18rem; display: inline-block\">
+              <h5 class=\"card-title my-bold\">Card title</h5>
+              <p class=\"card-text\">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+              <button type=\"button\" class=\"btn btn-primary\"><i class=\"fas fa-pencil-alt\"></i></button>
+            </div>
+
+            <div class=\"bg-white mb-2 mr-2 my-padding-sm\" style=\"width: 18rem; display: inline-block\">
+              <h5 class=\"card-title my-bold\">Card title</h5>
+              <p class=\"card-text\">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+              <button type=\"button\" class=\"btn btn-primary\"><i class=\"fas fa-pencil-alt\"></i></button>
+            </div>
+
+            <div class=\"bg-white mb-2 mr-2 my-padding-sm\" style=\"width: 18rem; display: inline-block\">
+              <h5 class=\"card-title my-bold\">Card title</h5>
+              <p class=\"card-text\">Some quick example text to build on  on on o no no no no no nononononon ono non o no no no n onon no on on o no no no no n on ono no no n ono n on on ononthe card title and make up the bulk of the card's content.</p>
+              <button type=\"button\" class=\"btn btn-primary\"><i class=\"fas fa-pencil-alt\"></i></button>
+            </div>
+
+            <div class=\"bg-white mb-2 mr-2 my-padding-sm\" style=\"width: 18rem; display: inline-block\">
+              <h5 class=\"card-title my-bold\">Card title</h5>
+              <p class=\"card-text\">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+              <button type=\"button\" class=\"btn btn-primary\"><i class=\"fas fa-pencil-alt\"></i></button>
+            </div>
+
+          </div>
 
       </div>
 
-      <div class='p-5 mx-auto' style=\"background-color: lightblue;\">
-        <button type=\"button\" class=\"btn btn-primary btn-lg\">Marcar reunião</button> <br><br>
-        <button type=\"button\" class=\"btn btn-primary btn-lg\">Anotar objetivos</button> <br><br>
-        <button type=\"button\" class=\"btn btn-primary btn-lg\">Concluir</button> <br><br>
-      </div>
 
     </div>
-  </div>
 
 </div>
 
 </div>";
+
 echo "<div id='my-tab3' class='my-inside-container my-hidden'>
 
   <h5 class='my-font-family my-padding-sm'>Ranking dos avaliados</h5>

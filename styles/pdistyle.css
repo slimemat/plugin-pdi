@@ -45,6 +45,9 @@
 .my-bold{
     font-weight: 700;
 }
+.my-med-bold{
+    font-weight: 400;
+}
 
 #mygrey-bg{
     background-color: var(--mywhite);
@@ -678,6 +681,10 @@ li paginate_button{
     padding: 16px;
 }
 
+.my-padding-xsm{
+    padding: 8px;
+}
+
 .my-margin-l{
     margin-left: 16px;
 }
@@ -805,6 +812,13 @@ li paginate_button{
     overflow-y: auto;
 }
 
+.my-scroll-h{
+    width: auto;
+    height:320px;
+    overflow-x: auto;
+    overflow-y: auto;
+}
+
 
 .my-big-btn{
     display: block; 
@@ -857,4 +871,17 @@ li paginate_button{
 
 .my-bg-greylight{
     background-color: var(--mygreylight);
+}
+
+.my-bg-primary{
+    background-color: var(--myprimary);
+}
+
+.my-bg-secondary{
+    background-color: var(--mysecondary);
+}
+
+
+.my-white{
+    color: var(--white);
 }

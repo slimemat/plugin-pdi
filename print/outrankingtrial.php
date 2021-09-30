@@ -424,6 +424,13 @@ function fetchTablesGrades($trialid, $currentuid){
             $mediaNota_av = "-" ;
         }
         //
+        if($mediaNota == 'nan'){
+            $mediaNota = 'todas perguntas foram dissertativas';
+        }
+        if($mediaNota_av == 'nan'){
+            $mediaNota_av = 'todas perguntas foram dissertativas';
+        }
+
 
         if($htmlConteudoTable != ""){
             //iniciar div e table
@@ -582,6 +589,10 @@ function calcularMediaGeral($trialid, $currentuid, $evaluatedid){
     $media_dasMedias = ($mediaNota + $mediaNota_av) / 2;
 
     $media_dasMedias = number_format($media_dasMedias, 2, ',', '.');
+
+    if($media_dasMedias == 'nan'){
+        $media_dasMedias = "Todas perguntas foram dissetativas";
+    }
 
     return $media_dasMedias;
          
