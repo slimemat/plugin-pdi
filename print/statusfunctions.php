@@ -103,9 +103,9 @@
 
       <div class='flex-grow-1'>
          <img src=\"http://localhost/moodle/user/pix.php/$alunoid/f1.jpg\" class=\"my-circle\">
-         <h5 class='my-label-bg margin-top'>$alunoFirstname $alunoLastname</h5>
+         <h5 class='my-label-bg margin-top my-white'>$alunoFirstname $alunoLastname</h5>
       </div>
-      <div class=''>
+      <div class='my-white'>
          <span>Avaliador: $avaFirstname $avaLastname</span> <br>
          <span>Status PDI: $statusPDI</span>
       </div>
@@ -164,7 +164,7 @@
             $strCategoria = $resCat[$rq->category]->name;
          }
          else{
-            $strCategoria = " "; //categoria vazia
+            $strCategoria = "<span title='sem categoria'>-</span>"; //categoria vazia
          }
 
          //se o tipo da pergunta NÃO for escrita, pegar a resposta
@@ -203,18 +203,18 @@
          </div>";
 
       }
-
-      if(count($resQav)<1){
-         $blocoHTML .= "
-         <div class=\"card\">
-         <div class=\"card-body my-bg-light\">
-           <h5 class=\"card-title\">Vazio...</h5>
-           <p class=\"card-text my-font-family\">Ainda não há o respostas salvas para comparar.</p>
-         </div>
-       </div>";
-      }
+      
 
     }
+    if(count($resQav)<1 or count($resQDB)<1){
+      $blocoHTML .= "
+      <div class=\"card\">
+      <div class=\"card-body my-bg-light\">
+        <h5 class=\"card-title\">Vazio...</h5>
+        <p class=\"card-text my-font-family\">Ainda não há o respostas salvas para comparar.</p>
+      </div>
+    </div>";
+   }
       
     $blocoHTML .= "
     </div>
@@ -227,7 +227,105 @@
 
    </div>
    </div>";
+
+   //marcar e objetivos
+   $blocoHTML .= "
+   <div id='my-tab2-inner3'>
+      <!--Archor points-->
+      <div id='div-reuniao'>
+         <div class=\"my-bg-secondary my-padding-xsm\"><span class='my-font-family my-qtitle my-white'>
+            <i class=\"fas fa-video mx-3\"></i>Marcar reunião</span>
+         </div>
+         <div class=\"card-body shadow-sm p-3 mb-5 bg-body rounded\">
+               <div class=\"\">
+               conteúdo aqui
+               </div>
+         </div>
+      </div>
+
+      <div id='div-objetivos'>
+         <div class=\"my-bg-secondary my-padding-xsm\"><span class='my-font-family my-qtitle my-white'>
+            <i class=\"fas fa-rocket mx-3\"></i>Objetivos</span>
+         </div>
+         <div class=\"card-body shadow-sm p-3 mb-5 bg-body rounded\">
+            <div class=\"\">
+               <form id='form-goal'>
+                  <div class=\"mb-3\">
+                     <label for=\"input-nome-goal\" class=\"form-label\">Nome do objetivo</label>
+                     <input type=\"text\" class=\"form-control rounded\" id=\"input-nome-goal\" placeholder=\"Competência exemplo...\" autocomplete=\"off\">
+                  </div>
+                  <div class=\"mb-3\">
+                     <label for=\"input-desc-goal\" class=\"form-label\">Descrição</label>
+                     <textarea class=\"form-control rounded\" id=\"input-desc-goal\" rows=\"3\"></textarea>
+                  </div>
+
+                  <input type=\"hidden\" id=\"hidden-aluno-id\" value=\"$alunoid\">
+                  <input type=\"hidden\" id=\"hidden-sector-id\" value=\"$sectorid\">
+                  <input type=\"hidden\" id=\"hidden-trial-id\" value=\"$trialid\">               
+
+                  <button id='btn-add-goal' type=\"button\" class=\"btn btn-primary\">Adicionar objetivo</button>
+               </form>
+            </div>
+
+
+            <div id=\"horizontal-scroll\" class='my-scroll-h row my-bg-light'>
+
+               <div class=\"bg-white mb-2 mr-2 my-padding-sm rounded\" style=\"width: 18rem; display: inline-block\">
+               <h5 class=\"card-title my-bold\">Card title</h5>
+               <p class=\"card-text\">Some quick example text.</p>
+               <button type=\"button\" class=\"btn btn-primary\"><i class=\"fas fa-pencil-alt\"></i></button>
+               </div>
+
+               <div class=\"bg-white mb-2 mr-2 my-padding-sm rounded\" style=\"width: 18rem; display: inline-block\">
+               <h5 class=\"card-title my-bold\">Card title</h5>
+               <p class=\"card-text\">Some quick example text.</p>
+               <button type=\"button\" class=\"btn btn-primary\"><i class=\"fas fa-pencil-alt\"></i></button>
+               </div>
+
+               <div class=\"bg-white mb-2 mr-2 my-padding-sm rounded\" style=\"width: 18rem; display: inline-block\">
+               <h5 class=\"card-title my-bold\">Card title</h5>
+               <p class=\"card-text\">Some quick example text.</p>
+               <button type=\"button\" class=\"btn btn-primary\"><i class=\"fas fa-pencil-alt\"></i></button>
+               </div>
+
+               <div class=\"bg-white mb-2 mr-2 my-padding-sm rounded\" style=\"width: 18rem; display: inline-block\">
+               <h5 class=\"card-title my-bold\">Card title</h5>
+               <p class=\"card-text\">Some quick example text.</p>
+               <button type=\"button\" class=\"btn btn-primary\"><i class=\"fas fa-pencil-alt\"></i></button>
+               </div>
+
+            </div>
+
+         </div>
+
+
+      </div>
+
+   </div>";
     
     echo $blocoHTML;
     
+ }
+
+
+ function inserirObjetivo($title, $desc, $alunoid, $trialid, $sectorid){
+
+   global $USER, $DB;
+      
+      //verificar se já existem gravações na tabela local_pdi_answer_status do aluno
+      $sqlVer = "SELECT s.userid, s.id FROM mdl_local_pdi_answer_status s
+                  WHERE s.userid = '$alunoid' AND s.idtrial = '$trialid' AND s.sectorid ='$sectorid'";
+      $resVer = $DB->get_records_sql($sqlVer);
+
+      $anstatusid = $resVer[$alunoid]->id;
+
+      
+      if($anstatusid == null){
+         echo "Falha ao adicionar!\nA pessoa em questão não finalizou suas respostas";
+         return;
+      }
+      else{
+         echo "ok";
+      }
+
  }

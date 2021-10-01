@@ -707,8 +707,9 @@ li paginate_button{
 .qblock2{
     display: block;
     background-color: var(--mygreylight);
+    min-width: 400px;
     max-width: 600px;
-    max-height: 300px;
+    max-height: 600px;
     padding: 12px;
     margin: 4px;
     overflow-y: auto;

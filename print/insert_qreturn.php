@@ -36,6 +36,7 @@ if(isset($_POST['hidden-qtype']))
     $trialID;
     foreach($resultado as $t){$trialID = $t->id;}
 
+
     $unixTime = time();
     $qname = $_POST['hidden-qname'];
     $qtext = $_POST['hidden-qtext'];

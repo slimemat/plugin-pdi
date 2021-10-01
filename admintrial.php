@@ -200,84 +200,18 @@ $imgURL = new moodle_url('/user/pix.php/'.$userid_pic.'/f1.jpg');
 
 echo "<div id='my-tab2' class='my-inside-container my-hidden'>
 
-<div id='my-tab2-inner'>
+  <div id='my-tab2-inner'>
 
-$html_status
+  $html_status
 
-</div>
+  </div>
 
-<div id='my-tab2-inner2' style='padding: 0 10% 0 10%;'>
-
-
-</div>
-
-<div id='my-tab2-inner3' style='padding: 0 10% 0 10%;'>
-    <!--Archor points-->
-    <div id='div-reuniao'>
-        <div class=\"my-bg-secondary my-padding-xsm\"><span class='my-font-family my-qtitle my-white'>
-          <i class=\"fas fa-video mx-3\"></i>Marcar reunião</span>
-        </div>
-        <div class=\"card-body shadow-sm p-3 mb-5 bg-body rounded\">
-            <div class=\"\">
-              conteúdo aqui
-            </div>
-        </div>
-    </div>
-
-    <div id='div-objetivos'>
-      <div class=\"my-bg-secondary my-padding-xsm\"><span class='my-font-family my-qtitle my-white'>
-         <i class=\"fas fa-rocket mx-3\"></i>Objetivos</span>
-      </div>
-      <div class=\"card-body shadow-sm p-3 mb-5 bg-body rounded\">
-          <div class=\"\">
-              <form id='form-goal'>
-                <div class=\"mb-3\">
-                  <label for=\"input-nome-goal\" class=\"form-label\">Nome do objetivo</label>
-                  <input type=\"text\" class=\"form-control rounded\" id=\"input-nome-goal\" placeholder=\"Competência exemplo...\" autocomplete=\"off\">
-                </div>
-                <div class=\"mb-3\">
-                  <label for=\"input-desc-goal\" class=\"form-label\">Descrição</label>
-                  <textarea class=\"form-control rounded\" id=\"input-desc-goal\" rows=\"3\"></textarea>
-                </div>
-                <button type=\"button\" class=\"btn btn-primary\">Adicionar objetivo</button>
-              </form>
-          </div>
+  <div id='my-tab2-inner2' style='padding: 0 10% 0 10%;'>
 
 
-          <div id=\"horizontal-scroll\" class='my-scroll-h row my-bg-light'>
-
-            <div class=\"bg-white mb-2 mr-2 my-padding-sm\" style=\"width: 18rem; display: inline-block\">
-              <h5 class=\"card-title my-bold\">Card title</h5>
-              <p class=\"card-text\">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-              <button type=\"button\" class=\"btn btn-primary\"><i class=\"fas fa-pencil-alt\"></i></button>
-            </div>
-
-            <div class=\"bg-white mb-2 mr-2 my-padding-sm\" style=\"width: 18rem; display: inline-block\">
-              <h5 class=\"card-title my-bold\">Card title</h5>
-              <p class=\"card-text\">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-              <button type=\"button\" class=\"btn btn-primary\"><i class=\"fas fa-pencil-alt\"></i></button>
-            </div>
-
-            <div class=\"bg-white mb-2 mr-2 my-padding-sm\" style=\"width: 18rem; display: inline-block\">
-              <h5 class=\"card-title my-bold\">Card title</h5>
-              <p class=\"card-text\">Some quick example text to build on  on on o no no no no no nononononon ono non o no no no n onon no on on o no no no no n on ono no no n ono n on on ononthe card title and make up the bulk of the card's content.</p>
-              <button type=\"button\" class=\"btn btn-primary\"><i class=\"fas fa-pencil-alt\"></i></button>
-            </div>
-
-            <div class=\"bg-white mb-2 mr-2 my-padding-sm\" style=\"width: 18rem; display: inline-block\">
-              <h5 class=\"card-title my-bold\">Card title</h5>
-              <p class=\"card-text\">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-              <button type=\"button\" class=\"btn btn-primary\"><i class=\"fas fa-pencil-alt\"></i></button>
-            </div>
-
-          </div>
-
-      </div>
+  </div>
 
 
-    </div>
-
-</div>
 
 </div>";
 
@@ -311,7 +245,9 @@ echo "<div id='my-tab4' class='my-inside-container my-hidden'>
 
 </div>";
 
-
+//hidden messages
+echo "<div id ='my-smallmsg-error' class='my-smallmsg-error'>Poucos caracteres!</div>";
+echo "<div id ='my-smallmsg-success' class='my-smallmsg-success'>Objetivo adicionado!<br>Atualize a lista para ver.</div>";
 
 //hidden form
 echo "<form id=\"frm-anstatus-id\" name=\"frm-anstatus-id\" class='hidden' method=\"post\" action=\"\">";
@@ -667,6 +603,76 @@ $(".my-youev").on("click", function(){
 
 
 });
+
+
+$("#my-tab2-inner2").on("click", "#btn-add-goal", function(){
+  //var
+  var title = $("#input-nome-goal").val();
+  var desc = $("#input-desc-goal").val();
+  var alunoid = $("#hidden-aluno-id").val();
+  var sectorid = $("#hidden-sector-id").val();
+  var trialid = $("#hidden-trial-id").val();
+  var functionid = 4; //verificar callphpfunctions.php qual é a quatro
+
+  if(title.length <= 5){
+    $("#input-nome-goal").focus();
+    $("#my-smallmsg-error").fadeIn(200);
+    $("#my-smallmsg-error").css("display", "flex");
+    $("#my-smallmsg-error").delay(2000).fadeOut(400);
+    
+    return false;
+  }
+  else if(desc.length <= 10){
+    $("#input-desc-goal").focus();
+    $("#my-smallmsg-error").fadeIn(200);
+    $("#my-smallmsg-error").css("display", "flex");
+    $("#my-smallmsg-error").delay(2000).fadeOut(400);
+
+    return false;
+  }
+
+  //ajax values
+  var values = {
+        'alunoid'  : alunoid,
+        'sectorid' : sectorid,
+        'trialid'  : trialid,
+        'title' : title,
+        'desc'  : desc,
+        'function' : functionid
+  };
+
+  //ajax
+  $.ajax({
+        method: 'POST',
+        url: 'print/callphpfunctions.php',
+        data: values,
+
+        beforeSend: function(){  }
+    })
+    .done(function(msg){
+        var resposta = msg;
+
+        if(resposta == "ok"){
+          //limpar campos
+          $("#input-nome-goal").val("");
+          $("#input-desc-goal").val("");
+
+          //mensagem de sucesso
+          $("#my-smallmsg-success").fadeIn(200);
+          $("#my-smallmsg-success").css("display", "flex");
+          $("#my-smallmsg-success").delay(2000).fadeOut(400);   
+        }
+        else{
+          alert(resposta);
+        } 
+        
+    })
+    .fail(function(){
+        alert('Algo deu errado!');
+    });
+
+});
+
 
 });
 

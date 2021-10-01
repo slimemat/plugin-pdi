@@ -67,6 +67,19 @@ if(isset($_POST['function'])){
         echo $return;
 
     }
+    else if($myfunction == 4){
+        //var de key
+        $alunoid = $_POST['alunoid'];
+        $sectorid = $_POST['sectorid'];
+        $trialid = $_POST['trialid'];
+        //var de conteudo
+        $title = $_POST['title'];
+        $desc = $_POST['desc'];
+
+        $return = inserirObjetivo($title, $desc, $alunoid, $trialid, $sectorid);
+
+        echo $return;
+    }
 
 
 
