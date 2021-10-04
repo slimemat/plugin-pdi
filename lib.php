@@ -64,7 +64,8 @@
          //esse abaixo retorna o setor que o avaliador do corte participa, busca por id de membro
          //no coorte
 
-         return mostrarPopup();
+         $retorno = mostrarPopup();
+         echo $retorno;
    
       }
       
