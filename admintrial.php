@@ -596,6 +596,9 @@ $(".my-youev").on("click", function(){
 
         $("#my-tab2-inner2").html(resposta);
         
+        //mostrar os bloquinhos
+        fetchBlocosGoal(alunoid, sectorid, trialid)
+        
     })
     .fail(function(){
         alert('Algo deu errado!');
@@ -604,7 +607,7 @@ $(".my-youev").on("click", function(){
 
 });
 
-
+//btn criar objetivo
 $("#my-tab2-inner2").on("click", "#btn-add-goal", function(){
   //var
   var title = $("#input-nome-goal").val();
@@ -652,6 +655,9 @@ $("#my-tab2-inner2").on("click", "#btn-add-goal", function(){
     .done(function(msg){
         var resposta = msg;
 
+        //ok
+        //console.log(msg);
+
         if(resposta == "ok"){
           //limpar campos
           $("#input-nome-goal").val("");
@@ -660,7 +666,12 @@ $("#my-tab2-inner2").on("click", "#btn-add-goal", function(){
           //mensagem de sucesso
           $("#my-smallmsg-success").fadeIn(200);
           $("#my-smallmsg-success").css("display", "flex");
-          $("#my-smallmsg-success").delay(2000).fadeOut(400);   
+          $("#my-smallmsg-success").delay(2000).fadeOut(400);  
+
+          //mostrar os bloquinhos
+          //fazer uma nova consulta
+          fetchBlocosGoal(alunoid, sectorid, trialid)                                     
+          
         }
         else{
           alert(resposta);
@@ -672,6 +683,134 @@ $("#my-tab2-inner2").on("click", "#btn-add-goal", function(){
     });
 
 });
+
+//botão de editar card de objetivos
+$("#my-tab2").on("click", ".btn-edit-goal", function(){
+  
+  var idgoal = $(this).attr("data-idgoal");
+  
+  //ocultar e mostrar
+  $("#h-goal-"+idgoal+"").hide(100);
+  $("#lbl-input-"+idgoal+"").show(100);
+  $("#input-edit-"+idgoal+"").show(100);
+
+  $("#p-goal-"+idgoal+"").hide(100);
+  $("#lbl-text-"+idgoal+"").show(100);
+  $("#text-edit-"+idgoal+"").show(100);
+
+  $("#btn-edit-goal-"+idgoal+"").hide(200);
+  $("#btn-cancel-goal-"+idgoal+"").show(200);
+  $("#btn-save-goal-"+idgoal+"").show(200);
+
+});
+
+//botão de cancelar edição do card
+$("#my-tab2").on("click", ".btn-cancel-goal", function(){
+
+  var idgoal = $(this).attr("data-idgoal");
+
+  //ocultar edição, mostrar padrão
+  $("#lbl-input-"+idgoal+"").hide(100);
+  $("#input-edit-"+idgoal+"").hide(100);
+  $("#h-goal-"+idgoal+"").show(100);
+
+  $("#lbl-text-"+idgoal+"").hide(100);
+  $("#text-edit-"+idgoal+"").hide(100);
+  $("#p-goal-"+idgoal+"").show(100);
+
+  $("#btn-cancel-goal-"+idgoal+"").hide(200);
+  $("#btn-save-goal-"+idgoal+"").hide(200);
+  $("#btn-edit-goal-"+idgoal+"").show(200);
+
+});
+
+//botão de salvar a edição do card
+$("#my-tab2").on("click", ".btn-save-goal", function(){
+
+  var idgoal = $(this).attr("data-idgoal");
+  var functionid = 6; //verificar 6 no callphpfunctions.php
+
+  //recuperar novos valores
+  var txtTitle = $("#input-edit-"+idgoal+"").val();
+  var txtDesc = $("#text-edit-"+idgoal+"").val();
+
+  //ajax values
+  var values = {
+        'idgoal'    : idgoal,
+        'txttitle'  : txtTitle,
+        'txtdesc'   : txtDesc,
+        'function' : functionid
+  };
+
+  //ajax
+  $.ajax({
+        method: 'POST',
+        url: 'print/callphpfunctions.php',
+        data: values,
+
+        beforeSend: function(){ $("#btn-save-goal-"+idgoal+"").html("salvando...") }
+    })
+    .done(function(msg){
+        resposta = msg;    
+        
+        $("#btn-save-goal-"+idgoal+"").html("<i class=\"far fa-save\"></i>")
+        
+        alert(resposta);   
+        //continuar o update pelo php statusfunctions
+    })
+    .fail(function(){
+        alert('Algo deu errado ao salvar!');
+    });
+
+});
+
+
+//função que traz os blocos de objetivos
+function fetchBlocosGoal(alunoid, sectorid, trialid){
+
+  var functionid = 5; //verificar callphpfunctions.php qual é a cinco
+  var resposta = "";
+
+  //ajax values
+  var values = {
+        'alunoid'  : alunoid,
+        'sectorid' : sectorid,
+        'trialid'  : trialid,
+        'function' : functionid
+  };
+
+  //ajax
+  $.ajax({
+        method: 'POST',
+        url: 'print/callphpfunctions.php',
+        data: values,
+
+        beforeSend: function(){  }
+    })
+    .done(function(msg){
+
+        resposta = msg;
+
+        resposta = linkify(resposta);
+      
+        $("#div-cards").html("");
+        $("#div-cards").append(resposta);
+        
+    })
+    .fail(function(){
+        alert('Algo deu errado ao carregar!');
+    });
+
+}
+
+
+//função de criar url clicavel
+function linkify(text) {
+    var urlRegex =/(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
+    return text.replace(urlRegex, function(url) {
+        return '<a href="' + url + '" target="_blank">' + url + '</a>';
+    });
+}
 
 
 });

@@ -80,6 +80,27 @@ if(isset($_POST['function'])){
 
         echo $return;
     }
+    else if($myfunction == 5){
+        //var de key
+        $alunoid = $_POST['alunoid'];
+        $sectorid = $_POST['sectorid'];
+        $trialid = $_POST['trialid'];
+
+        $return = fetchBlocosObjetivo($alunoid, $trialid, $sectorid);
+
+        echo $return;
+
+    }
+    else if($myfunction == 6){
+        //var keys
+        $idgoal = $_POST['idgoal'];
+        $txttitle = $_POST['txttitle'];
+        $txtdesc = $_POST['txtdesc'];
+
+        $return = updateGoalText($idgoal, $txttitle, $txtdesc);
+
+        echo $return;
+    }
 
 
 

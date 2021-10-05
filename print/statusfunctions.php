@@ -270,29 +270,9 @@
 
             <div id=\"horizontal-scroll\" class='my-scroll-h row my-bg-light'>
 
-               <div class=\"bg-white mb-2 mr-2 my-padding-sm rounded\" style=\"width: 18rem; display: inline-block\">
-               <h5 class=\"card-title my-bold\">Card title</h5>
-               <p class=\"card-text\">Some quick example text.</p>
-               <button type=\"button\" class=\"btn btn-primary\"><i class=\"fas fa-pencil-alt\"></i></button>
-               </div>
+               <div id=\"div-cards\" class=\"\"></div>
 
-               <div class=\"bg-white mb-2 mr-2 my-padding-sm rounded\" style=\"width: 18rem; display: inline-block\">
-               <h5 class=\"card-title my-bold\">Card title</h5>
-               <p class=\"card-text\">Some quick example text.</p>
-               <button type=\"button\" class=\"btn btn-primary\"><i class=\"fas fa-pencil-alt\"></i></button>
-               </div>
-
-               <div class=\"bg-white mb-2 mr-2 my-padding-sm rounded\" style=\"width: 18rem; display: inline-block\">
-               <h5 class=\"card-title my-bold\">Card title</h5>
-               <p class=\"card-text\">Some quick example text.</p>
-               <button type=\"button\" class=\"btn btn-primary\"><i class=\"fas fa-pencil-alt\"></i></button>
-               </div>
-
-               <div class=\"bg-white mb-2 mr-2 my-padding-sm rounded\" style=\"width: 18rem; display: inline-block\">
-               <h5 class=\"card-title my-bold\">Card title</h5>
-               <p class=\"card-text\">Some quick example text.</p>
-               <button type=\"button\" class=\"btn btn-primary\"><i class=\"fas fa-pencil-alt\"></i></button>
-               </div>
+                              
 
             </div>
 
@@ -311,9 +291,13 @@
  function inserirObjetivo($title, $desc, $alunoid, $trialid, $sectorid){
 
    global $USER, $DB;
+
+   //filtrando as var
+   $title = strip_tags($title, '<b>');
+   $desc = strip_tags($desc, '<b>');
       
       //verificar se já existem gravações na tabela local_pdi_answer_status do aluno
-      $sqlVer = "SELECT s.userid, s.id FROM mdl_local_pdi_answer_status s
+      $sqlVer = "SELECT s.userid, s.id FROM {local_pdi_answer_status} s
                   WHERE s.userid = '$alunoid' AND s.idtrial = '$trialid' AND s.sectorid ='$sectorid'";
       $resVer = $DB->get_records_sql($sqlVer);
 
@@ -325,7 +309,97 @@
          return;
       }
       else{
-         echo "ok";
+
+         $addGoal = new stdClass();
+         $addGoal->createdbyid = $USER->id;
+         $addGoal->idanstatus = $anstatusid;
+         $addGoal->title = $title;
+         $addGoal->description = $desc;
+         $addGoal->status = "criado";
+         $addGoal->timecreated = time();
+         $addGoal->timemodified = time();
+
+         $resGoal = $DB->insert_record('local_pdi_goals', $addGoal);
+         
+         if($resGoal){
+            echo "ok";
+         }
+
       }
+
+ }
+
+
+ function fetchBlocosObjetivo($alunoid, $trialid, $sectorid){
+    global $USER, $DB;
+
+   //retorna um bloco html
+   $htmlBlock = "";
+
+   //pegar o id da tabelas answer_status do aluno
+   $sqlVer = "SELECT s.userid, s.id FROM {local_pdi_answer_status} s
+                  WHERE s.userid = '$alunoid' AND s.idtrial = '$trialid' AND s.sectorid ='$sectorid'";
+   $resVer = $DB->get_records_sql($sqlVer);
+
+   $anstatusid = $resVer[$alunoid]->id;
+
+   if($anstatusid == null){
+      return "<div class=\"card-body my-bg-light\">
+                  <h5 class=\"card-title\">Vazio...</h5>
+                  <p class=\"card-text my-font-family\">É preciso esperar esta pessoa responder.</p>
+               </div>";
+   }
+   else{
+      $sql = "SELECT * FROM {local_pdi_goals} a
+               WHERE a.idanstatus = '$anstatusid' and a.createdbyid = '$USER->id'
+               ORDER BY a.timecreated DESC";
+   
+      $res = $DB->get_records_sql($sql);
+
+      foreach($res as $r){
+         $htmlBlock .= "<div class=\"align-top bg-white mb-2 mr-2 my-padding-sm rounded\" style=\"width: 18rem; display: inline-block\"> 
+                           <h5 id=\"h-goal-$r->id\" class=\"card-title my-bold\">$r->title</h5> 
+
+                           <div class=\"mb-3\">
+                              <label id=\"lbl-input-$r->id\" for=\"input-edit-$r->id\" class=\"form-label hidden\">Editar nome:</label>
+                              <input type=\"text\" id=\"input-edit-$r->id\" class=\"form-control rounded hidden\" value=\"$r->title\">
+                           </div>
+
+                           <p id=\"p-goal-$r->id\" class=\"card-text\" style=\"white-space: pre-wrap;\">$r->description</p>
+
+                           <div class=\"mb-3\">
+                              <label id=\"lbl-text-$r->id\" for=\"text-edit-$r->id\" class=\"form-label hidden\">Editar descrição:</label>
+                              <textarea id=\"text-edit-$r->id\" class=\"form-control rounded hidden\" rows=\"3\">$r->description</textarea>
+                           </div>
+
+                           <button type=\"button\" id=\"btn-edit-goal-$r->id\" class=\"btn btn-primary btn-edit-goal\" data-idgoal=\"$r->id\">
+                           <i class=\"fas fa-pencil-alt\"></i>
+                           </button>
+
+                           <button type=\"button\" id=\"btn-cancel-goal-$r->id\" class=\"btn btn-primary btn-cancel-goal hidden\" data-idgoal=\"$r->id\">
+                           <i class=\"fas fa-times\"></i>
+                           </button>
+
+                           <button type=\"button\" id=\"btn-save-goal-$r->id\" class=\"btn btn-success btn-save-goal hidden\" data-idgoal=\"$r->id\">
+                           <i class=\"far fa-save\"></i>
+                           </button>
+
+                        </div>";
+      }
+
+      return $htmlBlock;
+
+   }
+   
+
+
+
+ }
+
+
+ function updateGoalText($idgoal, $txttitle, $txtdesc){
+
+
+   return "oi";
 
  }

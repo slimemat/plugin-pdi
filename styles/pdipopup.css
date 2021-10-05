@@ -158,7 +158,7 @@
     position: fixed;
     bottom: 0px;
     right: 20px;
-    z-index: 1;
+    z-index: 2147483647;
 }
 
 .r-popup{
@@ -208,7 +208,7 @@
     position: fixed !important;
     bottom: 20px !important;
     right: 20px !important;
-    z-index: 1 !important;
+    z-index: 10 !important;
     max-width: 290px;
 }
 
