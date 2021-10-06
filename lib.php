@@ -224,13 +224,17 @@ function mostrarPopup(){
          $blocoReturn = "
          <!--opened popup-->
          <div id='div-popup' class='r-popup-frame'>
-            <div class='r-popup'>
-            
+            <div class='r-popup'>            
+               
                <div id='myblue-bg'>
-                  <span class='mylogo'>PDI</span>
+                  <span id='pdi-logo-span' class='mylogo' style='cursor: pointer;' title='alinhar posição'>
+                     PDI
+                  </span>
+                  <div id='div-popupheader' class='mx-auto' style='cursor: move; color: var(--mysecondary);'>░░░░░░░</div>
                   <div class='mypush my-marginr' style='color: var(--white);'><span>tela de processos</span></div>
                   <span id='btn-minimize-pop' class='pdi-nostyle'><i class=\"fas fa-minus\"></i></span>
                </div>
+               
                
                <div class='my-scroll' id='scroll-div'>
                   $blocoHtml
