@@ -247,7 +247,8 @@ echo "<div id='my-tab4' class='my-inside-container my-hidden'>
 
 //hidden messages
 echo "<div id ='my-smallmsg-error' class='my-smallmsg-error'>Poucos caracteres!</div>";
-echo "<div id ='my-smallmsg-success' class='my-smallmsg-success'>Objetivo adicionado!<br>Atualize a lista para ver.</div>";
+echo "<div id ='my-smallmsg-success' class='my-smallmsg-success'>Objetivo adicionado!</div>";
+echo "<div id ='my-smallmsg-success2' class='my-smallmsg-success'>Objetivo atualizado!</div>";
 
 //hidden form
 echo "<form id=\"frm-anstatus-id\" name=\"frm-anstatus-id\" class='hidden' method=\"post\" action=\"\">";
@@ -709,6 +710,11 @@ $("#my-tab2").on("click", ".btn-cancel-goal", function(){
 
   var idgoal = $(this).attr("data-idgoal");
 
+  //var
+  var alunoid = $("#hidden-aluno-id").val();
+  var sectorid = $("#hidden-sector-id").val();
+  var trialid = $("#hidden-trial-id").val();
+
   //ocultar edição, mostrar padrão
   $("#lbl-input-"+idgoal+"").hide(100);
   $("#input-edit-"+idgoal+"").hide(100);
@@ -722,6 +728,9 @@ $("#my-tab2").on("click", ".btn-cancel-goal", function(){
   $("#btn-save-goal-"+idgoal+"").hide(200);
   $("#btn-edit-goal-"+idgoal+"").show(200);
 
+  //mostrar os bloquinhos de novo
+  fetchBlocosGoal(alunoid, sectorid, trialid)   
+
 });
 
 //botão de salvar a edição do card
@@ -733,6 +742,12 @@ $("#my-tab2").on("click", ".btn-save-goal", function(){
   //recuperar novos valores
   var txtTitle = $("#input-edit-"+idgoal+"").val();
   var txtDesc = $("#text-edit-"+idgoal+"").val();
+
+  //var aluno
+  //var
+  var alunoid = $("#hidden-aluno-id").val();
+  var sectorid = $("#hidden-sector-id").val();
+  var trialid = $("#hidden-trial-id").val();
 
   //ajax values
   var values = {
@@ -755,8 +770,19 @@ $("#my-tab2").on("click", ".btn-save-goal", function(){
         
         $("#btn-save-goal-"+idgoal+"").html("<i class=\"far fa-save\"></i>")
         
-        alert(resposta);   
-        //continuar o update pelo php statusfunctions
+        if(resposta == 1){
+          //mensagem de sucesso UPDATE
+          $("#my-smallmsg-success2").fadeIn(200);
+          $("#my-smallmsg-success2").css("display", "flex");
+          $("#my-smallmsg-success2").delay(2000).fadeOut(400);  
+      
+          //mostrar os bloquinhos atualizados
+          fetchBlocosGoal(alunoid, sectorid, trialid)                                     
+        } 
+        else{
+          alert("Não foi possível salvar! Tente novamente.");
+        }
+        
     })
     .fail(function(){
         alert('Algo deu errado ao salvar!');

@@ -398,8 +398,15 @@
 
 
  function updateGoalText($idgoal, $txttitle, $txtdesc){
+   global $DB;
 
+   $upGoal = new stdClass();
+   $upGoal->id = $idgoal;
+   $upGoal->title = $txttitle;
+   $upGoal->description = $txtdesc;
 
-   return "oi";
+   $res = $DB->update_record("local_pdi_goals", $upGoal);
+
+   return $res;
 
  }
