@@ -276,6 +276,7 @@ echo "<table id=\"dt-select\" class=\"table mydark-table my-pointer my-highlight
 echo "</div>";
 
 echo "<div class='my-horizontal-div'>";
+echo "<br>";
 echo "<input type='text' id='my-searchbar' class='my-large-input my-wider' placeholder='Name of the sector...'>";
 echo "<input id='btn-create-sector' type='button' class='my-primary-btn' value='Create a sector'>";
 echo "</div>";

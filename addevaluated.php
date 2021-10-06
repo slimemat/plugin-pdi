@@ -293,6 +293,7 @@ echo "<table id=\"dt-select\" class=\"table mydark-table my-pointer my-highlight
 </table>";
 echo "</div>";
 
+echo "<br>";
 echo "<input id='btn-create-cohort' type='button' class='my-primary-btn my-large-input' value='Create a cohort'>";
 echo "<hr>";
 

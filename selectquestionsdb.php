@@ -207,7 +207,7 @@ echo "<table id=\"dt-select\" class=\"table mydark-table my-highlight\" cellspac
 </table>";
 echo "</div>";
 
-
+echo "<br>";
 echo "<input id='btn-create-database' type='button' class='my-primary-btn my-large-input' value='Create a question database'>";
 
 echo "<hr>";

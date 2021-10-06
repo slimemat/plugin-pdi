@@ -263,6 +263,9 @@ echo "<div id ='my-smallmsg-error' class='my-smallmsg-error'>No one is selected!
 echo "<div id='my-emptymsg' class='my-smallmsg-error'>You must fill in this!</div>";
 
 } //fechando o if de capability
+else{
+  redirect($CFG->wwwroot . '/my/index.php');
+}
 
 echo "</div>"; //div mygrey-bg ends
 

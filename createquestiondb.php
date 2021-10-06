@@ -647,7 +647,7 @@ echo "<div id='div-save-buttons'>";
 echo "<input type='button' id='id_back_btn' class='div-save-btn my-grey-btn'
 value='Back'>";
 echo "<input type='button' id='id_save_next_btn' class='div-save-btn my-primary-btn my-marginlauto'
-value='Next'>";
+value='Step 4'>";
 
 echo "</div>";
 
@@ -896,7 +896,7 @@ console.log("valor: "+ nome);
 
 //CREATE GROUP BTN
 $( "#id_save_next_btn" ).on( "click", function() {
-    window.location.replace("finalstep5.php");
+    window.location.replace("selecquestionsdb.php");
 
 });
 

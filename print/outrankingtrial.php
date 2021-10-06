@@ -249,7 +249,9 @@ function fetchStatusAvaliados($trialid, $currentuid){
               <span class=\"my-label\"><span class=\"my-disabled\">respondido:</span> $respondido_content</span> <br>
               <span class=\"my-label\"><span class=\"my-disabled\">avaliado:</span> $avaliado_content</span> <br>
               <span class=\"my-label\"><span class=\"my-disabled\">PDI completo:</span> NÃO</span> <br>
-              <span class=\"my-label my-pointer\"><b>Clique para abrir</b></span> <br><br>
+              <a href=\"#my-tab2-inner2\" class='pdi-nostyle'>
+                <span class=\"my-label my-pointer\"><b>Clique para abrir</b></span> <br><br>
+              </a>
           </div>
       </div>";
 
