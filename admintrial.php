@@ -11,6 +11,8 @@
 
 <!-- Font Awesome -->
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.11.2/css/all.css">
+
+
 </head>
 </html>
 
@@ -828,6 +830,11 @@ function fetchBlocosGoal(alunoid, sectorid, trialid){
     });
 
 }
+
+//código que ativa os acorddions que foram gerados no php statusfunctions
+$("#my-tab2").on("click", ".acordeon-header", function() {
+  $(this).toggleClass("active").next().slideToggle();
+});
 
 
 //função de criar url clicavel

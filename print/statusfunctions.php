@@ -357,6 +357,9 @@
       $res = $DB->get_records_sql($sql);
 
       foreach($res as $r){
+
+         $htmlAcordeon = alunoGoalReply($r->id);
+
          $htmlBlock .= "<div class=\"align-top bg-white mb-2 mr-2 my-padding-sm rounded\" style=\"width: 18rem; display: inline-block\"> 
                            <h5 id=\"h-goal-$r->id\" class=\"card-title my-bold\">$r->title</h5> 
 
@@ -384,6 +387,10 @@
                            <i class=\"far fa-save\"></i>
                            </button>
 
+                           <hr>
+                           $htmlAcordeon
+                           
+
                         </div>";
       }
 
@@ -409,4 +416,17 @@
 
    return $res;
 
+ }
+
+ function alunoGoalReply($idgoal){
+
+   $htmlGoalReply = "<div class=\"acordeon\">
+                        <div class=\"acordeon-header\">header ($idgoal)</div>
+                        <div class=\"acordeon-content\">Lorem ipsum dolor sit amet consectetur adipiscing elit, id nibh nulla enim dis tempor. Eu ultrices interdum vivamus.</div>
+
+                        <div class=\"acordeon-header\">header ($idgoal)</div>
+                        <div class=\"acordeon-content\">Lorem ipsum dolor sit amet consectetur adipiscing elit, id nibh nulla enim dis tempor. Eu ultrices interdum vivamus.</div>
+                     </div>";
+
+    return $htmlGoalReply;
  }
