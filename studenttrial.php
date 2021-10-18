@@ -41,6 +41,7 @@
 require_once('../../config.php');
 require_once('lib.php');
 require_once('print/outputmoodleusers.php');
+require_once('print/outrankingtrial.php');
 require_once('print/trialsfunctions.php');
 require_login();
 
@@ -52,6 +53,13 @@ $PAGE->requires->jquery();
 //$PAGE->requires->js(new moodle_url($CFG->dirrroot . '/local/pdi/scripts/pdiscript.js'));
 
 global $USER, $DB;
+
+//chamar funções
+
+//report das notas
+//pegar o id do avaliador desse processo
+$avaliatorid = ;
+$html_notas = fetchTablesGrades($trialid, $avaliatorid);
 
 //some before page coding
 if(isset($_POST['hidden-trial-id'])){
@@ -100,7 +108,7 @@ echo $OUTPUT->header();
 
 //actual page
 echo "<div id='myblue-bg'>";
-echo "<span><a href='index.php' class='pdi-nostyle my-marginr'>back</a></span>";
+echo "<span><a href='studentshowall.php' class='pdi-nostyle my-marginr'>back</a></span>";
 echo "<span><a href='index.php' class='pdi-nostyle my-marginr'>dashboard</a></span>";
 echo "<div class='mypush'><span class='mylogo'>PDI</span></div>";
 echo "</div><br>";
@@ -117,13 +125,69 @@ echo "<footer class='my-belowh1'>$dateInicioF - $dateFimF</footer>";
 
 if($respondido > 0){
 
-echo "<div id='my-tab1' class='my-inside-container my-hidden'></div>";
+echo "
+<div id='my-tab1' class='my-inside-container my-hidden'>
+
+      <h5 class='my-font-family my-padding-sm'>Notas</h5>
+      <footer class='my-padding-sm my-footer2'>Apenas as questões que já tem uma escala recebem uma nota.</footer>
+
+      <div id='my-tab1-inner2'>
+
+        $html_notas
+          
+      </div>
+
+</div>";
+
 echo "<div id='my-tab2' class='my-inside-container my-hidden'>my IDP</div>";
 
 }
 else{
-  echo "<div>MANDAR PREENCHER</div>";
+  echo "
+  <div id='my-tab1' class='my-inside-container'>
+
+    <div class=\"card\">
+        <div class=\"card-body my-bg-light\">
+          <h5 class=\"card-title\">Vazio...</h5>
+          <p class=\"card-text my-font-family\">É necessário <b class='my-label-btn btn-responder' data-idtrial='$trialid'>responder</b> esse processo antes de ver os relatórios.</p>
+        </div>
+    </div>
+
+  </div>
+  
+  <div id='my-tab2' class='my-inside-container my-hidden'>
+
+  <div class=\"card\">
+      <div class=\"card-body my-bg-light\">
+        <h5 class=\"card-title\">Vazio...</h5>
+        <p class=\"card-text my-font-family\">É necessário <b class='my-label-btn btn-responder' data-idtrial='$trialid'>responder</b> esse processo antes de ver os relatórios.</p>
+      </div>
+  </div>
+
+  </div>
+
+  ";
+
+  //formulário de respostas
+  echo "<div id='big-back-btn' class='my-big-btn my-hidden-2'>Voltar para os processos</div>";
+  echo "<div class='my-scroll my-hidden mx-auto' id='scroll-div-2' style='max-width: 70%; box-shadow: 1px 1px 5px grey;'>
+  </div>";
+  echo "<div id='div-q-save-btns' class='mx-auto my-hidden'>
+  <div class='grey-bottom-block'>
+    <input type='button' id='btn_salvar' class='my-grey-btn my-marginr btn my-large-input'
+        value='Salvar'>
+    <input type='button' id='btn_finalizar' class='my-primary-btn my-marginr btn'
+        value='Finalizar'>
+  </div>
+  </div>";
 }
+
+
+//hidden-form
+echo "<form id=\"frm-trial-id-evaluate\" name=\"frm-trial-id-evaluate\" class='hidden' method=\"post\" action=\"\">";
+echo "<input type=\"hidden\" name=\"hidden-trialid\" id=\"hidden-trialid\" value=\"\">";
+echo "<input type=\"hidden\" name=\"hidden-currentuserid\" id=\"hidden-currentuserid\" value=\"$USER->id\">";
+echo "</form>";
 
 echo "</div>"; //div mygrey-bg ends
 
@@ -173,6 +237,236 @@ $( ".my-secondary-btn" ).on( "click", function() {
       break;
   }
 });
+
+//************************************************************* */
+///////////////////POPUP DE RESPOSTAS
+
+
+$( ".btn-responder" ).on( "click", function() {
+  
+  var idtrial = $(this).attr("data-idtrial");
+    
+    //passar o valor pro form
+    $("#hidden-trialid").val(idtrial);
+    
+    //ajax
+    var dados = $("#frm-trial-id-evaluate").serialize();
+
+    $.ajax({
+        method: 'POST',
+        url: 'print/selectquestionstrial.php',
+        data: dados,
+
+        beforeSend: function(){
+            $("#scroll-div-2").html("<h3>loading...</h3>");
+            $(".my-inside-container").hide(400);          
+        }
+    })
+    .done(function(msg){
+        $("#btn-myidp").attr("disabled", true);
+        $("#btn-reports").attr("disabled", true);
+
+        $("#big-back-btn").removeClass("my-hidden-2");
+        $("#scroll-div-2").show(400);
+        $("#scroll-div-2").html(msg);
+        $("#div-q-save-btns").show(400);
+
+        $("#btn_salvar").prop("disabled",false);
+        $("#btn_finalizar").prop("disabled",false);
+
+    })
+    .fail(function(){
+        $("#scroll-div-2").html("Falha ao carregar!");
+        $("#bloco-div-1").show();
+    });
+
+
+});
+
+$("#btn_salvar").on("click", function(){
+    //alert('salvar');
+
+    //para os escritos
+    $(".answer").each(function(){
+        var txtAnswer = ""+ $(this).val() + "";
+        var inputID = $(this).attr("id");
+        var setorID = $(this).attr("data-sector");
+        //alert("Conteúdo escrito: " + txtAnswer + "\nQuestão id: "+ inputID);
+
+        if(txtAnswer.length < 1){
+            //$(this).focus();
+            //return false;
+
+            //não salvar esse
+
+        }else{
+
+            saveDaAnswer(txtAnswer, inputID, setorID);
+        }
+
+
+    });
+    //para os de escolha
+    $(".answer-choice").each(function(){
+        var formID = $(this).attr("id"); //também é o id da questão
+        var setorID = $(this).attr("data-sector");
+        var radioVal = ""+ $("#"+formID+" input[type='radio']:checked").val() + "";
+        //alert("Conteúdo escolhido: " + radioVal + "\nQuestão id: "+ formID);
+
+        if(radioVal == "undefined"){
+            //$(this).focus();
+            //alert('preencher questões de escolha');
+            //return false;
+
+            //não fazer nada
+
+        }else{
+            saveDaAnswer(radioVal, formID, setorID);
+
+        }
+
+
+    });
+
+});
+
+
+$("#btn_finalizar").on("click", function(){
+
+if (window.confirm("Finalizar\nVocê não poderá alterar mais!")) {    
+
+    var restantes = 0;
+
+    //para os escritos
+    $(".answer").each(function(){
+        var txtAnswer = ""+ $(this).val() + "";
+        var inputID = $(this).attr("id");
+        var setorID = $(this).attr("data-sector");
+        //alert("Conteúdo escrito: " + txtAnswer + "\nQuestão id: "+ inputID);
+
+        if(txtAnswer.length < 1){
+            $(this).focus();
+            restantes++;
+            return false;
+        }else{
+            saveDaAnswer(txtAnswer, inputID, setorID);
+        }
+
+
+    });
+    //para os de escolha
+    $(".answer-choice").each(function(){
+        var formID = $(this).attr("id"); //também é o id da questão
+        var setorID = $(this).attr("data-sector");
+        var radioVal = ""+ $("#"+formID+" input[type='radio']:checked").val() + "";
+        //alert("Conteúdo escolhido: " + radioVal + "\nQuestão id: "+ formID);
+
+        if(radioVal == "undefined"){
+            $(this).focus();
+            //alert('preencher questões de escolha');
+            restantes++;
+            return false;
+
+        }else{
+            saveDaAnswer(radioVal, formID, setorID);
+        }
+
+    });
+
+    if(restantes == 0){
+        finishDaForm();
+    }else{
+        alert("Responda todas as questões para finalizar!");
+    }
+}
+});
+
+
+
+//funções que tem no script
+//each call saves each answer
+function saveDaAnswer(txtanswer, questid, setorid) {
+    $("#hidden-questid").val(questid);
+    $("#hidden-qsector").val(setorid);
+    $("#hidden-qanswer").val(txtanswer);
+
+    //ajax
+    var dados = $("#frm-quest-answer").serialize();
+
+    $.ajax({
+        method: 'POST',
+        url: 'print/saveanswer.php',
+        data: dados,
+
+        beforeSend: function(){
+            //do nothing 
+        }
+
+    })
+    .done(function(msg){
+        var resposta = msg;
+        var originalColor = $("#btn_salvar").css("background");
+
+        //mudar a cor
+        $("#btn_salvar").attr('style', 'background-color: var(--mysuccess) !important');
+        $("#btn_salvar").attr('value', 'Salvando');
+
+        //esperar para voltar
+        setTimeout(function(){
+            $("#btn_salvar").attr('style', 'background-color: originalColor !important');
+            $("#btn_salvar").attr('value', 'Salvar');
+          }, 1000);
+
+    })
+    .fail(function(){
+        alert('Algo deu errado!');
+    });
+}
+
+
+function finishDaForm(){
+    //ajax
+    var dados = $("#frm-quest-answer").serialize();
+
+    $.ajax({
+        method: 'POST',
+        url: 'print/finishform.php',
+        data: dados,
+
+        beforeSend: function(){  }
+    })
+    .done(function(msg){
+        var resposta = msg;
+        window.location.reload();
+    })
+    .fail(function(){
+        alert('Algo deu errado!');
+    });
+}
+
+
+$("#big-back-btn").on("click", function(){
+  $("#btn-myidp").attr("disabled", false);
+  $("#btn-reports").attr("disabled", false);
+  $("#big-back-btn").addClass("my-hidden-2");
+  $("#scroll-div-2").hide(200);
+  $("#div-q-save-btns").hide();
+  $("#my-tab1").show();
+});
+
+//elemento que ainda não existe na criação
+$(document).on('click', '#btn_pop_voltar', function(){
+  $("#btn-myidp").attr("disabled", false);
+  $("#btn-reports").attr("disabled", false);
+  $("#big-back-btn").addClass("my-hidden-2");
+  $("#scroll-div-2").hide(200);
+  $("#div-q-save-btns").hide();
+  $("#my-tab1").show();
+});
+
+
+
+
 
 });
 

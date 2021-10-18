@@ -90,12 +90,12 @@ echo "<div id='my-centralizadora'>";
 echo "<div id='div-dashboard-list'>"; //div dashboard list
 
 //printar todos os processos de maneira dinâmica aqui
-echo "<div id='div-padrao'>";
+echo "<div id='div-padrao' style='width: 75vw'>";
 echo $retornoBlocos;
 echo "</div>";
 
 //printar de acordo com a pesquisa
-echo "<div id='div-pesquisados'></div>";
+echo "<div id='div-pesquisados' style='width: 75vw'></div>";
 
 
 echo "</div>"; //</div dashboard list

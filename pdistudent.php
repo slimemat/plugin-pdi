@@ -76,7 +76,7 @@ echo "<div id='div-dashboard-list'>"; //div dashboard list
 
 
 /////////
-echo "<div id='bloco-div-1'>";
+echo "<div id='bloco-div-1' style='width: 75vw'>";
 
   echo $blocoHtml;
 

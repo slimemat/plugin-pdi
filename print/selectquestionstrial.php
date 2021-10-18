@@ -48,8 +48,6 @@ if(isset($_POST['hidden-trialid']))
 
     $res = $DB->get_records_sql($sql);
 
-    //var_dump($res);
-
     //selecionar o titulo do processo
     $trialSQL = "SELECT title from mdl_local_pdi_trial t where t.id = '$trialid'";
     $trialRES = $DB->get_records_sql($trialSQL);
@@ -238,5 +236,8 @@ if(isset($_POST['hidden-trialid']))
     </form>";
 
     echo $htmlBlock;
+}
+else{
+    echo "sem trial id";
 }
 
