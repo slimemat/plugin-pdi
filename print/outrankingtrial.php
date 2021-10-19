@@ -271,9 +271,18 @@ function fetchTablesGrades($trialid, $currentuid){
     $htmlDentro = ""; 
     $htmlConteudoTable = "";
 
-    $imgAvaliador = new moodle_url('/user/pix.php/'.$USER->id.'/f1.jpg');
+    $imgAvaliador = new moodle_url('/user/pix.php/'.$currentuid.'/f1.jpg');
     $sectorid = null;
     $listaNotasAluno = null;
+
+    //quick query to get evaluator data (note that $currentuid may only refer to the evaluator, not necessary the logged user)
+    $sqlOnlyAvaliador = "SELECT a.id, a.firstname, a.lastname FROM {user} a WHERE a.id = '$currentuid'";
+    $resU = $DB->get_records_sql($sqlOnlyAvaliador);
+
+    $avFname = $resU[$currentuid]->firstname;
+    $avLname = $resU[$currentuid]->lastname;
+
+    
 
     //quick query to get sector
     $sqlSec = "SELECT * FROM mdl_local_pdi_sector_member sm
@@ -466,7 +475,7 @@ function fetchTablesGrades($trialid, $currentuid){
                     <th scope=\"row\">Resposta em</th>
                 </tr>
                 <tr>
-                    <td colspan=\"2\"><img src=\"$imgAvaliador\" class='my-circle-sm'><span class='my-padding-sm my-font-family'>$USER->firstname $USER->lastname</span></td>
+                    <td colspan=\"2\"><img src=\"$imgAvaliador\" class='my-circle-sm'><span class='my-padding-sm my-font-family'>$avFname $avLname</span></td>
                     <td><img class='my-v-bar-sm'>$mediaNota_av</td>
                     <td><img class='my-v-bar-sm'>$respTimemod</td>
                 </tr>

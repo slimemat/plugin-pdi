@@ -5,6 +5,7 @@
     --white: #FFFFFF;
     --disabled-grey: #8b8b8b;
     --cancel-black: rgba(0, 0, 0, 0.438);
+    --mygreylight2: #b9b9b9;
     --control-grey-blue: #8fafca;
     --info: #008196;
     --light-red: rgb(255, 85, 85);
@@ -529,6 +530,27 @@ li paginate_button{
     border-radius: 30px;
 }
 
+.my-margin-box2{
+    display: inline-block;
+    width: fit-content;
+    height: fit-content;
+    vertical-align: middle;
+    margin-bottom: 8px;
+    margin-left: 8px;
+    cursor: pointer;
+    transition: ease 200ms;
+}
+.my-margin-box2:hover{
+    transition: ease 200ms;
+    background-color: var(--mygreylight);
+    border-radius: 30px;
+}
+.my-margin-box2:active{
+    background-color: var(--mygreylight2);
+}
+
+
+
 .my-circle-title{
     font-family: "Poppins" !important;
     font-size: 16px;
@@ -604,6 +626,12 @@ li paginate_button{
 .my-label-bg{
     font-family: "Poppins";
     color: var(--myblack);
+    font-size: 20px;
+    margin-right: 20px !important;
+}
+
+.my-label-bg2{
+    font-family: "Poppins";
     font-size: 20px;
     margin-right: 20px !important;
 }
@@ -873,6 +901,10 @@ li paginate_button{
 .my-bg-greylight{
     background-color: var(--mygreylight);
 }
+.my-bg-greylight-round{
+    background-color: var(--mygreylight);
+    border-radius: 30px;
+}
 
 .my-bg-primary{
     background-color: var(--myprimary);
@@ -881,6 +913,13 @@ li paginate_button{
 .my-bg-secondary{
     background-color: var(--mysecondary);
 }
+
+.my-bg-secondary-round{
+    background-color: var(--mysecondary);
+    border-radius: 30px;
+    color: var(--white) !important;
+}
+
 
 
 .my-white{

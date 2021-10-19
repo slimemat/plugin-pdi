@@ -419,6 +419,7 @@
  }
 
  function alunoGoalReply($idgoal){
+    //gerar de acordo com o banco depois
 
    $htmlGoalReply = "<div class=\"acordeon\">
                         <div class=\"acordeon-header\">header ($idgoal)</div>
@@ -429,4 +430,179 @@
                      </div>";
 
     return $htmlGoalReply;
+ }
+
+
+ function blocosEscolherAvaliador($trialid){
+    //escolher um avaliador no "my pdi" se ouver mais
+    global $DB;
+
+    //pegar o id do(s) avaliador(es) desse processo
+      $sqlAvaliadores = "SELECT u.id userid, u.firstname, u.lastname, ta.trialid FROM {local_pdi_trial_evaluator} ta
+      LEFT JOIN {local_pdi_evaluator} ev
+      ON ev.id = ta.evaluatorid
+      LEFT JOIN {user} u
+      ON u.id = ev.mdlid
+      WHERE ta.trialid = '$trialid'";
+
+      $resAvaliadores = $DB->get_records_sql($sqlAvaliadores);
+
+      //bloco
+      $html = "<div class='my-margin-l'><h5 class='my-font-family my-padding-xsm'>Avaliador:</h5>";
+
+      foreach($resAvaliadores as $ra){
+         $uid = $ra->userid;
+         $trialid = $ra->trialid;
+         $fname = $ra->firstname;
+         $lname = $ra->lastname;
+         $fullname = $fname . " " . $lname;
+
+         $html .= "
+               <div class=\"my-margin-box2 my-avaliador\" data-uid=\"$uid\" data-trialid=\"$trialid\">
+                  <img src=\"http://localhost/moodle/user/pix.php/$uid/f1.jpg\" class=\"my-circle\">
+                  <div class=\"my-sidetext\">
+                        <span class=\"my-label-bg2\">$fullname</span> <br>                     
+                  </div>
+               </div>";
+      }   
+
+      $html .= "</div>"; 
+      
+      return $html;
+
+ }
+
+ function retortoPdiPorAvaliador($userid, $trialid){
+   global $USER, $DB;
+
+   //var
+   $alunoid = $USER->id;
+   $evaluatorid = $userid; //esse 'userid' recebido se refere ao avaliador
+   
+   //***** PARTE ALUNO *****/
+   $sqlAluno = "SELECT u.id, u.firstname, u.lastname, u.username, u.email 
+   FROM {user} u WHERE u.id = '$alunoid'";
+   $resAluno = $DB->get_records_sql($sqlAluno);
+
+   //var aluno
+   $alunoFirstname = $resAluno[$alunoid]->firstname;
+   $alunoLastname = $resAluno[$alunoid]->lastname;
+   $alunoUsername = $resAluno[$alunoid]->username;
+   $alunoEmail = $resAluno[$alunoid]->email;
+
+   //***** PARTE AVALIADOR*****/
+   $sqlAvaliador = "SELECT u.id, u.firstname, u.lastname, u.username, u.email 
+         FROM {user} u WHERE u.id ='$evaluatorid'";
+   $resAvaliador = $DB->get_records_sql($sqlAvaliador);
+
+   //var do avaliador
+   $avaFirstname = $resAvaliador[$evaluatorid]->firstname;
+   $avaLastname = $resAvaliador[$evaluatorid]->lastname;
+   $avaUsername = $resAvaliador[$evaluatorid]->username;
+   $avaEmail = $resAvaliador[$evaluatorid]->email;
+
+   //***** Pegar o setor rapidinho *****/
+   $sqlSector = "SELECT sm.userid, sm.trialid, sm.sectorid FROM {local_pdi_sector_member} sm
+                  WHERE sm.userid = '$evaluatorid' AND sm.trialid ='$trialid'";
+   $resSector = $DB->get_records_sql($sqlSector);
+
+   $sectorid = $resSector[$evaluatorid]->sectorid;
+
+   //html
+   //var
+   $blocoHTML = "";
+   $statusPDI = "";
+
+   //***** COMPARAR progresso do pdi *****/
+
+      //aluno
+      $sqlSttAluno = "SELECT ast.userid, ast.idtrial, ast.sectorid, ast.isfinished, ast.timecreated, ast.timemodified, ast.id
+                        FROM {local_pdi_answer_status} ast
+                        WHERE ast.userid = '$alunoid' and ast.idtrial = '$trialid' AND ast.sectorid = '$sectorid'";
+      $resSttAluno = $DB->get_records_sql($sqlSttAluno);
+   
+      if(count($resSttAluno)>0){
+
+         $isfinished = $resSttAluno[$alunoid]->isfinished;
+         if($isfinished == '1'){
+               $statusPDI = "respondido apenas";
+         }
+
+         //avaliador
+         $sqlSttAv = "SELECT anst.evaluatedid, anst.secmemberid, anst.isfinished, sm.sectorid, sm.userid, sm.trialid 
+                     FROM {local_pdi_evanswer_status} anst
+                     LEFT JOIN {local_pdi_sector_member} sm
+                     ON sm.id = anst.secmemberid
+                     WHERE anst.evaluatedid = '$alunoid' AND sm.userid = '$evaluatorid' and sm.trialid = '$trialid' and sm.sectorid = '$sectorid'";
+         $resSttAv = $DB->get_records_sql($sqlSttAv);
+
+         if(count($resSttAv)>0){
+            $isfinished_av = $resSttAv[$alunoid]->isfinished;
+            if($isfinished_av == '1'){
+               $statusPDI = "respondido e avaliado";
+            }
+         }
+
+    }else{
+       $statusPDI = "não respondido";
+    }
+
+    //string bloco
+    //part 1 bloco
+    $blocoHTML .= "
+    <div class=\"d-flex bd-highlight my-padding-sm\" style=\"background-color: var(--mysecondary)\">
+
+      <div class='flex-grow-1'>
+         <img src=\"http://localhost/moodle/user/pix.php/$alunoid/f1.jpg\" class=\"my-circle\">
+         <h5 class='my-label-bg margin-top my-white'>$alunoFirstname $alunoLastname</h5>
+      </div>
+      <div class='my-white'>
+         <span>Avaliador: $avaFirstname $avaLastname</span> <br>
+         <span>Status PDI: $statusPDI</span>
+      </div>
+
+   </div>
+   
+   <br>
+   ";
+
+   //parte2
+
+   //marcar e objetivos
+   $blocoHTML .= "
+   <div id='my-tab2-inner3'>
+      <!--Archor points-->
+      <div id='div-reuniao'>
+         <div class=\"my-bg-secondary my-padding-xsm\"><span class='my-font-family my-qtitle my-white'>
+            <i class=\"fas fa-video mx-3\"></i>Marcar reunião</span>
+         </div>
+         <div class=\"card-body shadow-sm p-3 mb-5 bg-body rounded\">
+               <div class=\"\">
+               
+               conteúdo aqui
+
+               </div>
+         </div>
+      </div>
+
+      <div id='div-objetivos'>
+         <div class=\"my-bg-secondary my-padding-xsm\"><span class='my-font-family my-qtitle my-white'>
+            <i class=\"fas fa-rocket mx-3\"></i>Objetivos</span>
+         </div>
+         <div class=\"card-body shadow-sm p-3 mb-5 bg-body rounded\">
+            <div class=\"\">
+               
+               algo aqui
+
+            </div>
+            <div id=\"horizontal-scroll\" class='my-scroll-h row my-bg-light'>
+               <div id=\"div-cards\" class=\"\"></div>
+            </div>
+         </div>
+      </div>
+   </div>";
+
+   
+   return $blocoHTML;
+
  }

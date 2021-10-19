@@ -101,6 +101,15 @@ if(isset($_POST['function'])){
 
         echo $return;
     }
+    else if($myfunction == 7){
+        //var
+        $userid = $_POST['userid'];
+        $trialid = $_POST['trialid'];
+
+        $return = retortoPdiPorAvaliador($userid, $trialid);
+
+        echo $return;
+    }
 
 
 

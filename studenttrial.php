@@ -43,6 +43,7 @@ require_once('lib.php');
 require_once('print/outputmoodleusers.php');
 require_once('print/outrankingtrial.php');
 require_once('print/trialsfunctions.php');
+require_once('print/statusfunctions.php');
 require_login();
 
 $PAGE->set_url(new moodle_url('/local/pdi/studenttrial.php'));
@@ -54,12 +55,6 @@ $PAGE->requires->jquery();
 
 global $USER, $DB;
 
-//chamar funções
-
-//report das notas
-//pegar o id do avaliador desse processo
-$avaliatorid = ;
-$html_notas = fetchTablesGrades($trialid, $avaliatorid);
 
 //some before page coding
 if(isset($_POST['hidden-trial-id'])){
@@ -98,6 +93,31 @@ if(isset($_POST['hidden-trial-id'])){
       $respondido = $rr->isfinished;
     }
   }
+
+
+  //parte 3, mostrar alguns dados
+  
+  //report das notas
+  //pegar o id do(s) avaliador(es) desse processo
+  $sqlAvaliadores = "SELECT u.id userid, ta.trialid FROM {local_pdi_trial_evaluator} ta
+                      LEFT JOIN {local_pdi_evaluator} ev
+                      ON ev.id = ta.evaluatorid
+                      LEFT JOIN {user} u
+                      ON u.id = ev.mdlid
+                      WHERE ta.trialid = '$trialid'";
+  $resAvaliadores = $DB->get_records_sql($sqlAvaliadores);
+
+  //var_dump($resAvaliadores);
+  $html_notas = "";
+  foreach($resAvaliadores as $ra){
+    $avaliatorid = $ra->userid;
+    $html_notas .= fetchTablesGrades($trialid, $avaliatorid);    
+  }
+
+  //meu pdi
+  //pedir pra selecionar o avaliador se tiver mais
+  $html_avaliadores_pdi = blocosEscolherAvaliador($trialid);
+
 
 }
 
@@ -139,7 +159,19 @@ echo "
 
 </div>";
 
-echo "<div id='my-tab2' class='my-inside-container my-hidden'>my IDP</div>";
+echo "<div id='my-tab2' class='my-inside-container my-hidden'>
+  
+  $html_avaliadores_pdi
+
+  <hr>
+  <div class='my-margin-l'><h5 class='my-font-family my-padding-xsm'>Você:</h5></div>
+  <div id='my-tab2-inner' style='padding: 0 10% 0 10%;'>
+  
+    <!--aqui vai o conteúdo de acordo com o avaliador-->
+
+  </div>
+
+</div>";
 
 }
 else{
@@ -465,6 +497,39 @@ $(document).on('click', '#btn_pop_voltar', function(){
 });
 
 
+//selecionar o avaliador
+$(".my-avaliador").on("click", function(){
+    var trialid = $(this).attr("data-trialid");
+    var userid = $(this).attr("data-uid");
+    var functionid = 7;
+
+    //estilo
+    $(".my-avaliador").each(function(){
+      $(this).removeClass("my-bg-greylight-round");
+    });
+    $(this).addClass("my-bg-greylight-round");
+
+    //ajax values
+  var values = {
+        'trialid'    : trialid,
+        'userid'  : userid,
+        'function' : functionid
+  };
+
+  //ajax
+  $.ajax({
+        method: 'POST',
+        url: 'print/callphpfunctions.php',
+        data: values,
+    })
+    .done(function(msg){
+        resposta = msg;    
+        $("#my-tab2-inner").html(resposta);
+    })
+    .fail(function(){
+        alert('Algo deu errado ao acessar!');
+    });
+});
 
 
 
