@@ -432,6 +432,30 @@
     return $htmlGoalReply;
  }
 
+ function alunoGoalReplyEdit($idgoal){
+   //gerar de acordo com o banco depois
+
+  $htmlGoalReply = "<div class=\"acordeon\">
+
+                       <div class=\"acordeon-header\"><span>resposta x<span> 
+                           <div class='' style='float: right;'>
+                              <button type=\"button\" class=\"btn btn-primary btn-edit-goal\" data-idgoal=\"$idgoal\">
+                                 <i class=\"fas fa-pencil-alt\"></i>
+                              </button>
+                           </div>
+                       </div>
+                       <div class=\"acordeon-content\">
+                           <div class=\"mb-3\">                              
+                              <span>Aqui é o que está escrito nessa área bla bla</span>   
+                              <div><small class=\"text-muted\">20/10/2021</small></div>                        
+                           </div>
+                       </div>
+                       
+                    </div>";
+
+   return $htmlGoalReply;
+}
+
 
  function blocosEscolherAvaliador($trialid){
     //escolher um avaliador no "my pdi" se ouver mais
@@ -457,8 +481,16 @@
          $lname = $ra->lastname;
          $fullname = $fname . " " . $lname;
 
+         //pegar sectorid rápidinho
+         $sqlsec = "SELECT sm.userid, sm.trialid, sm.sectorid FROM {local_pdi_sector_member} sm
+                     WHERE sm.userid = '$uid' AND sm.trialid = '$trialid'";
+         $resSec = $DB->get_records_sql($sqlsec);
+
+         $sectorid = $resSec[$uid]->sectorid;
+
+
          $html .= "
-               <div class=\"my-margin-box2 my-avaliador\" data-uid=\"$uid\" data-trialid=\"$trialid\">
+               <div class=\"my-margin-box2 my-avaliador\" data-uid=\"$uid\" data-trialid=\"$trialid\" data-sectorid=\"$sectorid\">
                   <img src=\"http://localhost/moodle/user/pix.php/$uid/f1.jpg\" class=\"my-circle\">
                   <div class=\"my-sidetext\">
                         <span class=\"my-label-bg2\">$fullname</span> <br>                     
@@ -472,7 +504,7 @@
 
  }
 
- function retortoPdiPorAvaliador($userid, $trialid){
+ function retornoPdiPorAvaliador($userid, $trialid){
    global $USER, $DB;
 
    //var
@@ -606,3 +638,66 @@
    return $blocoHTML;
 
  }
+
+
+ function fetchBlocosObjetivoForAluno($avaliadorid, $trialid, $sectorid){
+   global $USER, $DB;
+
+   $alunoid = $USER->id;
+
+  //retorna um bloco html
+  $htmlBlock = "";
+
+  //pegar o id da tabelas answer_status do aluno
+  $sqlVer = "SELECT s.userid, s.id FROM {local_pdi_answer_status} s
+                 WHERE s.userid = '$alunoid' AND s.idtrial = '$trialid' AND s.sectorid ='$sectorid'";
+  $resVer = $DB->get_records_sql($sqlVer);
+
+  $anstatusid = $resVer[$alunoid]->id;
+
+  if($anstatusid == null){
+     return "<div class=\"card-body my-bg-light\">
+                 <h5 class=\"card-title\">Vazio...</h5>
+                 <p class=\"card-text my-font-family\">É preciso responder primeiro.</p>
+              </div>";
+  }
+  else{
+     $sql = "SELECT * FROM {local_pdi_goals} a
+              WHERE a.idanstatus = '$anstatusid' and a.createdbyid = '$avaliadorid'
+              ORDER BY a.timecreated DESC";
+  
+     $res = $DB->get_records_sql($sql);
+
+     if(count($res) > 0){
+
+         foreach($res as $r){
+
+            $htmlAcordeon = alunoGoalReplyEdit($r->id);
+
+            $htmlBlock .= "<div class=\"align-top bg-white mb-2 mr-2 my-padding-sm rounded\" style=\"width: 18rem; display: inline-block\"> 
+                              <h5 id=\"h-goal-$r->id\" class=\"card-title my-bold\">$r->title</h5> 
+
+                              <p id=\"p-goal-$r->id\" class=\"card-text\" style=\"white-space: pre-wrap;\">$r->description</p>
+
+                              <hr>
+                              <div class='my-mention2'><small class='my-label-btn'>adicionar resposta</small></div>
+                              $htmlAcordeon
+                              
+
+                           </div>";
+         }
+      }else{
+         $htmlBlock .= "<div class=\"align-top bg-white mb-2 mr-2 my-padding-sm rounded\" style=\"width: 18rem; display: inline-block\"> 
+               <h5 id=\"h-aviso\" class=\"card-title my-bold text-muted\">Vazio...</h5> 
+               <p id=\"p-aviso\" class=\"card-text text-muted\" style=\"white-space: pre-wrap;\">Os objetivos definidos aparecerão aqui.</p>
+               </div>";
+      }
+
+     return $htmlBlock;
+
+  }
+  
+
+
+
+}

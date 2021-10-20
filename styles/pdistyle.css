@@ -160,11 +160,14 @@ input:focus{
     border: none;
 }
 
+
 textarea{
     background-color: var(--mygreylight) !important;
     border: 1px solid var(--myprimary) !important;
-    min-width: 250px !important;
+    /*min-width: 250px !important;*/
 }
+
+
 textarea:focus{
     box-shadow: none !important;
     outline: 4px solid var(--myprimary) !important;
@@ -787,6 +790,10 @@ li paginate_button{
     color: var(--disabled-grey);
     font-style: italic;
     padding: 2px 8px 2px 4px;
+}
+.my-mention2{
+    font-style: italic;
+    padding: 0px 0px 8px 0px;
 }
 
 .my-footer2{

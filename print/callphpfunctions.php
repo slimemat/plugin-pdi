@@ -106,7 +106,17 @@ if(isset($_POST['function'])){
         $userid = $_POST['userid'];
         $trialid = $_POST['trialid'];
 
-        $return = retortoPdiPorAvaliador($userid, $trialid);
+        $return = retornoPdiPorAvaliador($userid, $trialid);
+
+        echo $return;
+    }
+    else if($myfunction == 8){
+        //var
+        $avaliadorid = $_POST['avaliadorid'];
+        $sectorid = $_POST['sectorid'];
+        $trialid = $_POST['trialid'];
+
+        $return = fetchBlocosObjetivoForAluno($avaliadorid, $trialid, $sectorid);
 
         echo $return;
     }

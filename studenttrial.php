@@ -501,6 +501,7 @@ $(document).on('click', '#btn_pop_voltar', function(){
 $(".my-avaliador").on("click", function(){
     var trialid = $(this).attr("data-trialid");
     var userid = $(this).attr("data-uid");
+    var sectorid = $(this).attr("data-sectorid");
     var functionid = 7;
 
     //estilo
@@ -525,12 +526,65 @@ $(".my-avaliador").on("click", function(){
     .done(function(msg){
         resposta = msg;    
         $("#my-tab2-inner").html(resposta);
+
+        fetchBlocosGoal(userid, trialid, sectorid);
     })
     .fail(function(){
         alert('Algo deu errado ao acessar!');
     });
 });
 
+
+//função que traz os blocos de objetivos para o aluno
+function fetchBlocosGoal(avaliadorid, trialid, sectorid){
+
+var functionid = 8; //verificar callphpfunctions.php qual é a cinco
+var resposta = "";
+
+//ajax values
+var values = {
+      'avaliadorid'  : avaliadorid,
+      'sectorid' : sectorid,
+      'trialid'  : trialid,
+      'function' : functionid
+};
+
+//ajax
+$.ajax({
+      method: 'POST',
+      url: 'print/callphpfunctions.php',
+      data: values,
+
+      beforeSend: function(){  }
+  })
+  .done(function(msg){
+
+      resposta = msg;
+
+      resposta = linkify(resposta);
+    
+      $("#div-cards").html("");
+      $("#div-cards").append(resposta);
+      
+  })
+  .fail(function(){
+      alert('Algo deu errado ao carregar!');
+  });
+
+}
+
+//código que ativa os acorddions que foram gerados no php statusfunctions
+$("#my-tab2").on("click", ".acordeon-header", function() {
+  $(this).toggleClass("active").next().slideToggle();
+});
+
+//função de criar url clicavel
+function linkify(text) {
+    var urlRegex =/(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
+    return text.replace(urlRegex, function(url) {
+        return '<a href="' + url + '" target="_blank">' + url + '</a>';
+    });
+}
 
 
 });

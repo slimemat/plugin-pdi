@@ -307,7 +307,38 @@ function fetchTablesGrades($trialid, $currentuid){
 
     $res = $DB->get_records_sql($sql);
 
-    //var_dump($res);
+    //verificar se o usuário logado chamando a função é aluno, não avaliador
+    $is_only_aluno = false;
+
+    foreach($res as $r){
+        $x_evaluatedid = $r->evaluatedid;
+
+        if($x_evaluatedid == $USER->id){ //se o avaliado é a pessoa vendo
+            if($x_evaluatedid == $currentuid){ //se o avaliado é o avaliador (caso alguém atribua um corte para avaliar que contenha o avaliador dentro)
+                $x_evaluatedid = null;
+            }else{
+                $is_only_aluno = true;
+                break; //chegou aqui, a pessoas vendo é um aluno
+            }
+        }else{
+            $x_evaluatedid = null;
+        }
+    }
+
+    //se for um aluno avaliado vendo, mostrar apenas ele. Mudar a query
+    if($is_only_aluno){
+        $sql = "SELECT cm.userid evaluatedid, u.id currentuid
+                FROM {user} u
+                LEFT JOIN {local_pdi_evaluator} ev
+                ON ev.mdlid = u.id
+                LEFT JOIN {local_pdi_trial_evaluator} tev
+                ON tev.evaluatorid = ev.id
+                LEFT JOIN {cohort_members} cm
+                ON cm.cohortid = tev.cohortid
+                WHERE u.id = '$currentuid' and tev.trialid = '$trialid' and cm.userid = '$USER->id'
+                ";
+        $res = $DB->get_records_sql($sql);
+    }
 
     //foreach person under evaluation by current user in this trial
     foreach($res as $r){

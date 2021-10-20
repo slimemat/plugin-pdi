@@ -896,7 +896,7 @@ console.log("valor: "+ nome);
 
 //CREATE GROUP BTN
 $( "#id_save_next_btn" ).on( "click", function() {
-    window.location.replace("selecquestionsdb.php");
+    window.location.replace("selectquestionsdb.php");
 
 });
 
