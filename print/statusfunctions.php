@@ -434,24 +434,43 @@
 
  function alunoGoalReplyEdit($idgoal){
    //gerar de acordo com o banco depois
+   global $DB, $USER;
 
-  $htmlGoalReply = "<div class=\"acordeon\">
+   $sql = "SELECT gf.*, u.firstname FROM {local_pdi_goals_feedback} gf
+            LEFT JOIN mdl_user u ON u.id = gf.createdbyid
+            WHERE gf.goalid = '$idgoal' and gf.createdbyid = '$USER->id'";
+   $res = $DB->get_records_sql($sql);
 
-                       <div class=\"acordeon-header\"><span>resposta x<span> 
+  $htmlGoalReply = "<div class=\"acordeon\">";
+
+  foreach($res as $r){
+      $title = $r->title;
+      $desc = $r->description;
+      $timemod = $r->timemodified;
+      $timemod_data = date("d/m/Y", $timemod);
+      $fname = $r->firstname;
+
+     $htmlGoalReply .= "<div class=\"acordeon-header\"><span>$title<span> 
                            <div class='' style='float: right;'>
                               <button type=\"button\" class=\"btn btn-primary btn-edit-goal\" data-idgoal=\"$idgoal\">
                                  <i class=\"fas fa-pencil-alt\"></i>
                               </button>
                            </div>
-                       </div>
-                       <div class=\"acordeon-content\">
-                           <div class=\"mb-3\">                              
-                              <span>Aqui é o que está escrito nessa área bla bla</span>   
-                              <div><small class=\"text-muted\">20/10/2021</small></div>                        
+                        </div>
+                        <div class=\"acordeon-content\">
+                           <div class=\"mb-3\">  
+                              <div><small class=\"text-muted\">$fname:</small></div>
+                              <span>$desc</span>   
+                              <div><small class=\"text-muted\">$timemod_data</small></div>                        
                            </div>
-                       </div>
+                        </div>";
+  }
+
                        
-                    </div>";
+
+                       
+                       
+   $htmlGoalReply .= "</div>";
 
    return $htmlGoalReply;
 }
@@ -680,7 +699,9 @@
                               <p id=\"p-goal-$r->id\" class=\"card-text\" style=\"white-space: pre-wrap;\">$r->description</p>
 
                               <hr>
-                              <div class='my-mention2'><small class='my-label-btn'>adicionar resposta</small></div>
+                              <div class='my-mention2'>
+                                 <small class='my-label-btn btn-add-resp' data-goalid='$r->id'>adicionar resposta</small>
+                              </div>
                               $htmlAcordeon
                               
 
@@ -700,4 +721,11 @@
 
 
 
+}
+
+//só alunos chamaram essa função
+function insertGoalFeedback($goalid){
+   global $DB, $USER;
+
+   
 }

@@ -80,6 +80,17 @@ echo "<div id='bloco-div-1' style='width: 75vw'>";
 
   echo $blocoHtml;
 
+  
+  //significa que não houve html inserido (346 min lenght)
+  if(strlen($blocoHtml) < 350){
+        echo "
+                <div class=\"container my-bg-light\">
+                    <div class=\"card-body\">
+                        Não há processos para responder
+                    </div>
+                </div>";
+  }
+
 echo "</div>";
 
 echo "<div id='big-back-btn' class='my-big-btn my-hidden-2'>Voltar para os processos</div>";
@@ -101,6 +112,8 @@ echo "<div id='div-q-save-btns' class='mx-auto my-hidden'>
 //////
 
 //btn SHOW ALL
+echo "<footer class='text-muted text-center'>Clique no botão para ver os já respondidos</footer>";
+
 echo "<div id='div-save-buttons'>";
 echo "<input type='button' id='id_show_btn' class='my-large-input my-primary-btn my-marginlauto'
 value='Show all'>";

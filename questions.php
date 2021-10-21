@@ -78,7 +78,7 @@ if(isset($_POST['txtCatname'])){
     }
     else{
         $DB->insert_record('local_pdi_question_categ', $addCat);
-        redirect($CFG->wwwroot . '/local/pdi/createquestiondb.php', 'Competency saved!');
+        redirect($CFG->wwwroot . '/local/pdi/questions.php', 'Competency saved!');
     }
 
 }
@@ -131,14 +131,14 @@ $dropdownCategory = "
 
 <form></form>
 
-<form id='frmAddCat' name='frmAddCat' method='post' action='createquestiondb.php'>
+<form id='frmAddCat' name='frmAddCat' method='post' action='questions.php'>
 
     <input type='text' id='txtCatname' name='txtCatname' placeholder='Competency name' class='margin-top' required>
     <button type='button' id='btn-criar-cat' class='btn myenable-btn'><i class=\"fas fa-plus\"></i></button>
 
 </form>
 
-<form id='frmDelCat' name='frmDelCat' method='post' action='createquestiondb.php' class=''>
+<form id='frmDelCat' name='frmDelCat' method='post' action='questions.php' class=''>
 
     <select id='select-cat-del' name=\"select-cat-del\" class='margin-top'>
     <option value=\"-1\" disabled selected></option>
@@ -530,7 +530,7 @@ echo "<br><br>";
 //create database
 echo "
     <div>
-        <form id='frmAddDb' name='frmAddDb' method='post' action='createquestiondb.php'>
+        <form id='frmAddDb' name='frmAddDb' method='post' action='questions.php'>
             <label for='database-name' class='my-label'>Database name</label> <br>
             <input type='text' id='database-name' class='my-large-input' data-id='0'>    
             <button type='button' id='btn-criar-db' class='btn myenable-btn'><i class=\"fas fa-chevron-down\"></i></button>
@@ -574,7 +574,7 @@ echo "
     </div>
     <div id='question-create-div' class='my-inside-container my-hidden'>
             <div class='div-mywhite'>
-                <form id=\"my-type-form\" name=\"my-type-form\" method=\"post\" action=\"createquestiondb.php\">
+                <form id=\"my-type-form\" name=\"my-type-form\" method=\"post\" action=\"questions.php\">
 
                     $dropdownCategory
 

@@ -139,10 +139,7 @@ function mostrarBlocosTrial($offset, $rows){
     
     $blocoReturn = "
     <!--opened popup-->
-        
-          
-             $blocoHtml
-             
+             $blocoHtml            
       <form id='frm-trial-id' name='frm-trial-id' class='my-hidden' method='POST' action=''>
          <input type=\"hidden\" name=\"hidden-trialid\" id=\"hidden-trialid\" value=\"\">
          <input type=\"hidden\" name=\"hidden-currentuserid\" id=\"hidden-currentuserid\" value=\"$USER->id\">

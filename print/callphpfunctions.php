@@ -120,6 +120,14 @@ if(isset($_POST['function'])){
 
         echo $return;
     }
+    else if($myfunction == 9){
+        //var
+        $goalid = $_POST['goalid'];
+
+        $return = insertGoalFeedback($goalid);
+
+        echo $return;
+    }
 
 
 

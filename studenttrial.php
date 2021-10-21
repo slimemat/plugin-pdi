@@ -538,7 +538,7 @@ $(".my-avaliador").on("click", function(){
 //função que traz os blocos de objetivos para o aluno
 function fetchBlocosGoal(avaliadorid, trialid, sectorid){
 
-var functionid = 8; //verificar callphpfunctions.php qual é a cinco
+var functionid = 8; //verificar callphpfunctions.php qual é a 8
 var resposta = "";
 
 //ajax values
@@ -585,6 +585,37 @@ function linkify(text) {
         return '<a href="' + url + '" target="_blank">' + url + '</a>';
     });
 }
+
+
+//adicionar resposta ao objetivo
+$("#my-tab2-inner").on("click", ".btn-add-resp", function(){
+  var goalid = $(this).attr("data-goalid");
+  var functionid = 9; //ver callphpfunctions.php
+
+  //ajax values
+  //não é necessário passar o createdby, porque sempre o aluno logado que criará
+  var values = {
+        'goalid'  : goalid,      
+        'function' : functionid
+  };
+
+  //ajax
+  $.ajax({
+        method: 'POST',
+        url: 'print/callphpfunctions.php',
+        data: values,
+
+        beforeSend: function(){  }
+    })
+    .done(function(msg){
+        console.log(msg);
+    })
+    .fail(function(){
+        alert('Algo deu errado ao adicionar!');
+    });
+
+  
+});
 
 
 });
