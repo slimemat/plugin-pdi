@@ -444,24 +444,27 @@
   $htmlGoalReply = "<div class=\"acordeon\">";
 
   foreach($res as $r){
+      $idfeedback = $r->id;
       $title = $r->title;
       $desc = $r->description;
       $timemod = $r->timemodified;
       $timemod_data = date("d/m/Y", $timemod);
       $fname = $r->firstname;
 
-     $htmlGoalReply .= "<div class=\"acordeon-header\"><span>$title<span> 
-                           <div class='' style='float: right;'>
-                              <button type=\"button\" class=\"btn btn-primary btn-edit-goal\" data-idgoal=\"$idgoal\">
-                                 <i class=\"fas fa-pencil-alt\"></i>
-                              </button>
+     $htmlGoalReply .= "<div class='feedback-container' data-idfeed=\"$idfeedback\">
+                           <div class=\"acordeon-header\"><span>$title<span> 
+                              <div class='' style='float: right;'>
+                                 <button type=\"button\" class=\"btn btn-primary btn-edit-goal\" data-idgoal=\"$idgoal\">
+                                    <i class=\"fas fa-pencil-alt\"></i>
+                                 </button>
+                              </div>
                            </div>
-                        </div>
-                        <div class=\"acordeon-content\">
-                           <div class=\"mb-3\">  
-                              <div><small class=\"text-muted\">$fname:</small></div>
-                              <span>$desc</span>   
-                              <div><small class=\"text-muted\">$timemod_data</small></div>                        
+                           <div class=\"acordeon-content\">
+                              <div class=\"mb-3\">  
+                                 <div><small class=\"text-muted\">$fname:</small></div>
+                                 <span>$desc</span>   
+                                 <div><small class=\"text-muted\">$timemod_data</small></div>                        
+                              </div>
                            </div>
                         </div>";
   }
@@ -727,5 +730,24 @@
 function insertGoalFeedback($goalid){
    global $DB, $USER;
 
-   
+   $createdby = $USER->id; //sempre o aluno
+   $tempo = time();
+   $title = "<span style=\"font-style: italic;\">[oculto] Pronto para editar</span>";
+   $description = "";
+
+
+
+   $addFeed = new stdClass();
+   $addFeed->createdbyid = $createdby;
+   $addFeed->goalid = $goalid;
+   $addFeed->title = $title;
+   $addFeed->description = $description;
+   $addFeed->timecreated = $tempo;
+   $addFeed->timemodified = $tempo;
+
+   //status recebe o id da inserção
+   $status = $DB->insert_record('local_pdi_goals_feedback', $addFeed);
+
+   return $status;
+
 }

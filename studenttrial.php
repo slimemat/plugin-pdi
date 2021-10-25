@@ -591,6 +591,7 @@ function linkify(text) {
 $("#my-tab2-inner").on("click", ".btn-add-resp", function(){
   var goalid = $(this).attr("data-goalid");
   var functionid = 9; //ver callphpfunctions.php
+  var elemnt = $(this);
 
   //ajax values
   //não é necessário passar o createdby, porque sempre o aluno logado que criará
@@ -605,13 +606,25 @@ $("#my-tab2-inner").on("click", ".btn-add-resp", function(){
         url: 'print/callphpfunctions.php',
         data: values,
 
-        beforeSend: function(){  }
+        beforeSend: function(){ elemnt.html("adicionando..."); }
     })
     .done(function(msg){
-        console.log(msg);
+        if(msg > 0){
+          //regarregar para mostrar o adicionado e pedir para editar
+
+          //se o avaliador tiver essa classe, é o selecionado
+          $(".my-bg-greylight-round").click();
+
+          //retornar o html do btn adicionar
+          elemnt.html("adicionar resposta");
+
+        }else{
+          alert("erro ao adicionar objetivo!");
+        }
     })
     .fail(function(){
         alert('Algo deu errado ao adicionar!');
+        elemnt.html("adicionar resposta");
     });
 
   
