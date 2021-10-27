@@ -437,7 +437,7 @@
    global $DB, $USER;
 
    $sql = "SELECT gf.*, u.firstname FROM {local_pdi_goals_feedback} gf
-            LEFT JOIN mdl_user u ON u.id = gf.createdbyid
+            LEFT JOIN {user} u ON u.id = gf.createdbyid
             WHERE gf.goalid = '$idgoal' and gf.createdbyid = '$USER->id'";
    $res = $DB->get_records_sql($sql);
 
@@ -452,7 +452,13 @@
       $fname = $r->firstname;
 
      $htmlGoalReply .= "<div class='feedback-container' data-idfeed=\"$idfeedback\">
-                           <div class=\"acordeon-header\"><span>$title<span> 
+                           <div class=\"acordeon-header\">
+
+                              <span id=\"title-fbid-$idfeedback\">$title<span> 
+                              <div style=\"display: none;\" id=\"div-input-title-$idfeedback\">
+                                 <input type=\"text\" class=\"form-control my-white-bg\" id=\"input-title-$idfeedback\" value=\"$title\">
+                              </div>
+
                               <div class='' style='float: right;'>
                                  <button type=\"button\" class=\"btn btn-primary btn-edit-goal\" data-idgoal=\"$idgoal\">
                                     <i class=\"fas fa-pencil-alt\"></i>
@@ -462,7 +468,15 @@
                            <div class=\"acordeon-content\">
                               <div class=\"mb-3\">  
                                  <div><small class=\"text-muted\">$fname:</small></div>
-                                 <span>$desc</span>   
+
+                                    <span id=\"desc-fbid-$idfeedback\">$desc</span>  
+                                    <div class=\"form-floating\" style=\"display: none;\" id=\"div-input-desc-$idfeedback\">
+                                       <textarea class=\"form-control\" placeholder=\"Descrição\" id=\"input-desc-$idfeedback\">$desc</textarea>
+                                       <label for=\"input-desc-$idfeedback\">Comments</label>
+
+                                       <small class=\"my-label-btn btn-add-resp\" data-fbid=\"$idfeedback\">SALVAR</small>
+                                    </div> 
+
                                  <div><small class=\"text-muted\">$timemod_data</small></div>                        
                               </div>
                            </div>

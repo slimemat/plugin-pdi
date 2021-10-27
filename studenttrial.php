@@ -631,6 +631,29 @@ $("#my-tab2-inner").on("click", ".btn-add-resp", function(){
 });
 
 
+//lapis de edição
+$("#my-tab2-inner").on("click", ".btn-edit-goal", function(){
+  var fbcontainer = $(this).closest($(".feedback-container"));
+
+  fecharTodosAcordeon();
+
+  
+
+});
+
+function fecharTodosAcordeon(){
+  
+  $(".acordeon-header").each(function(){
+    $(this).removeClass("active");
+  });
+
+  $(".acordeon-content").each(function(){
+    $(this).hide();
+  });
+
+}
+
+
 });
 
 </script>
