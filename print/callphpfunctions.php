@@ -128,6 +128,16 @@ if(isset($_POST['function'])){
 
         echo $return;
     }
+    else if($myfunction == 10){
+        //var
+        $feedbackid = $_POST['idfeed'];
+        $title = $_POST['txttitle'];
+        $desc = $_POST['txtdesc'];
+
+        $return = updateFeedback($feedbackid, $title, $desc);
+
+        echo $return;
+    }
 
 
 

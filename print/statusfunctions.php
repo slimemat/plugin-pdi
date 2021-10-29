@@ -445,18 +445,24 @@
 
   foreach($res as $r){
       $idfeedback = $r->id;
-      $title = $r->title;
+      $title = strip_tags($r->title);
       $desc = $r->description;
       $timemod = $r->timemodified;
       $timemod_data = date("d/m/Y", $timemod);
+      $timecreated = $r->timecreated;
       $fname = $r->firstname;
+
+      $linhaTitle = "<span id=\"title-fbid-$idfeedback\" class='mylabel-onoff'>$title</span>";
+      if($timemod == $timecreated){
+         $linhaTitle = "<span id=\"title-fbid-$idfeedback\" class='my-selected-opt mylabel-onoff'>$title</span>";
+      }
 
      $htmlGoalReply .= "<div class='feedback-container' data-idfeed=\"$idfeedback\">
                            <div class=\"acordeon-header\">
 
-                              <span id=\"title-fbid-$idfeedback\">$title<span> 
-                              <div style=\"display: none;\" id=\"div-input-title-$idfeedback\">
-                                 <input type=\"text\" class=\"form-control my-white-bg\" id=\"input-title-$idfeedback\" value=\"$title\">
+                              $linhaTitle
+                              <div style=\"display: none;\" id=\"div-input-title-$idfeedback\" class=\"myinput-onoff\">
+                                 <input type=\"text\" class=\"form-control my-white-bg myinput-header\" id=\"input-title-$idfeedback\" value=\"$title\">
                               </div>
 
                               <div class='' style='float: right;'>
@@ -469,12 +475,14 @@
                               <div class=\"mb-3\">  
                                  <div><small class=\"text-muted\">$fname:</small></div>
 
-                                    <span id=\"desc-fbid-$idfeedback\">$desc</span>  
-                                    <div class=\"form-floating\" style=\"display: none;\" id=\"div-input-desc-$idfeedback\">
-                                       <textarea class=\"form-control\" placeholder=\"Descrição\" id=\"input-desc-$idfeedback\">$desc</textarea>
-                                       <label for=\"input-desc-$idfeedback\">Comments</label>
-
-                                       <small class=\"my-label-btn btn-add-resp\" data-fbid=\"$idfeedback\">SALVAR</small>
+                                    <span id=\"desc-fbid-$idfeedback\" class='mylabel-onoff'>$desc</span>  
+                                    <div class=\"form-floating myinput-onoff\" style=\"display: none;\" id=\"div-input-desc-$idfeedback\">
+                                       <textarea class=\"form-control my-white-bg\" id=\"input-desc-$idfeedback\" rows=\"5\">$desc</textarea>
+                                 
+                                       <div style=\"margin-top: 4px\">
+                                          <small class=\"my-label-err-btn btn-cancelar-resp\" data-fbid=\"$idfeedback\">cancelar</small>
+                                          <small class=\"my-label-btn btn-salvar-resp\" style=\"float: right;\" data-fbid=\"$idfeedback\">salvar</small>
+                                       </div>
                                     </div> 
 
                                  <div><small class=\"text-muted\">$timemod_data</small></div>                        
@@ -740,13 +748,13 @@
 
 }
 
-//só alunos chamaram essa função
+//só alunos chamarão essa função
 function insertGoalFeedback($goalid){
    global $DB, $USER;
 
    $createdby = $USER->id; //sempre o aluno
    $tempo = time();
-   $title = "<span style=\"font-style: italic;\">[oculto] Pronto para editar</span>";
+   $title = "[oculto] Pronto para editar";
    $description = "";
 
 
@@ -763,5 +771,21 @@ function insertGoalFeedback($goalid){
    $status = $DB->insert_record('local_pdi_goals_feedback', $addFeed);
 
    return $status;
+
+}
+
+//só Alunos chamarão essa função
+function updateFeedback($idfeedback, $title, $desc){
+   global $DB;
+   
+   $updateFb = new stdClass();
+   $updateFb->id = $idfeedback;
+   $updateFb->title = $title;
+   $updateFb->description = $desc;
+   $updateFb->timemodified = time();
+
+   $res = $DB->update_record('local_pdi_goals_feedback', $updateFb);
+
+   return $res;
 
 }

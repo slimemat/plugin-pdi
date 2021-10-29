@@ -162,7 +162,7 @@ input:focus{
 
 
 textarea{
-    background-color: var(--mygreylight) !important;
+    background-color: var(--mygreylight);
     border: 1px solid var(--myprimary) !important;
     /*min-width: 250px !important;*/
 }
@@ -823,6 +823,11 @@ li paginate_button{
     
 }
 
+.my-label-err-btn{
+    color: var(--myerror);
+    cursor: pointer;
+}
+
 .my-round-card{
     display: inline-block;
     border-radius: 20px;
@@ -933,7 +938,7 @@ li paginate_button{
     color: var(--white);
 }
 
-/*accordion - drawer - abre fecha*/
+/*acordeon - drawer - abre fecha*/
 .acordeon {
 	max-width: 400px;
 	background: white;
@@ -962,7 +967,7 @@ li paginate_button{
 	display: none;
 	border-bottom: 1px solid var(--mygreylight);
 	background: white;
-	padding: 1.4rem;
+	padding: 0.6rem;
 	color: var(--myblack);
 }
 

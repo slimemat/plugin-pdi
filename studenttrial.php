@@ -221,6 +221,11 @@ echo "<input type=\"hidden\" name=\"hidden-trialid\" id=\"hidden-trialid\" value
 echo "<input type=\"hidden\" name=\"hidden-currentuserid\" id=\"hidden-currentuserid\" value=\"$USER->id\">";
 echo "</form>";
 
+
+//popup msg
+echo "<div id ='my-smallmsg-error' class='my-smallmsg-error'>Poucos caracteres nos campos.</div>";
+echo "<div id ='my-smallmsg-success' class='my-smallmsg-success'>A resposta foi salva com sucesso!</div>";
+
 echo "</div>"; //div mygrey-bg ends
 
 //js do bootstrap
@@ -574,8 +579,12 @@ $.ajax({
 }
 
 //código que ativa os acorddions que foram gerados no php statusfunctions
-$("#my-tab2").on("click", ".acordeon-header", function() {
-  $(this).toggleClass("active").next().slideToggle();
+$("#my-tab2").on("click", ".acordeon-header", function(e) {
+  if (!$(e.target).hasClass('myinput-header')) {
+    
+    $(this).toggleClass("active").next().slideToggle();      
+  }
+  
 });
 
 //função de criar url clicavel
@@ -634,10 +643,23 @@ $("#my-tab2-inner").on("click", ".btn-add-resp", function(){
 //lapis de edição
 $("#my-tab2-inner").on("click", ".btn-edit-goal", function(){
   var fbcontainer = $(this).closest($(".feedback-container"));
+  var idfeed = fbcontainer.attr("data-idfeed");
 
   fecharTodosAcordeon();
 
-  
+  $("#title-fbid-"+idfeed).hide();
+  $("#desc-fbid-"+idfeed).hide();
+  $("#div-input-title-"+idfeed).show();
+  $("#div-input-desc-"+idfeed).show();
+
+  $("#input-title-"+idfeed).focus();
+  $("#input-title-"+idfeed).focus();
+
+  //apagar se for o valor default
+  var txtDefault = "[oculto] Pronto para editar";
+  var txtTitle = $("#input-title-"+idfeed).val();
+
+  if(txtTitle == txtDefault){ $("#input-title-"+idfeed).val(""); }
 
 });
 
@@ -651,7 +673,92 @@ function fecharTodosAcordeon(){
     $(this).hide();
   });
 
+  //ter certeza que os outros inputs são restaurados a visão original
+  $(".myinput-onoff").each(function(){
+    $(this).hide();
+  });
+  $(".mylabel-onoff").each(function(){
+    $(this).show();
+  });
+
+
 }
+
+
+$("#my-tab2-inner").on("click", ".btn-cancelar-resp" ,function(){
+  
+  //se o avaliador tiver essa classe, é o selecionado
+  $(".my-bg-greylight-round").click();
+  //isso reseta os blocos de goals
+});
+
+$("#my-tab2-inner").on("click", ".btn-salvar-resp" ,function(){
+  var elemnt = $(this);
+  
+  //feedback id
+  var idfeed = $(this).attr("data-fbid");
+  var functionid = 10;
+
+  //pegar os valores escritos no input
+  var txtTitle =$("#input-title-"+idfeed).val()+"";
+  var txtDesc = $("#input-desc-"+idfeed).val()+"";
+  
+
+  if(txtTitle.length < 5){ 
+    $("#input-title-"+idfeed).focus(); 
+    $("#my-smallmsg-error").fadeIn(200);
+    $("#my-smallmsg-error").delay(1000).fadeOut(200);
+    
+  }
+  else if(txtDesc.length < 10){ 
+    $("#input-desc-"+idfeed).focus();
+    $("#my-smallmsg-error").fadeIn(200);
+    $("#my-smallmsg-error").delay(1000).fadeOut(200);
+   }
+  else{
+    
+    //chegou aqui, tudo ok
+
+    //ajax values
+  var values = {
+        'idfeed'  : idfeed,     
+        'txttitle': txtTitle,
+        'txtdesc' : txtDesc,
+        'function' : functionid
+  };
+
+  //ajax
+  $.ajax({
+        method: 'POST',
+        url: 'print/callphpfunctions.php',
+        data: values,
+
+        beforeSend: function(){ elemnt.html("salvando..."); }
+    })
+    .done(function(msg){
+        if(msg == 1){
+          elemnt.html("salvar");
+
+          //se o avaliador tiver essa classe, é o selecionado
+          $(".my-bg-greylight-round").click();
+
+          $("#my-smallmsg-success").fadeIn(200);
+          $("#my-smallmsg-success").delay(2500).fadeOut(400);
+
+        }
+        else{
+          alert('não foi possível atualizar');
+        }
+    })
+    .fail(function(){
+        alert('Algo deu errado ao adicionar!');
+        elemnt.html("salvar");
+    });
+
+  }
+  
+  
+});
 
 
 });
