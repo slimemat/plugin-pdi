@@ -12,6 +12,7 @@
 <!-- Font Awesome -->
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.11.2/css/all.css">
 
+
 </head>
 </html>
 
@@ -40,30 +41,45 @@
 
 require_once('../../config.php');
 require_once('lib.php');
-require_once('print/outputmoodleusers.php');
+require_once('print/outrankingtrial.php');
 require_once('print/fetchforevaluator.php');
 require_login();
 
-$PAGE->set_url(new moodle_url('/local/pdi/admintrialalt.php'));
+$PAGE->set_url(new moodle_url('/local/pdi/admintrial.php'));
 $PAGE->set_context(\context_system::instance());
-$PAGE->set_title("PDI Avaliador - Trial");
-$PAGE->set_heading('PDI Avaliador');
+$PAGE->set_title("PDI Admin - Trial");
+$PAGE->set_heading('PDI Admin');
 $PAGE->requires->jquery();
 //$PAGE->requires->js(new moodle_url($CFG->dirrroot . '/local/pdi/scripts/pdiscript.js'));
 
 global $USER, $DB;
 
-//form instance
+//código
 
 //verifica se o logado é adm
-//verifyAdm($USER->username);
+verifyAdm($USER->username);
+
+//preparação para a lista da tabela
+$trialid = $_POST['hidden-trial-id'];
+$currentuid = $USER->id;
+
+//rankings
+$lista_rank = fetchRankings($trialid, $currentuid);
+
+//questionários
+$html_quest = fetchDataQuestions($trialid, $currentuid);
+
+//status
+$html_status = fetchStatusAvaliados($trialid, $currentuid);
+
+//report das notas
+$html_notas = fetchTablesGrades($trialid, $currentuid);
 
 
 //page STARTS HERE
 echo $OUTPUT->header();
 
-//$auth = ($_SESSION['authadm']);
-
+//para esconder o form
 
 //some before page coding
   if(isset($_POST['hidden-trial-id'])){
@@ -100,7 +116,6 @@ echo $OUTPUT->header();
 
 //actual page for admin
 echo "<div id='myblue-bg'>";
-echo "<span><a href='pdistudent.php' class='pdi-nostyle my-marginr'>back</a></span>";
 echo "<span><a href='pdistudent.php' class='pdi-nostyle my-marginr'>dashboard</a></span>";
 echo "<div class='mypush'><span class='mylogo'>PDI</span></div>";
 echo "</div><br>";
@@ -110,7 +125,6 @@ echo "<div>
 <input type='button' value='status' class='my-secondary-btn my-btn-pad' id='btn-status'>
 <input type='button' value='ranking' class='my-secondary-btn my-btn-pad' id='btn-ranking'>
 <input type='button' value='questions database' class='my-secondary-btn my-btn-pad' id='btn-questions'>
-<input type='button' value='settings' class='my-secondary-btn my-btn-pad' id='btn-settings'>
 </div>";
 
 echo "<div id='mygrey-bg'>"; //grey bg starts
@@ -130,11 +144,9 @@ echo "
 <div id='nome-do-avaliado' class='my-padding-sm my-qtitle my-hidden my-center'></div>
 <div id='big-back-btn' class='my-big-btn my-hidden-2'>Voltar para os processos</div>
 
-
 <div id='my-tab1-inner-formdiv' class='my-hidden my-scroll mx-auto' style='max-width: 70%; box-shadow: 1px 1px 5px grey;'>
   Carregando...
 </div>
-
 
 <div id='div-q-save-btns' class='mx-auto my-hidden'>
 
@@ -145,16 +157,83 @@ echo "
       value='Finalizar'>
 </div>
 
+
 </div>
+
+<hr>
+<h5 class='my-font-family my-padding-sm'>Notas</h5>
+<footer class='my-padding-sm my-footer2'>Apenas as questões que já tem uma escala recebem uma nota.</footer>
+
+<div id='my-tab1-inner2'>
+
+$html_notas
+    
+</div>
+
 
 
 </div>";
 
-echo "<div id='my-tab2' class='my-inside-container my-hidden'>status</div>";
-echo "<div id='my-tab3' class='my-inside-container my-hidden'>ranking</div>";
-echo "<div id='my-tab4' class='my-inside-container my-hidden'>questions db</div>";
-echo "<div id='my-tab5' class='my-inside-container my-hidden'>settings</div>";
+///////////////////////////////trabalhando nessa tela
+///////////////////////////////////////////////////////
+///////////////////////////////////
+$userid_pic = '4';
+$imgURL = new moodle_url('/user/pix.php/'.$userid_pic.'/f1.jpg');
 
+///TESTE COM IMAGENS
+///////////////////////
+
+echo "<div id='my-tab2' class='my-inside-container my-hidden'>
+
+  <div id='my-tab2-inner'>
+
+  $html_status
+
+  </div>
+
+  <div id='my-tab2-inner2' style='padding: 0 10% 0 10%;'>
+
+
+  </div>
+
+
+
+</div>";
+
+echo "<div id='my-tab3' class='my-inside-container my-hidden'>
+
+  <h5 class='my-font-family my-padding-sm'>Ranking dos avaliados</h5>
+  <div id='my-tab3-inner' class='my-padding-sm my-margin-lados my-bg-light shadow-sm p-3 mb-5 rounded'>
+  
+    <table id=\"dt-ranking\" class=\"table my-highlight\" cellspacing=\"0\" width=\"100%\">
+    <thead>
+      <tr>
+        <th class='col-8'>Nome avaliado</th>
+        <th class='col-4'>Média</th>
+      </tr>
+    </thead>
+    
+    </table>
+
+
+  </div>
+
+
+</div>";
+echo "<div id='my-tab4' class='my-inside-container my-hidden'>
+
+<div id='my-tab4-inner'>
+
+  $html_quest
+
+</div>
+
+</div>";
+
+//hidden messages
+echo "<div id ='my-smallmsg-error' class='my-smallmsg-error'>Poucos caracteres!</div>";
+echo "<div id ='my-smallmsg-success' class='my-smallmsg-success'>Objetivo adicionado!</div>";
+echo "<div id ='my-smallmsg-success2' class='my-smallmsg-success'>Objetivo atualizado!</div>";
 
 //hidden form
 echo "<form id=\"frm-anstatus-id\" name=\"frm-anstatus-id\" class='hidden' method=\"post\" action=\"\">";
@@ -162,7 +241,6 @@ echo "<input type=\"hidden\" name=\"hidden-anstatus-id\" id=\"hidden-anstatus-id
 echo "</form>";
 
 echo "</div>"; //div mygrey-bg ends
-
 
 
 //js do bootstrap
@@ -178,6 +256,30 @@ echo $OUTPUT->footer();
 <script>
 
 $(document).ready(function() {
+
+//tabela
+
+var dataSet = <?= $lista_rank ?>; //valor chamado do php
+
+//tabela dinamica
+var table = $('#dt-ranking').DataTable({
+data: dataSet,
+"pageLength": 25,
+columns: [
+{
+title: "Nome avaliado"
+},  
+{
+title: "Média"
+}
+],
+dom: 'Bfrtip',
+
+});
+
+
+///fim tabela
+
 
 //valor padrão
 var blockID;
@@ -454,6 +556,276 @@ function finishDaForm(){
     });
 }
 
+$(".my-youev").on("click", function(){
+  var alunoid = $(this).attr("data-uid");
+  var sectorid = $(this).attr("data-sector");
+  var trialid = $(this).attr("data-trial");
+  var functionid = 3; //verificar callphpfunctions.php para ver qual é a três
+
+  var values = {
+        'alunoid'  : alunoid,
+        'sectorid' : sectorid,
+        'trialid'  : trialid,
+        'function' : functionid
+  };
+
+  $.ajax({
+        method: 'POST',
+        url: 'print/callphpfunctions.php',
+        data: values,
+
+        beforeSend: function(){  }
+    })
+    .done(function(msg){
+        var resposta = msg;
+
+        $("#my-tab2-inner2").html(resposta);
+        
+        //mostrar os bloquinhos
+        fetchBlocosGoal(alunoid, sectorid, trialid)
+        
+    })
+    .fail(function(){
+        alert('Algo deu errado!');
+    });
+
+
+});
+
+//btn criar objetivo
+$("#my-tab2-inner2").on("click", "#btn-add-goal", function(){
+  //var
+  var title = $("#input-nome-goal").val();
+  var desc = $("#input-desc-goal").val();
+  var alunoid = $("#hidden-aluno-id").val();
+  var sectorid = $("#hidden-sector-id").val();
+  var trialid = $("#hidden-trial-id").val();
+  var functionid = 4; //verificar callphpfunctions.php qual é a quatro
+
+  if(title.length <= 5){
+    $("#input-nome-goal").focus();
+    $("#my-smallmsg-error").fadeIn(200);
+    $("#my-smallmsg-error").css("display", "flex");
+    $("#my-smallmsg-error").delay(2000).fadeOut(400);
+    
+    return false;
+  }
+  else if(desc.length <= 10){
+    $("#input-desc-goal").focus();
+    $("#my-smallmsg-error").fadeIn(200);
+    $("#my-smallmsg-error").css("display", "flex");
+    $("#my-smallmsg-error").delay(2000).fadeOut(400);
+
+    return false;
+  }
+
+  //ajax values
+  var values = {
+        'alunoid'  : alunoid,
+        'sectorid' : sectorid,
+        'trialid'  : trialid,
+        'title' : title,
+        'desc'  : desc,
+        'function' : functionid
+  };
+
+  //ajax
+  $.ajax({
+        method: 'POST',
+        url: 'print/callphpfunctions.php',
+        data: values,
+
+        beforeSend: function(){  }
+    })
+    .done(function(msg){
+        var resposta = msg;
+
+        //ok
+        //console.log(msg);
+
+        if(resposta == "ok"){
+          //limpar campos
+          $("#input-nome-goal").val("");
+          $("#input-desc-goal").val("");
+
+          //mensagem de sucesso
+          $("#my-smallmsg-success").fadeIn(200);
+          $("#my-smallmsg-success").css("display", "flex");
+          $("#my-smallmsg-success").delay(2000).fadeOut(400);  
+
+          //mostrar os bloquinhos
+          //fazer uma nova consulta
+          fetchBlocosGoal(alunoid, sectorid, trialid)                                     
+          
+        }
+        else{
+          alert(resposta);
+        } 
+        
+    })
+    .fail(function(){
+        alert('Algo deu errado!');
+    });
+
+});
+
+//botão de editar card de objetivos
+$("#my-tab2").on("click", ".btn-edit-goal", function(){
+  
+  var idgoal = $(this).attr("data-idgoal");
+  
+  //ocultar e mostrar
+  $("#h-goal-"+idgoal+"").hide(100);
+  $("#lbl-input-"+idgoal+"").show(100);
+  $("#input-edit-"+idgoal+"").show(100);
+
+  $("#p-goal-"+idgoal+"").hide(100);
+  $("#lbl-text-"+idgoal+"").show(100);
+  $("#text-edit-"+idgoal+"").show(100);
+
+  $("#btn-edit-goal-"+idgoal+"").hide(200);
+  $("#btn-cancel-goal-"+idgoal+"").show(200);
+  $("#btn-save-goal-"+idgoal+"").show(200);
+
+});
+
+//botão de cancelar edição do card
+$("#my-tab2").on("click", ".btn-cancel-goal", function(){
+
+  var idgoal = $(this).attr("data-idgoal");
+
+  //var
+  var alunoid = $("#hidden-aluno-id").val();
+  var sectorid = $("#hidden-sector-id").val();
+  var trialid = $("#hidden-trial-id").val();
+
+  //ocultar edição, mostrar padrão
+  $("#lbl-input-"+idgoal+"").hide(100);
+  $("#input-edit-"+idgoal+"").hide(100);
+  $("#h-goal-"+idgoal+"").show(100);
+
+  $("#lbl-text-"+idgoal+"").hide(100);
+  $("#text-edit-"+idgoal+"").hide(100);
+  $("#p-goal-"+idgoal+"").show(100);
+
+  $("#btn-cancel-goal-"+idgoal+"").hide(200);
+  $("#btn-save-goal-"+idgoal+"").hide(200);
+  $("#btn-edit-goal-"+idgoal+"").show(200);
+
+  //mostrar os bloquinhos de novo
+  fetchBlocosGoal(alunoid, sectorid, trialid)   
+
+});
+
+//botão de salvar a edição do card
+$("#my-tab2").on("click", ".btn-save-goal", function(){
+
+  var idgoal = $(this).attr("data-idgoal");
+  var functionid = 6; //verificar 6 no callphpfunctions.php
+
+  //recuperar novos valores
+  var txtTitle = $("#input-edit-"+idgoal+"").val().trim();
+  var txtDesc = $("#text-edit-"+idgoal+"").val().trim();
+
+  //var aluno
+  //var
+  var alunoid = $("#hidden-aluno-id").val();
+  var sectorid = $("#hidden-sector-id").val();
+  var trialid = $("#hidden-trial-id").val();
+
+  //ajax values
+  var values = {
+        'idgoal'    : idgoal,
+        'txttitle'  : txtTitle,
+        'txtdesc'   : txtDesc,
+        'function' : functionid
+  };
+
+  //ajax
+  $.ajax({
+        method: 'POST',
+        url: 'print/callphpfunctions.php',
+        data: values,
+
+        beforeSend: function(){ $("#btn-save-goal-"+idgoal+"").html("salvando...") }
+    })
+    .done(function(msg){
+        resposta = msg;    
+        
+        $("#btn-save-goal-"+idgoal+"").html("<i class=\"far fa-save\"></i>")
+        
+        if(resposta == 1){
+          //mensagem de sucesso UPDATE
+          $("#my-smallmsg-success2").fadeIn(200);
+          $("#my-smallmsg-success2").css("display", "flex");
+          $("#my-smallmsg-success2").delay(2000).fadeOut(400);  
+      
+          //mostrar os bloquinhos atualizados
+          fetchBlocosGoal(alunoid, sectorid, trialid)                                     
+        } 
+        else{
+          alert("Não foi possível salvar! Tente novamente.");
+        }
+        
+    })
+    .fail(function(){
+        alert('Algo deu errado ao salvar!');
+    });
+
+});
+
+
+//função que traz os blocos de objetivos
+function fetchBlocosGoal(alunoid, sectorid, trialid){
+
+  var functionid = 5; //verificar callphpfunctions.php qual é a cinco
+  var resposta = "";
+
+  //ajax values
+  var values = {
+        'alunoid'  : alunoid,
+        'sectorid' : sectorid,
+        'trialid'  : trialid,
+        'function' : functionid
+  };
+
+  //ajax
+  $.ajax({
+        method: 'POST',
+        url: 'print/callphpfunctions.php',
+        data: values,
+
+        beforeSend: function(){  }
+    })
+    .done(function(msg){
+
+        resposta = msg;
+
+        resposta = linkify(resposta);
+      
+        $("#div-cards").html("");
+        $("#div-cards").append(resposta);
+        
+    })
+    .fail(function(){
+        alert('Algo deu errado ao carregar!');
+    });
+
+}
+
+//código que ativa os acorddions que foram gerados no php statusfunctions
+$("#my-tab2").on("click", ".acordeon-header", function() {
+  $(this).toggleClass("active").next().slideToggle();
+});
+
+
+//função de criar url clicavel
+function linkify(text) {
+    var urlRegex =/(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
+    return text.replace(urlRegex, function(url) {
+        return '<a href="' + url + '" target="_blank">' + url + '</a>';
+    });
+}
 
 
 });

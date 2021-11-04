@@ -742,8 +742,8 @@ $("#my-tab2").on("click", ".btn-save-goal", function(){
   var functionid = 6; //verificar 6 no callphpfunctions.php
 
   //recuperar novos valores
-  var txtTitle = $("#input-edit-"+idgoal+"").val();
-  var txtDesc = $("#text-edit-"+idgoal+"").val();
+  var txtTitle = $("#input-edit-"+idgoal+"").val().trim();
+  var txtDesc = $("#text-edit-"+idgoal+"").val().trim();
 
   //var aluno
   //var
@@ -819,10 +819,29 @@ function fetchBlocosGoal(alunoid, sectorid, trialid){
 
         resposta = msg;
 
-        resposta = linkify(resposta);
+        //resposta = linkify(resposta);
       
         $("#div-cards").html("");
         $("#div-cards").append(resposta);
+
+        //parte de links avaliador
+        var lblDesc = $(".lbl-obj-onoff");
+
+        lblDesc.each(function(){
+          var texto = $(this).text();
+          texto = linkify(texto);
+          $(this).html(texto);
+        });
+
+        //essa parte que é o feedback
+        var lblDesc = $(".mylabel-onoff");
+      
+        lblDesc.each(function(){
+
+          var texto = $(this).text();
+          texto = linkify(texto);
+          $(this).html(texto);
+        });
         
     })
     .fail(function(){

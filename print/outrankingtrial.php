@@ -409,7 +409,7 @@ function fetchTablesGrades($trialid, $currentuid){
         //**********Média que o avaliador deu pro aluno */
 
         //pega os valores referentes ao avaliado do each que o AVALIADOR respondeu
-        $sqlAvaliador = "SELECT eatr.id, eatr.answeredbyid answer_by_evaluator, eatr.timemodified, q.name, q.qtype, qa.fraction nota, qa.answer, ans.userid evaluatedid, ans.idtrial, ans.sectorid, ans.isfinished
+        $sqlAvaliador = "SELECT eatr.id, eatr.answeredbyid answer_by_evaluator, eatr.timemodified, q.name, q.questiontext ,q.qtype, qa.fraction nota, qa.answer, ans.userid evaluatedid, ans.idtrial, ans.sectorid, ans.isfinished
         FROM mdl_local_pdi_evanswer_trial eatr
         LEFT JOIN mdl_local_pdi_question q
         ON q.id = eatr.idquestion
@@ -440,6 +440,8 @@ function fetchTablesGrades($trialid, $currentuid){
 
                 $notaAluno = $listaNotasAluno[$q][0];
                 $mediaDuas = ($notaAluno + $qnota_av) / 2;
+
+                if($is_only_aluno){ $qname_av = $ra->questiontext; } //se for o aluno chamando essa função, alterar aqui
 
                 $htmlConteudoTable .= "
                 <tr>
@@ -558,6 +560,7 @@ function calcularMediaGeral($trialid, $currentuid, $evaluatedid){
 
     $resFunc = $DB->get_records_sql($sqlFunc);
 
+
     //get data from the evaluated pov
     $q = 0; $somaNota = 0; $mediaNota = 0;
     foreach($resFunc as $rs){
@@ -576,7 +579,7 @@ function calcularMediaGeral($trialid, $currentuid, $evaluatedid){
 
     if($respTimecreated == null){
         //do nothing 
-        $mediaNota = "-" ;
+        $mediaNota = "--" ;
     }
 
     //var_dump("média aluno: $mediaNota");
@@ -611,17 +614,17 @@ function calcularMediaGeral($trialid, $currentuid, $evaluatedid){
 
     $mediaNota_av = $somaNota / $q;
 
+
     if($respTimemod == null){
         //do nothing
-        $mediaNota_av = "-" ;
+        $mediaNota_av = "--" ;
     }
 
-    //var_dump("média avaliador: $mediaNota_av");
 
-    if($mediaNota == "-"){
+    if($mediaNota === "--"){
         return "não respondeu";
     }
-    else if($mediaNota_av == "-"){
+    else if($mediaNota_av === "--"){
         return "não foi avaliado";
     }
 
@@ -631,6 +634,7 @@ function calcularMediaGeral($trialid, $currentuid, $evaluatedid){
     $media_dasMedias = ($mediaNota + $mediaNota_av) / 2;
 
     $media_dasMedias = number_format($media_dasMedias, 2, ',', '.');
+
 
     if($media_dasMedias == 'nan'){
         $media_dasMedias = "Todas perguntas foram dissetativas";

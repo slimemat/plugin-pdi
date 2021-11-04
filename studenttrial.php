@@ -242,6 +242,7 @@ echo $OUTPUT->footer();
 
 $(document).ready(function() {
 
+
 $("#btn-reports").attr('style', 'background-color: var(--myprimary) !important');
 $("#my-tab1").show();
 
@@ -264,6 +265,11 @@ $( ".my-secondary-btn" ).on( "click", function() {
       //show
       $(".my-inside-container").hide();
       $("#my-tab2").show();
+
+        //já abre o avaliador
+      var avaBtn = $(".my-avaliador");
+      avaBtn[0].click();
+
       break;
 
     default:
@@ -566,10 +572,19 @@ $.ajax({
 
       resposta = msg;
 
-      resposta = linkify(resposta);
+      //resposta = linkify(resposta);
     
       $("#div-cards").html("");
       $("#div-cards").append(resposta);
+
+      var lblDesc = $(".mylabel-onoff");
+      
+      lblDesc.each(function(){
+
+        var texto = $(this).text();
+        texto = linkify(texto);
+        $(this).html(texto);
+      });
       
   })
   .fail(function(){
@@ -591,7 +606,7 @@ $("#my-tab2").on("click", ".acordeon-header", function(e) {
 function linkify(text) {
     var urlRegex =/(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
     return text.replace(urlRegex, function(url) {
-        return '<a href="' + url + '" target="_blank">' + url + '</a>';
+        return '<a href="' + url + '" target="_blank" class="linkfy-tag">' + url + '</a>';
     });
 }
 
@@ -651,6 +666,7 @@ $("#my-tab2-inner").on("click", ".btn-edit-goal", function(){
   $("#desc-fbid-"+idfeed).hide();
   $("#div-input-title-"+idfeed).show();
   $("#div-input-desc-"+idfeed).show();
+
 
   $("#input-title-"+idfeed).focus();
   $("#input-title-"+idfeed).focus();

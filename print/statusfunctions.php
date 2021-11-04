@@ -252,11 +252,11 @@
                <form id='form-goal'>
                   <div class=\"mb-3\">
                      <label for=\"input-nome-goal\" class=\"form-label\">Nome do objetivo</label>
-                     <input type=\"text\" class=\"form-control rounded\" id=\"input-nome-goal\" placeholder=\"Competência exemplo...\" autocomplete=\"off\">
+                     <input type=\"text\" class=\"form-control rounded\" id=\"input-nome-goal\" placeholder=\"Competência exemplo...\" autocomplete=\"off\" maxlength=\"30\">
                   </div>
                   <div class=\"mb-3\">
-                     <label for=\"input-desc-goal\" class=\"form-label\">Descrição</label>
-                     <textarea class=\"form-control rounded\" id=\"input-desc-goal\" rows=\"3\"></textarea>
+                     <label for=\"input-desc-goal\" class=\"form-label\" maxlength=\"30\">Descrição</label>
+                     <textarea class=\"form-control rounded\" id=\"input-desc-goal\" rows=\"3\" maxlength=\"256\"></textarea>
                   </div>
 
                   <input type=\"hidden\" id=\"hidden-aluno-id\" value=\"$alunoid\">
@@ -360,30 +360,38 @@
 
          $htmlAcordeon = alunoGoalReply($r->id);
 
+         $rId = $r->id;
+         $rTitle = $r->title;
+         $rDesc = $r->description;
+
+         $rTitle = strip_tags($rTitle);
+         $rDesc = strip_tags($rDesc);
+
+
          $htmlBlock .= "<div class=\"align-top bg-white mb-2 mr-2 my-padding-sm rounded\" style=\"width: 18rem; display: inline-block\"> 
-                           <h5 id=\"h-goal-$r->id\" class=\"card-title my-bold\">$r->title</h5> 
+                           <h5 id=\"h-goal-$rId\" class=\"card-title my-bold lbl-obj-onoff\">$rTitle</h5> 
 
                            <div class=\"mb-3\">
-                              <label id=\"lbl-input-$r->id\" for=\"input-edit-$r->id\" class=\"form-label hidden\">Editar nome:</label>
-                              <input type=\"text\" id=\"input-edit-$r->id\" class=\"form-control rounded hidden\" value=\"$r->title\">
+                              <label id=\"lbl-input-$rId\" for=\"input-edit-$rId\" class=\"form-label hidden\">Editar nome:</label>
+                              <input type=\"text\" id=\"input-edit-$rId\" class=\"form-control rounded hidden\" value=\"$rTitle\" maxlength=\"30\">      
                            </div>
 
-                           <p id=\"p-goal-$r->id\" class=\"card-text\" style=\"white-space: pre-wrap;\">$r->description</p>
+                           <p id=\"p-goal-$rId\" class=\"card-text lbl-obj-onoff\" style=\"white-space: pre-wrap;\">$rDesc</p>
 
                            <div class=\"mb-3\">
-                              <label id=\"lbl-text-$r->id\" for=\"text-edit-$r->id\" class=\"form-label hidden\">Editar descrição:</label>
-                              <textarea id=\"text-edit-$r->id\" class=\"form-control rounded hidden\" rows=\"3\">$r->description</textarea>
+                              <label id=\"lbl-text-$rId\" for=\"text-edit-$rId\" class=\"form-label hidden\">Editar descrição:</label>
+                              <textarea id=\"text-edit-$rId\" class=\"form-control rounded hidden\" rows=\"3\" maxlength=\"256\">$rDesc</textarea>
                            </div>
 
-                           <button type=\"button\" id=\"btn-edit-goal-$r->id\" class=\"btn btn-primary btn-edit-goal\" data-idgoal=\"$r->id\">
+                           <button type=\"button\" id=\"btn-edit-goal-$rId\" class=\"btn btn-primary btn-edit-goal\" data-idgoal=\"$rId\">
                            <i class=\"fas fa-pencil-alt\"></i>
                            </button>
 
-                           <button type=\"button\" id=\"btn-cancel-goal-$r->id\" class=\"btn btn-primary btn-cancel-goal hidden\" data-idgoal=\"$r->id\">
+                           <button type=\"button\" id=\"btn-cancel-goal-$rId\" class=\"btn btn-primary btn-cancel-goal hidden\" data-idgoal=\"$rId\">
                            <i class=\"fas fa-times\"></i>
                            </button>
 
-                           <button type=\"button\" id=\"btn-save-goal-$r->id\" class=\"btn btn-success btn-save-goal hidden\" data-idgoal=\"$r->id\">
+                           <button type=\"button\" id=\"btn-save-goal-$rId\" class=\"btn btn-success btn-save-goal hidden\" data-idgoal=\"$rId\">
                            <i class=\"far fa-save\"></i>
                            </button>
 
@@ -409,8 +417,8 @@
 
    $upGoal = new stdClass();
    $upGoal->id = $idgoal;
-   $upGoal->title = $txttitle;
-   $upGoal->description = $txtdesc;
+   $upGoal->title = strip_tags($txttitle);
+   $upGoal->description = strip_tags($txtdesc);
 
    $res = $DB->update_record("local_pdi_goals", $upGoal);
 
@@ -419,16 +427,51 @@
  }
 
  function alunoGoalReply($idgoal){
-    //gerar de acordo com o banco depois
+    //esse é o POV do avaliador
+    global $DB, $USER;
 
-   $htmlGoalReply = "<div class=\"acordeon\">
-                        <div class=\"acordeon-header\">header ($idgoal)</div>
-                        <div class=\"acordeon-content\">Lorem ipsum dolor sit amet consectetur adipiscing elit, id nibh nulla enim dis tempor. Eu ultrices interdum vivamus.</div>
+    $sql = "SELECT gf.*, u.firstname, u.lastname FROM {local_pdi_goals_feedback} gf
+             LEFT JOIN {user} u ON u.id = gf.createdbyid
+             WHERE gf.goalid = '$idgoal'";
+    $res = $DB->get_records_sql($sql);
+ 
+   $htmlGoalReply = "<div class=\"acordeon\">";
+ 
+   foreach($res as $r){
+       $idfeedback = $r->id;
+       $title = strip_tags($r->title);
+       $desc = $r->description;
+       $timemod = $r->timemodified;
+       $timemod_data = date("d/m/Y", $timemod);
+       $timecreated = $r->timecreated;
+       $fname = $r->firstname;
+       $lname = $r->lastname;
+ 
+       if($timecreated != $timemod){
+   
+         $htmlGoalReply .= "
+         <div class='feedback-container' data-idfeed=\"$idfeedback\">
+            <div class=\"acordeon-header\">
 
-                        <div class=\"acordeon-header\">header ($idgoal)</div>
-                        <div class=\"acordeon-content\">Lorem ipsum dolor sit amet consectetur adipiscing elit, id nibh nulla enim dis tempor. Eu ultrices interdum vivamus.</div>
-                     </div>";
+               <span id=\"title-fbid-$idfeedback\" class='mylabel-onoff'>$title</span>
 
+            </div>
+            <div class=\"acordeon-content\">
+               <div class=\"mb-3\">  
+                  <div><small class=\"text-muted\">$fname $lname:</small></div>
+
+                     <span id=\"desc-fbid-$idfeedback\" class='mylabel-onoff'>$desc</span>  
+
+                  <div><small class=\"text-muted\">$timemod_data</small></div>                        
+               </div>
+            </div>
+         </div>";
+       }
+   }
+                      
+                        
+    $htmlGoalReply .= "</div>";
+ 
     return $htmlGoalReply;
  }
 
@@ -446,7 +489,7 @@
   foreach($res as $r){
       $idfeedback = $r->id;
       $title = strip_tags($r->title);
-      $desc = $r->description;
+      $desc = strip_tags($r->description);
       $timemod = $r->timemodified;
       $timemod_data = date("d/m/Y", $timemod);
       $timecreated = $r->timecreated;
@@ -462,7 +505,7 @@
 
                               $linhaTitle
                               <div style=\"display: none;\" id=\"div-input-title-$idfeedback\" class=\"myinput-onoff\">
-                                 <input type=\"text\" class=\"form-control my-white-bg myinput-header\" id=\"input-title-$idfeedback\" value=\"$title\">
+                                 <input type=\"text\" class=\"form-control my-white-bg myinput-header\" id=\"input-title-$idfeedback\" value=\"$title\" maxlength=\"30\">
                               </div>
 
                               <div class='' style='float: right;'>
@@ -477,7 +520,7 @@
 
                                     <span id=\"desc-fbid-$idfeedback\" class='mylabel-onoff'>$desc</span>  
                                     <div class=\"form-floating myinput-onoff\" style=\"display: none;\" id=\"div-input-desc-$idfeedback\">
-                                       <textarea class=\"form-control my-white-bg\" id=\"input-desc-$idfeedback\" rows=\"5\">$desc</textarea>
+                                       <textarea class=\"form-control my-white-bg\" id=\"input-desc-$idfeedback\" rows=\"5\" maxlength=\"256\">$desc</textarea>
                                  
                                        <div style=\"margin-top: 4px\">
                                           <small class=\"my-label-err-btn btn-cancelar-resp\" data-fbid=\"$idfeedback\">cancelar</small>
@@ -718,10 +761,13 @@
 
             $htmlAcordeon = alunoGoalReplyEdit($r->id);
 
-            $htmlBlock .= "<div class=\"align-top bg-white mb-2 mr-2 my-padding-sm rounded\" style=\"width: 18rem; display: inline-block\"> 
-                              <h5 id=\"h-goal-$r->id\" class=\"card-title my-bold\">$r->title</h5> 
+            $rTitle = strip_tags($r->title);
+            $rDesc = strip_tags($r->description);
 
-                              <p id=\"p-goal-$r->id\" class=\"card-text\" style=\"white-space: pre-wrap;\">$r->description</p>
+            $htmlBlock .= "<div class=\"align-top bg-white mb-2 mr-2 my-padding-sm rounded\" style=\"width: 18rem; display: inline-block\"> 
+                              <h5 id=\"h-goal-$r->id\" class=\"card-title my-bold\">$rTitle</h5> 
+
+                              <p id=\"p-goal-$r->id\" class=\"card-text\" style=\"white-space: pre-wrap;\">$rDesc</p>
 
                               <hr>
                               <div class='my-mention2'>
