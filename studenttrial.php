@@ -577,10 +577,20 @@ $.ajax({
       $("#div-cards").html("");
       $("#div-cards").append(resposta);
 
+      //parte de links aluno
       var lblDesc = $(".mylabel-onoff");
       
       lblDesc.each(function(){
 
+        var texto = $(this).text();
+        texto = linkify(texto);
+        $(this).html(texto);
+      });
+
+      //parte de links avaliador
+      var lblDesc = $(".lbl-obj-onoff");
+
+      lblDesc.each(function(){
         var texto = $(this).text();
         texto = linkify(texto);
         $(this).html(texto);
@@ -618,7 +628,7 @@ $("#my-tab2-inner").on("click", ".btn-add-resp", function(){
   var elemnt = $(this);
 
   //ajax values
-  //não é necessário passar o createdby, porque sempre o aluno logado que criará
+  //não é necessário passar o createdby, porque sempre o logado que criará
   var values = {
         'goalid'  : goalid,      
         'function' : functionid

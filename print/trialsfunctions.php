@@ -68,6 +68,31 @@ function mostrarBlocosTrial($offset, $rows){
        $xsectorid ="$r->sectorid";
        $xuserid_sector_member ="$r->userid_sector_member";
        $xfullevaluatorname = "$r->firstname" . " ". "$r->lastname";
+       
+       $startdate = $r->startdate;
+       $enddate = $r->enddate;
+       $fstartdate = date('d/m/Y', $startdate);
+       $fenddate = date('d/m/Y', $enddate);
+
+       //verificar a data
+       $startdate_dt = date("m/d/Y", $startdate); //só funciona nesse formato americano
+       $enddate_dt = date("m/d/Y", $enddate);
+       $startdate_dt = new DateTime($startdate_dt);
+       $enddate_dt = new DateTime($enddate_dt);
+
+       $unixnow = time();
+       $today_dt = new DateTime(date("m/d/Y", $unixnow));
+
+       //não cria html para os processos que não começaram
+       if($today_dt < $startdate_dt){
+          continue; //ignora o código a seguir e faz o proxímo do loop foreach
+       }
+
+       //não cria html para os que já passaram a data
+       if($today_dt > $enddate_dt){
+          continue;
+       }
+       
 
        
        //verificar se esse está marcado como respondido
@@ -103,6 +128,7 @@ function mostrarBlocosTrial($offset, $rows){
              ";
    
              $blocoHtml .= "<span class='my-sidetext'>
+             <small class='my-font-family'>$fstartdate - $fenddate</small>
              <h5 class='my-font-family' title='nome do processo'>$xtrialtitle</h5>";
              $blocoHtml .= "<span class='my-label'>Avaliadores:</span><br>";
     
@@ -116,13 +142,14 @@ function mostrarBlocosTrial($offset, $rows){
              $blocoHtml .= "</span>";
           }
 
-          $blocoHtml .= "
+          $blocoHtml .= "         
           <span class='my-hidden' id='data-block-$xtrialid'>
              <span class='processo-id-$xtrialid'>$xtrialid</span> 
              <span class='responder-db-id-$xtrialid'>$xdbid</span> 
              <span class='setor-id-$xtrialid'>$xsectorid</span>
              <span class='avaliador-id-$xtrialid'>$xuserid_sector_member</span>
-          </span>";
+          </span>
+          ";
 
           //guardar os valores anteriores
           $lastTrialid = $xtrialid;
@@ -130,6 +157,7 @@ function mostrarBlocosTrial($offset, $rows){
           
           $count_i++;
        }
+
     }
 
     if($respondido == 0){
@@ -139,7 +167,7 @@ function mostrarBlocosTrial($offset, $rows){
     
     $blocoReturn = "
     <!--opened popup-->
-             $blocoHtml            
+             $blocoHtml                         
       <form id='frm-trial-id' name='frm-trial-id' class='my-hidden' method='POST' action=''>
          <input type=\"hidden\" name=\"hidden-trialid\" id=\"hidden-trialid\" value=\"\">
          <input type=\"hidden\" name=\"hidden-currentuserid\" id=\"hidden-currentuserid\" value=\"$USER->id\">
@@ -188,6 +216,9 @@ function mostrarTodosTrials($offset, $rows){
       $tstartdate = $r->startdate;
       $tenddate = $r->enddate;
 
+      $dateInicioF = gmdate("d/m/y", $tstartdate);
+      $dateFimF = gmdate("d/m/y", $tenddate);
+
       $avaliadores = '';
 
       //verificar se esse está marcado como respondido
@@ -216,6 +247,31 @@ function mostrarTodosTrials($offset, $rows){
          $avaliadores .= "<span class='my-mention'>$firstname $lastname</span>";
       }
 
+
+      //
+      //datas
+      $startdate = $r->startdate;
+      $enddate = $r->enddate;
+      $fstartdate = date('d/m/Y', $startdate);
+      $fenddate = date('d/m/Y', $enddate);
+
+      //verificar a data
+      $startdate_dt = date("m/d/Y", $startdate); //só funciona nesse formato americano
+      $enddate_dt = date("m/d/Y", $enddate);
+      $startdate_dt = new DateTime($startdate_dt);
+      $enddate_dt = new DateTime($enddate_dt);
+
+      $unixnow = time();
+      $today_dt = new DateTime(date("m/d/Y", $unixnow));
+
+      //não cria html para os processos que não começaram
+      if($today_dt < $startdate_dt){
+         continue;
+      }
+      //
+
+
+
       if($respondido == 0){
 
          $blocoHtml .= "  
@@ -229,7 +285,9 @@ function mostrarTodosTrials($offset, $rows){
              <h5 class='my-font-family' title='nome do processo'>$ttitle</h5>";
              $blocoHtml .= "<span class='my-label'>Avaliadores:</span><br>";
 
-             $blocoHtml .= "$avaliadores </span></span>";
+             $blocoHtml .= "$avaliadores
+               <br><small class='my-font-family'>$dateInicioF - $dateFimF</small>
+              </span></span>";
       }
       else{
          
@@ -244,7 +302,9 @@ function mostrarTodosTrials($offset, $rows){
              <h5 class='my-font-family' title='nome do processo'>$ttitle</h5>";
              $blocoHtml .= "<span class='my-label'>Avaliadores:</span><br>";
 
-             $blocoHtml .= "$avaliadores </span></span>";
+             $blocoHtml .= "$avaliadores 
+               <br><small class='my-font-family'>$dateInicioF - $dateFimF</small>
+             </span></span>";
       }
 
    }
@@ -292,6 +352,9 @@ function searchStudentTrials($pesquisa){
       $tstartdate = $r->startdate;
       $tenddate = $r->enddate;
 
+      $dateInicioF = gmdate("d/m/y", $tstartdate);
+      $dateFimF = gmdate("d/m/y", $tenddate);
+
       $avaliadores = '';
 
       //verificar se esse está marcado como respondido
@@ -322,7 +385,7 @@ function searchStudentTrials($pesquisa){
 
       if($respondido == 0){
 
-         $blocoHtml .= "  
+         $blocoHtml .= "
              
              <span class='my-round-card' id='trial_$tid' data-idtrial='$tid'>
              <span class=\"my-circle\" style=\"background-color: var(--myerror); color: var(--myblack);\">✖</span>
@@ -333,7 +396,9 @@ function searchStudentTrials($pesquisa){
              <h5 class='my-font-family' title='nome do processo'>$ttitle</h5>";
              $blocoHtml .= "<span class='my-label'>Avaliadores:</span><br>";
 
-             $blocoHtml .= "$avaliadores </span></span>";
+             $blocoHtml .= "$avaliadores 
+             <br><small class='my-font-family'>$dateInicioF - $dateFimF</small>
+             </span></span>";
       }
       else{
          
@@ -348,7 +413,9 @@ function searchStudentTrials($pesquisa){
              <h5 class='my-font-family' title='nome do processo'>$ttitle</h5>";
              $blocoHtml .= "<span class='my-label'>Avaliadores:</span><br>";
 
-             $blocoHtml .= "$avaliadores </span></span>";
+             $blocoHtml .= "$avaliadores
+               <br><small class='my-font-family'>$dateInicioF - $dateFimF</small>
+              </span></span>";
       }
 
    }

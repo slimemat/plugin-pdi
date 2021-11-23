@@ -190,8 +190,55 @@ function buscarProcessos() {
   else{
     $("#div-padrao").show();
     $("#div-pesquisados").html("");
+    $("#btn-ver-mais").show();
   }
 }
+
+
+
+//----------------------------
+//tratamento da páginação
+var youevCount;
+contarIniciais();
+
+function contarIniciais(){
+  //conta os iniciais que estão em uma div diferente (quando carrega)
+  let youev = $("#div-padrao").find('.my-round-card');
+  youevCount = 0;
+  youev.each(function(){
+    youevCount++;    
+  });
+  if(youevCount < 6){
+    $("#btn-ver-mais").hide();    
+  }
+  else{
+
+  }
+}
+
+function contarAvaliacoes(){
+
+  if($("#div-pesquisados").html() != ""){
+
+    let youev = $("#div-pesquisados").find('.my-round-card');
+    youevCount = 0;
+    youev.each(function(){
+      youevCount++;    
+    });
+    if(youevCount < 6){
+      $("#btn-ver-mais").hide();
+    }
+  }
+}
+
+var target = document.querySelector('#div-pesquisados')
+var observer = new MutationObserver(function(mutations) {
+  contarAvaliacoes();
+});
+var config = { attributes: true, childList: true, characterData: true };
+// pass in the target node, as well as the observer options
+observer.observe(target, config);
+//----------------------------
 
 
 
@@ -200,6 +247,11 @@ var maisRows = 6;
 var maisOffset = 0;
 $("#btn-ver-mais").on("click", function(){
 
+  btnVerMaisAjax();
+
+});
+
+function btnVerMaisAjax(){
   maisRows = 6;
   maisOffset += 6;
   
@@ -214,21 +266,22 @@ $("#btn-ver-mais").on("click", function(){
           data: values,
       })
       .done(function(msg){
+
         console.log(msg);
         if(msg == ""){
           $("#btn-ver-mais").hide();
+          return false;          
         }
-
+        
         $("#div-padrao").hide();
         $("#div-pesquisados").html(msg);
-        $("#btn-ver-menos").show();
+        $("#btn-ver-menos").show();        
 
       })
       .fail(function(){
         $("#div-pesquisados").html("Não foi possível acessar os dados.");
       });
-
-});
+}
 
 $("#btn-ver-menos").on("click", function(){
 

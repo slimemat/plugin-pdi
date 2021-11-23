@@ -79,7 +79,6 @@ $html_notas = fetchTablesGrades($trialid, $currentuid);
 //page STARTS HERE
 echo $OUTPUT->header();
 
-//para esconder o form
 
 //some before page coding
   if(isset($_POST['hidden-trial-id'])){
@@ -801,10 +800,29 @@ function fetchBlocosGoal(alunoid, sectorid, trialid){
 
         resposta = msg;
 
-        resposta = linkify(resposta);
+        //resposta = linkify(resposta);
       
         $("#div-cards").html("");
         $("#div-cards").append(resposta);
+
+        //parte de links avaliador
+        var lblDesc = $(".lbl-obj-onoff");
+
+        lblDesc.each(function(){
+          var texto = $(this).text();
+          texto = linkify(texto);
+          $(this).html(texto);
+        });
+
+        //essa parte que é o feedback
+        var lblDesc = $(".mylabel-onoff");
+      
+        lblDesc.each(function(){
+
+          var texto = $(this).text();
+          texto = linkify(texto);
+          $(this).html(texto);
+        });
         
     })
     .fail(function(){

@@ -224,10 +224,13 @@ var maisRows = 6;
 var maisOffset = 0;
 $("#btn-ver-mais").on("click", function(){
 
+  btnVerMaisAjax();
+
+});
+
+function btnVerMaisAjax(){
   maisRows = 6;
   maisOffset += 6;
-
-  console.log("proxi: \nmaisROW {" + maisRows + "}\nmaisOffset {" + maisOffset + "}");
   
   var values = {
               'function': 0, 
@@ -242,18 +245,18 @@ $("#btn-ver-mais").on("click", function(){
       .done(function(msg){
         if(msg == ""){
           $("#btn-ver-mais").hide();
+          return false;          
         }
-
+        
         $("#div-padrao").hide();
         $("#div-pesquisados").html(msg);
-        $("#btn-ver-menos").show();
+        $("#btn-ver-menos").show();        
 
       })
       .fail(function(){
         $("#div-pesquisados").html("Não foi possível acessar os dados.");
       });
-
-});
+}
 
 $("#btn-ver-menos").on("click", function(){
 

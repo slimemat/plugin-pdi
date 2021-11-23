@@ -832,7 +832,7 @@ li paginate_button{
     display: inline-block;
     border-radius: 20px;
     background-color: var(--mywhite);
-    padding: 20px;
+    padding: 12px;
     transition: ease 200ms;
 }
 .my-round-card:hover{

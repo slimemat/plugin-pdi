@@ -163,6 +163,33 @@ function mostrarPopup(){
             $xuserid_sector_member ="$r->userid_sector_member";
             $xfullevaluatorname = "$r->firstname" . " ". "$r->lastname";
 
+
+            //datas
+            $startdate = $r->startdate;
+            $enddate = $r->enddate;
+            $fstartdate = date('d/m/Y', $startdate);
+            $fenddate = date('d/m/Y', $enddate);
+
+            //verificar a data
+            $startdate_dt = date("m/d/Y", $startdate); //só funciona nesse formato americano
+            $enddate_dt = date("m/d/Y", $enddate);
+            $startdate_dt = new DateTime($startdate_dt);
+            $enddate_dt = new DateTime($enddate_dt);
+
+            $unixnow = time();
+            $today_dt = new DateTime(date("m/d/Y", $unixnow));
+
+            //não cria html para os processos que não começaram
+            if($today_dt < $startdate_dt){
+               continue;
+            }
+
+            //não cria html para os que já terminaram
+            if($today_dt > $enddate_dt){
+               continue;
+            }
+            
+
             
             //verificar se esse está marcado como respondido
             //não importa o setor, então está agrupado
@@ -190,7 +217,8 @@ function mostrarPopup(){
                if($xtrialid != $lastTrialid){
 
                   $blocoHtml .= "<span class='my-round-card' data-idtrial='$xtrialid' id='trial_$xtrialid'>";
-                  $blocoHtml .= "<h5 class='my-font-family' title='nome do processo'>$xtrialtitle</h5>";
+                  $blocoHtml .= "<small class='my-font-family'>termina: $fenddate</small>
+                                 <h5 class='my-font-family' title='nome do processo'>$xtrialtitle</h5>";
                   $blocoHtml .= "<span class='my-label'>Avaliadores:</span><br>";
          
                   $count_trial++;
@@ -206,7 +234,8 @@ function mostrarPopup(){
                   <span class='responder-db-id-$xtrialid'>$xdbid</span> 
                   <span class='setor-id-$xtrialid'>$xsectorid</span>
                   <span class='avaliador-id-$xtrialid'>$xuserid_sector_member</span>
-               </span>";
+               </span>            
+               ";
 
                //guardar os valores anteriores
                $lastTrialid = $xtrialid;

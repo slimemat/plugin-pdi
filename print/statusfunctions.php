@@ -25,7 +25,7 @@
  //função para retornar a primeira estrutura html com dados da aba status
  function stsPrimeiroBloco($alunoid, $trialid, $sectorid){
     
-    global $USER, $DB;
+    global $USER, $DB, $CFG;
 
     //var
     $blocoHTML = "";
@@ -228,6 +228,10 @@
    </div>
    </div>";
 
+   //url para o iframe
+   $url = $CFG->wwwroot;
+   $url = $url . "/course/view.php?id=14"; //teste
+
    //marcar e objetivos
    $blocoHTML .= "
    <div id='my-tab2-inner3'>
@@ -238,7 +242,9 @@
          </div>
          <div class=\"card-body shadow-sm p-3 mb-5 bg-body rounded\">
                <div class=\"\">
-               conteúdo aqui
+
+                  colocar aqui
+
                </div>
          </div>
       </div>
@@ -711,7 +717,7 @@
          <div class=\"card-body shadow-sm p-3 mb-5 bg-body rounded\">
             <div class=\"\">
                
-               algo aqui
+               <span class='my-font-family text-muted'>os objetivos criados aparecem aqui:</span>
 
             </div>
             <div id=\"horizontal-scroll\" class='my-scroll-h row my-bg-light'>
@@ -765,9 +771,9 @@
             $rDesc = strip_tags($r->description);
 
             $htmlBlock .= "<div class=\"align-top bg-white mb-2 mr-2 my-padding-sm rounded\" style=\"width: 18rem; display: inline-block\"> 
-                              <h5 id=\"h-goal-$r->id\" class=\"card-title my-bold\">$rTitle</h5> 
+                              <h5 id=\"h-goal-$r->id\" class=\"card-title my-bold lbl-obj-onoff\">$rTitle</h5> 
 
-                              <p id=\"p-goal-$r->id\" class=\"card-text\" style=\"white-space: pre-wrap;\">$rDesc</p>
+                              <p id=\"p-goal-$r->id\" class=\"card-text lbl-obj-onoff\" style=\"white-space: pre-wrap;\">$rDesc</p>
 
                               <hr>
                               <div class='my-mention2'>
