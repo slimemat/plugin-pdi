@@ -138,6 +138,16 @@ if(isset($_POST['function'])){
 
         echo $return;
     }
+    else if($myfunction == 11){
+        //var
+        $coursecatid = $_POST['coursecatid'];
+        $coursename = $_POST['coursename'];
+        $trialid = $_POST['trialid'];
+
+        $return = criarCourseCatpdi($coursecatid, $coursename, $trialid);
+
+        echo $return;
+    }
 
 
 

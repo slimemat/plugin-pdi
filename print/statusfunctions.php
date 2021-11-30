@@ -228,9 +228,58 @@
    </div>
    </div>";
 
-   //url para o iframe
-   $url = $CFG->wwwroot;
-   $url = $url . "/course/view.php?id=14"; //teste
+   
+   //*** form para criar um course com o plugin congrea ***/
+   $sqlVeCat = "SELECT * FROM mdl_course_categories cc WHERE cc.name = 'pdi_hidden' and cc.idnumber = 'pdi_hidden_key'";
+   $resVeCat = $DB->get_records_sql($sqlVeCat);
+   $htmlFormCourse = '';
+
+   if(count($resVeCat) == 0){
+      $addCat = new stdClass();
+      $addCat->name = "pdi_hidden";
+      $addCat->idnumber = "pdi_hidden_key";
+
+      $res = $DB->insert_record('course_categories', $addCat);
+      echo "<script>console.log('pdi inseriu categoria:' + $res)</script>";
+
+      $sqlVeCat = "SELECT * FROM mdl_course_categories cc WHERE cc.name = 'pdi_hidden' and cc.idnumber = 'pdi_hidden_key'";
+      $resVeCat = $DB->get_records_sql($sqlVeCat);
+
+      $resVeCat = array_values($resVeCat);
+      $resVeCat = $resVeCat[0];
+      $idcoursecat = $resVeCat->id;
+
+      $htmlFormCourse = "
+      <form id='form-create-course' data-id-coursecat='$idcoursecat'>
+         <div class=\"mb-3\">
+            <label for=\"input-nome-course\" class=\"form-label\">Nome das reuniões</label>
+            <input type=\"text\" class=\"form-control rounded\" id=\"input-nome-course\" placeholder=\"Reuniões PDI Processo Moodle\" autocomplete=\"off\" maxlength=\"30\">
+         </div>
+         <button id=\"btn-add-course\" type=\"button\" class=\"btn btn-primary\">Criar</button>
+      </form>
+      ";
+
+
+   }
+   else{
+      echo "<script>console.log('pdi: categoria do plugin já criada')</script>";
+
+      $resVeCat = array_values($resVeCat);
+      $resVeCat = $resVeCat[0];
+      $idcoursecat = $resVeCat->id;
+
+      $htmlFormCourse = "
+      <form id='form-create-course' data-id-coursecat='$idcoursecat'>
+         <div class=\"mb-3\">
+            <label for=\"input-nome-course\" class=\"form-label\">Nome das reuniões</label>
+            <input type=\"text\" class=\"form-control rounded\" id=\"input-nome-course\" placeholder=\"Reuniões PDI Processo Moodle\" autocomplete=\"off\" maxlength=\"30\">
+         </div>
+         <button id=\"btn-add-course\" type=\"button\" class=\"btn btn-primary\">Criar</button>
+      </form>
+      ";
+   }
+
+
 
    //marcar e objetivos
    $blocoHTML .= "
@@ -243,7 +292,8 @@
          <div class=\"card-body shadow-sm p-3 mb-5 bg-body rounded\">
                <div class=\"\">
 
-                  colocar aqui
+                  <small class='my-font-family text-muted'>Deve-se utilizar o componente 'cursos' do moodle para marcar reuniões</small>
+                  $htmlFormCourse
 
                </div>
          </div>
@@ -840,4 +890,34 @@ function updateFeedback($idfeedback, $title, $desc){
 
    return $res;
 
+}
+
+
+//função dos avaliadores
+function criarCourseCatpdi($coursecatid, $coursename, $trialid){
+   global $DB, $USER;
+
+   //setup vars
+   $uid = $USER->id;
+   $evaluatorid = null; //ok
+
+   $strShortname = preg_replace('/\s+/', '', $coursename);
+   $strShortname = strtolower($strShortname);
+   $timecreated = time();
+   $timemodified = time();
+
+   $idnumber = null; //receberá o id do local_pdi_trial_evaluator
+   //para isso, necessário trialid e evaluatorid
+
+   $sqlEvaluator = "SELECT * FROM {local_pdi_evaluator} ev WHERE ev.mdlid = '$uid'";
+   $resEvaluator = $DB->get_records_sql($sqlEvaluator);
+
+   $resEvaluator = array_values($resEvaluator);
+   $evaluatorid = $resEvaluator[0]->id;
+
+
+   echo "ECHOING: $trialid<br>";
+
+
+   return "Oiioi";
 }

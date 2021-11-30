@@ -731,7 +731,7 @@ $("#my-tab2").on("click", ".btn-cancel-goal", function(){
   $("#btn-edit-goal-"+idgoal+"").show(200);
 
   //mostrar os bloquinhos de novo
-  fetchBlocosGoal(alunoid, sectorid, trialid)   
+  fetchBlocosGoal(alunoid, sectorid, trialid); 
 
 });
 
@@ -863,6 +863,51 @@ function linkify(text) {
         return '<a href="' + url + '" target="_blank">' + url + '</a>';
     });
 }
+
+
+
+$("#my-tab2").on("click", "#btn-add-course", function(){
+  
+  var functionid = 11; //verificar callphpfunctions.php qual é a 11
+  var coursecatid = $("#form-create-course").attr("data-id-coursecat");
+  var coursename = $("#input-nome-course").val().trim();
+  var trialid = "" + <?= $_POST['hidden-trial-id'] ?> + "";
+
+  if(coursename.length < 5){
+    $("#input-nome-course").focus();
+    $("#my-smallmsg-error").fadeIn(200);
+    $("#my-smallmsg-error").css("display", "flex");
+    $("#my-smallmsg-error").delay(2000).fadeOut(400);
+
+    return false;
+  }
+
+  //ajax values
+  var values = {       
+        'coursecatid'  : coursecatid,
+        'coursename' : coursename,
+        'trialid'   : trialid,
+        'function' : functionid
+  };
+
+  //ajax
+  $.ajax({
+        method: 'POST',
+        url: 'print/callphpfunctions.php',
+        data: values,
+
+        beforeSend: function(){  }
+    })
+    .done(function(msg){
+        console.log("Mensagem: "+ coursecatid + " e "+ coursename);
+        console.log(msg);
+        
+    })
+    .fail(function(){
+        alert('Algo deu errado ao carregar!');
+    });
+
+});
 
 
 });
