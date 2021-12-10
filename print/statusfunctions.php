@@ -901,8 +901,12 @@ function criarCourseCatpdi($coursecatid, $coursename, $trialid){
    $uid = $USER->id;
    $evaluatorid = null; //ok
 
-   $strShortname = preg_replace('/\s+/', '', $coursename);
-   $strShortname = strtolower($strShortname);
+   $coursename = trim($coursename);
+
+   $strShortname = preg_replace ('/[^\p{L}\p{N}]/u', '_', $coursename);
+   $strShortname = trim($strShortname);
+   $strShortname = "pdi_" . $strShortname . "";
+
    $timecreated = time();
    $timemodified = time();
 
@@ -916,8 +920,56 @@ function criarCourseCatpdi($coursecatid, $coursename, $trialid){
    $evaluatorid = $resEvaluator[0]->id;
 
 
-   echo "ECHOING: $trialid<br>";
+   echo "trial id> $trialid<br>evaluator id> $evaluatorid<br>";
+
+   //verificar no db onde o course custom field está
+
+   //criar caso não exista
+   $customFID = null;
+   
+   $sqlCourseCfield = "SELECT * FROM {customfield_field} cf 
+   WHERE cf.shortname = 'pdi_trial_evaluator' AND cf.sortorder IS NULL";
+   $resCourseCfield = $DB->get_records_sql($sqlCourseCfield);
+
+   if(count($resCourseCfield) < 1){
+      $addCourseCfield = new stdClass();
+      $addCourseCfield->shortname = "pdi_trial_evaluator";
+      $addCourseCfield->name = "PDI campo controle 1";
+      $addCourseCfield->type = "text";
+      $addCourseCfield->timecreated = time();
+      $addCourseCfield->timemodified = time();
+
+      $addRes = $DB->insert_record('customfield_field', $addCourseCfield); //id do campo custom
+      $customFID = $addRes;
+   }
+   else{
+      $resCourseCfield = array_values($resCourseCfield);
+      $customFID = $resCourseCfield[0]->id;
+   }
+   //passou aqui, verificou se criou o custom field para cursos
 
 
-   return "Oiioi";
+   //AGORA, criar o curso com as definições necessárias e passar o pdi_trial_evaluator no custom field
+   $criarCurso = new stdClass();
+   $criarCurso->category = $coursecatid;
+   $criarCurso->fullname = $coursename;
+   $criarCurso->shortname = $strShortname;
+   $criarCurso->timecreated = $timecreated;
+   $criarCurso->timemodified = $timemodified;
+
+   $resCriarC = $DB->insert_record('course', $criarCurso); //retorna id do curso
+
+   //atribuir custom field
+   $addCustomData = new stdClass();
+   $addCustomData->fieldid = $customFID;
+   $addCustomData->instanceid = $resCriarC;
+   $addCustomData->charvalue = "pdi_trial_evaluator_$evaluatorid"; //id do pdi_trial_evaluator
+   $addCustomData->value = $evaluatorid; //id do pdi_trial_evaluator
+   $addCustomData->valueformat = 0;
+   $addCustomData->timecreated = $timecreated;
+   $addCustomData->timemodified = $timemodified;
+
+   $resCustomField = $DB->insert_record('customfield_data', $addCustomData);
+
+   return "ok";
 }

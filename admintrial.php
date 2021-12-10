@@ -899,8 +899,12 @@ $("#my-tab2").on("click", "#btn-add-course", function(){
         beforeSend: function(){  }
     })
     .done(function(msg){
-        console.log("Mensagem: "+ coursecatid + " e "+ coursename);
-        console.log(msg);
+        if(msg == "ok"){
+          //smth
+        }
+        else{
+          console.log("DONE, but not ok");
+        }
         
     })
     .fail(function(){
