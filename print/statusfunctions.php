@@ -279,6 +279,46 @@
       ";
    }
 
+//************************* **************************//
+   //pdi_trial_evaluator pegar o id
+   $trial_ev_id = "";
+   $sqlGetTrevId = "SELECT trev.id trevid, trev.cohortid, ev.id evid, ev.mdlid FROM {local_pdi_trial_evaluator} trev
+                     LEFT JOIN {local_pdi_evaluator} ev
+                     ON ev.id = trev.evaluatorid
+                     WHERE trev.trialid = '$trialid' AND ev.mdlid = '$USER->id'";
+   $resGetTrevId = $DB->get_records_sql($sqlGetTrevId);
+   $resGetTrevId = array_values($resGetTrevId);
+   $resGetTrevId = $resGetTrevId[0];
+
+   $cohortTrial = $resGetTrevId->cohortid;
+   $trial_ev_id = $resGetTrevId->trevid;
+
+
+   //verificar se já existe um curso para a reunião congrea
+   $sqlVerCourse = "SELECT c.id cid, c.category ccat, c.fullname cname, c.shortname cshortname, c.startdate cstart, c.enddate cend, 
+                     cc.id ccid, cc.name ccname, cff.id cffid, cff.shortname cffshortname, cfd.id cfdid, cfd.charvalue cfdcharvalue, cfd.value cfdvalue
+                     FROM {course} c
+                     LEFT JOIN {course_categories} cc
+                     ON cc.id = c.category
+                     LEFT JOIN {customfield_field} cff
+                     ON cff.shortname = 'pdi_trial_evaluator'
+                     LEFT JOIN {customfield_data} cfd
+                     ON cfd.fieldid = cff.id AND cfd.instanceid = c.id
+                     WHERE cc.name = 'pdi_hidden' AND cc.idnumber = 'pdi_hidden_key' AND cfd.value = '$trial_ev_id'
+                     ";
+   $resVerCourse = $DB->get_records_sql($sqlVerCourse);
+   
+
+   //var_dump($resVerCourse);
+
+   if(count($resVerCourse) < 1){
+      $htmlReuniao = $htmlFormCourse;
+   }
+   else{
+      $htmlReuniao = "<span class=\"badge bg-secondary\">Reunião criada</span>";
+      //
+   }
+   
 
 
    //marcar e objetivos
@@ -293,7 +333,7 @@
                <div class=\"\">
 
                   <small class='my-font-family text-muted'>Deve-se utilizar o componente 'cursos' do moodle para marcar reuniões</small>
-                  $htmlFormCourse
+                  $htmlReuniao
 
                </div>
          </div>
@@ -895,7 +935,10 @@ function updateFeedback($idfeedback, $title, $desc){
 
 //função dos avaliadores
 function criarCourseCatpdi($coursecatid, $coursename, $trialid){
-   global $DB, $USER;
+   global $DB, $USER, $CFG;
+
+   require_once('../../../config.php');
+   require_once($CFG->dirroot.'/course/lib.php');
 
    //setup vars
    $uid = $USER->id;
@@ -910,17 +953,19 @@ function criarCourseCatpdi($coursecatid, $coursename, $trialid){
    $timecreated = time();
    $timemodified = time();
 
-   $idnumber = null; //receberá o id do local_pdi_trial_evaluator
+   $trial_evaluator_id = "";//receberá o id do local_pdi_trial_evaluator
    //para isso, necessário trialid e evaluatorid
 
-   $sqlEvaluator = "SELECT * FROM {local_pdi_evaluator} ev WHERE ev.mdlid = '$uid'";
+   $sqlEvaluator = "SELECT trev.id trevid, trev.cohortid, ev.id evid, ev.mdlid FROM {local_pdi_trial_evaluator} trev
+                     LEFT JOIN {local_pdi_evaluator} ev
+                     ON ev.id = trev.evaluatorid
+                     WHERE trev.trialid = '$trialid' AND ev.mdlid = '$uid'";
    $resEvaluator = $DB->get_records_sql($sqlEvaluator);
 
    $resEvaluator = array_values($resEvaluator);
-   $evaluatorid = $resEvaluator[0]->id;
+   $evaluatorid = $resEvaluator[0]->evid;
+   $trialevaluatorid = $resEvaluator[0]->trevid; 
 
-
-   echo "trial id> $trialid<br>evaluator id> $evaluatorid<br>";
 
    //verificar no db onde o course custom field está
 
@@ -950,26 +995,104 @@ function criarCourseCatpdi($coursecatid, $coursename, $trialid){
 
 
    //AGORA, criar o curso com as definições necessárias e passar o pdi_trial_evaluator no custom field
-   $criarCurso = new stdClass();
-   $criarCurso->category = $coursecatid;
-   $criarCurso->fullname = $coursename;
-   $criarCurso->shortname = $strShortname;
-   $criarCurso->timecreated = $timecreated;
-   $criarCurso->timemodified = $timemodified;
+      $shortnameinicial = $strShortname;
+      $shortnamefinal = $strShortname;
+      $attempts = 0;
+      do {
 
-   $resCriarC = $DB->insert_record('course', $criarCurso); //retorna id do curso
+      try
+      {
+         $erroCatch = false;
+
+         $criarCurso = new stdClass();
+         $criarCurso->category = $coursecatid;
+         $criarCurso->fullname = $coursename;
+         $criarCurso->shortname = $shortnamefinal;
+      
+         $resCriarC = create_course($criarCurso);
+
+      } catch (Exception $e) {
+            $attempts++;
+            $erroCatch = true;
+            $shortnamefinal = $shortnameinicial . "_$attempts";
+            usleep(100000); // 0,1 segundos
+            continue;
+      }
+
+      break;
+
+      } while($erroCatch == true);
+
 
    //atribuir custom field
    $addCustomData = new stdClass();
    $addCustomData->fieldid = $customFID;
-   $addCustomData->instanceid = $resCriarC;
-   $addCustomData->charvalue = "pdi_trial_evaluator_$evaluatorid"; //id do pdi_trial_evaluator
-   $addCustomData->value = $evaluatorid; //id do pdi_trial_evaluator
+   $addCustomData->instanceid = $resCriarC->id;
+   $addCustomData->charvalue = "pdi_trial_evaluator_$trialevaluatorid"; //id do pdi_trial_evaluator
+   $addCustomData->value = $trialevaluatorid; //id do pdi_trial_evaluator
    $addCustomData->valueformat = 0;
-   $addCustomData->timecreated = $timecreated;
-   $addCustomData->timemodified = $timemodified;
+   $addCustomData->timecreated = time();
+   $addCustomData->timemodified = time();
+
+   //var_dump($addCustomData);
 
    $resCustomField = $DB->insert_record('customfield_data', $addCustomData);
 
+   //adicionar membros do cohort ao curso
+   //selecionar os dados
+   if($resCustomField > 0 ){
+      $sqlMembers = "SELECT cm.id cmid, cm.cohortid, cm.userid, trev.id trevid, trev.trialid 
+         FROM {local_pdi_trial_evaluator} trev
+         LEFT JOIN {cohort_members} cm
+         ON cm.cohortid = trev.cohortid
+         WHERE trev.id = '$trialevaluatorid'";
+      $resMembers = $DB->get_records_sql($sqlMembers);
+
+      foreach($resMembers as $r){
+         $studentid = $r->userid;
+         $roleid = 5; //student
+
+         check_enrol($shortnamefinal, $studentid, $roleid);
+      }
+
+      //adicionar o avaliador
+      check_enrol($shortnamefinal, $USER->id, 3); //3 = editing teacher
+      
+
+   }
+
    return "ok";
+}
+
+//function from moodle forum to enrol a user
+function check_enrol($shortname, $userid, $roleid, $enrolmethod = 'manual') {
+   global $DB;
+   require_once('../../../config.php');
+
+   $user = $DB->get_record('user', array('id' => $userid, 'deleted' => 0), '*', MUST_EXIST);
+   $course = $DB->get_record('course', array('shortname' => $shortname), '*', MUST_EXIST);
+   $context = context_course::instance($course->id);
+   if (!is_enrolled($context, $user)) {
+       $enrol = enrol_get_plugin($enrolmethod);
+       if ($enrol === null) {
+           return false;
+       }
+       $instances = enrol_get_instances($course->id, true);
+       $manualinstance = null;
+       foreach ($instances as $instance) {
+           if ($instance->name == $enrolmethod) {
+               $manualinstance = $instance;
+               break;
+           }
+       }
+       if ($manualinstance !== null) {
+           $instanceid = $enrol->add_default_instance($course);
+           if ($instanceid === null) {
+               $instanceid = $enrol->add_instance($course);
+           }
+           $instance = $DB->get_record('enrol', array('id' => $instanceid));
+       }
+       $enrol->enrol_user($instance, $userid, $roleid);
+   }
+   return true;
 }

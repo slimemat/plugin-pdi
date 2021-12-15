@@ -60,6 +60,8 @@ function mostrarBlocosTrial($offset, $rows){
     $lastTrialid = 'null';
     $lastFullevaluatorname = 'null';
 
+    $respondido = 0;
+
     foreach($res as $r){
 
        $xtrialid = "$r->trialid";

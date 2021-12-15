@@ -191,6 +191,7 @@ $html_notas
 
 </div>";
 
+
 ///////////////////////////////trabalhando nessa tela
 ///////////////////////////////////////////////////////
 ///////////////////////////////////
@@ -199,6 +200,7 @@ $imgURL = new moodle_url('/user/pix.php/'.$userid_pic.'/f1.jpg');
 
 ///TESTE COM IMAGENS
 ///////////////////////
+
 
 echo "<div id='my-tab2' class='my-inside-container my-hidden'>
 
@@ -580,6 +582,14 @@ $(".my-youev").on("click", function(){
   var trialid = $(this).attr("data-trial");
   var functionid = 3; //verificar callphpfunctions.php para ver qual é a três
 
+  //esquema de mudar o estilo do selecionado
+  //estilo
+  $(".my-youev").each(function(){
+      $(this).removeClass("my-bg-greylight-round");
+    });
+    $(this).addClass("my-bg-greylight-round");
+
+
   var values = {
         'alunoid'  : alunoid,
         'sectorid' : sectorid,
@@ -896,19 +906,31 @@ $("#my-tab2").on("click", "#btn-add-course", function(){
         url: 'print/callphpfunctions.php',
         data: values,
 
-        beforeSend: function(){  }
+        beforeSend: function(){ 
+          $("#my-tab2 #btn-add-course").html("Criando...");
+          $("#my-tab2 #btn-add-course").prop("disabled",true);
+        }
     })
     .done(function(msg){
+      $("#my-tab2 #btn-add-course").html("Criar");
+      $("#my-tab2 #btn-add-course").prop("disabled",false);
         if(msg == "ok"){
-          //smth
+          //atualizar        
+          //atualiza clicando no avaliado ativo, que tem essa classe
+          $("#my-tab2-inner .my-bg-greylight-round").click();
+          console.log("ok, atualizar reunião");
         }
         else{
           console.log("DONE, but not ok");
+          console.log(msg);
         }
         
     })
-    .fail(function(){
+    .fail(function(msg){
+      $("#my-tab2 #btn-add-course").html("Criar");
+      $("#my-tab2 #btn-add-course").prop("disabled",false);
         alert('Algo deu errado ao carregar!');
+        console.log(msg);
     });
 
 });
