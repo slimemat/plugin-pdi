@@ -54,7 +54,7 @@ $PAGE->set_context(\context_system::instance());
 $PAGE->set_title("Web Admin");
 $PAGE->set_heading('Web Admin');
 $PAGE->requires->jquery();
-$PAGE->requires->js(new moodle_url($CFG->dirrroot . '/local/pdi/scripts/pdiscript.js'));
+$PAGE->requires->js(new moodle_url('/local/pdi/scripts/pdiscript.js'));
 
 global $DB;
 
@@ -197,6 +197,18 @@ $adm_select_table = "<table id='pditable-select' class=\"table mydark-table\">
 </table>";
 
 
+//plugin concrea verify
+$congrea = $DB->get_records('modules', ['name' => 'congrea']);
+if(count($congrea)>0){ 
+  $urlCongrea = $CFG->wwwroot . '/admin/settings.php?section=modsettingcongrea';
+  $congreaDiv = "<div class=\"card-body\"><h4><span class=\"badge bg-light text-dark rounded\">Installed <i class=\"fas fa-check\"></i></span></h4>
+                  <p>If you haven't defined the api keys yet, you can do it <a href=\"$urlCongrea\" class=\"link-primary\">here</a>.</p>
+  </div>                
+  "; 
+}
+else{ $congreaDiv = "Not installed"; }
+
+
 //page
 echo $OUTPUT->header();
 
@@ -257,6 +269,11 @@ echo "<table id=\"dt-select\" class=\"table mydark-table my-pointer\" cellspacin
 </tfoot>
 </table>
 </div>";
+
+echo "<br><hr>";
+
+echo "<h4>Meetings plugin (congrea)</h4>";
+echo "$congreaDiv";
 
 echo "<div id='my-smallmsg'>Copied to form!</div>";
 echo "<div id ='my-smallmsg-error' class='my-smallmsg-error'>No one is selected!</div>";

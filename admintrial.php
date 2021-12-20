@@ -936,6 +936,49 @@ $("#my-tab2").on("click", "#btn-add-course", function(){
 });
 
 
+//botões dentro da reunião criada
+$("#my-tab2").on("click", "#btn-ver-reuniao", function(){
+  alert("aaaa");
+});
+
+$("#my-tab2").on("click", "#btn-ocultar-curso", function(){
+  var functionid = 12;
+  var courseid = $(this).attr('data-cid');
+
+  var values = {        
+        'function' : functionid,
+        'courseid' : courseid,
+  };
+
+  $.ajax({
+        method: 'POST',
+        url: 'print/callphpfunctions.php',
+        data: values,
+    })
+    .done(function(msg){
+        if(msg == "ok"){
+          //atualiza clicando no avaliado ativo, que tem essa classe
+          $("#my-tab2-inner .my-bg-greylight-round").click();
+        }
+        else{
+          alert("Não foi possível alterar a visibilidade!");
+        }
+    })
+    .fail(function(){
+        alert('Algo deu errado ao tentar ocultar!');
+    });
+});
+
+
+//btn-ver-reuniao
+$("#my-tab2").on("click", "#btn-ver-reuniao", function(){
+  
+});
+
+
+
+
+
 });
 
 </script>

@@ -230,19 +230,19 @@
 
    
    //*** form para criar um course com o plugin congrea ***/
-   $sqlVeCat = "SELECT * FROM mdl_course_categories cc WHERE cc.name = 'pdi_hidden' and cc.idnumber = 'pdi_hidden_key'";
+   $sqlVeCat = "SELECT * FROM mdl_course_categories cc WHERE cc.name = 'categoria pdi' and cc.idnumber = 'pdi_hidden_key'";
    $resVeCat = $DB->get_records_sql($sqlVeCat);
    $htmlFormCourse = '';
 
    if(count($resVeCat) == 0){
       $addCat = new stdClass();
-      $addCat->name = "pdi_hidden";
+      $addCat->name = "categoria pdi";
       $addCat->idnumber = "pdi_hidden_key";
 
       $res = $DB->insert_record('course_categories', $addCat);
       echo "<script>console.log('pdi inseriu categoria:' + $res)</script>";
 
-      $sqlVeCat = "SELECT * FROM mdl_course_categories cc WHERE cc.name = 'pdi_hidden' and cc.idnumber = 'pdi_hidden_key'";
+      $sqlVeCat = "SELECT * FROM mdl_course_categories cc WHERE cc.name = 'categoria pdi' and cc.idnumber = 'pdi_hidden_key'";
       $resVeCat = $DB->get_records_sql($sqlVeCat);
 
       $resVeCat = array_values($resVeCat);
@@ -295,7 +295,7 @@
 
 
    //verificar se já existe um curso para a reunião congrea
-   $sqlVerCourse = "SELECT c.id cid, c.category ccat, c.fullname cname, c.shortname cshortname, c.startdate cstart, c.enddate cend, 
+   $sqlVerCourse = "SELECT c.id cid, c.category ccat, c.fullname cname, c.shortname cshortname, c.startdate cstart, c.enddate cend, c.visible,
                      cc.id ccid, cc.name ccname, cff.id cffid, cff.shortname cffshortname, cfd.id cfdid, cfd.charvalue cfdcharvalue, cfd.value cfdvalue
                      FROM {course} c
                      LEFT JOIN {course_categories} cc
@@ -304,19 +304,39 @@
                      ON cff.shortname = 'pdi_trial_evaluator'
                      LEFT JOIN {customfield_data} cfd
                      ON cfd.fieldid = cff.id AND cfd.instanceid = c.id
-                     WHERE cc.name = 'pdi_hidden' AND cc.idnumber = 'pdi_hidden_key' AND cfd.value = '$trial_ev_id'
+                     WHERE cc.name = 'categoria pdi' AND cc.idnumber = 'pdi_hidden_key' AND cfd.value = '$trial_ev_id'
                      ";
    $resVerCourse = $DB->get_records_sql($sqlVerCourse);
-   
-
-   //var_dump($resVerCourse);
 
    if(count($resVerCourse) < 1){
       $htmlReuniao = $htmlFormCourse;
    }
    else{
-      $htmlReuniao = "<span class=\"badge bg-secondary\">Reunião criada</span>";
-      //
+
+      $resVerCourse = array_values($resVerCourse);
+      $resVerCourse = $resVerCourse[0];
+
+      $courseid = $resVerCourse->cid;
+      $categoryid = $resVerCourse->ccat;
+      $cname = $resVerCourse->cname;
+      $cshortname = $resVerCourse->cshortname;
+      $cstart = $resVerCourse->cstart;
+      $cend = $resVerCourse->cend;
+      $cvisible = $resVerCourse->visible;
+
+      $htmlReuniao = "<span class=\"badge bg-secondary\">Reunião criada</span>
+                     <br>
+                     <h5 class='my-font-family'>$cname</h5>
+                     <button type=\"button\" class=\"btn btn-primary btn-sm\" id='btn-ver-reuniao' data-cid='$courseid'>Ver reunião</button>                     
+      ";
+      //ver se o curso terá opção de ocultar ou mostrar
+      if($cvisible == 1){
+         $htmlReuniao .= "<button type=\"button\" class=\"btn btn-secondary btn-sm\" id='btn-ocultar-curso' data-cid='$courseid' title='ocultar'> visibilidade: <i class=\"far fa-eye\"></i></button>";
+      }else{
+         $htmlReuniao .= "<button type=\"button\" class=\"btn btn-secondary btn-sm\" id='btn-ocultar-curso' data-cid='$courseid' title='mostrar'> visibilidade: <i class=\"far fa-eye-slash\"></i></button>";
+      }
+
+
    }
    
 
@@ -1095,4 +1115,32 @@ function check_enrol($shortname, $userid, $roleid, $enrolmethod = 'manual') {
        $enrol->enrol_user($instance, $userid, $roleid);
    }
    return true;
+}
+
+function ocultarMostrarCurso($courseid){
+   global $DB;
+
+   $res = $DB->get_records('course', array('id'=>"$courseid"));
+   $res = array_values($res);
+   $res = $res[0];
+
+   $visible = $res->visible;
+
+   if($visible == 1){ $visible = 0; }
+   else{ $visible = 1; }
+
+   $updateC = new stdClass();
+   $updateC->id = $courseid;
+   $updateC->visible = $visible;
+
+   $resUp = $DB->update_record('course', $updateC);
+
+   if($resUp){
+      return 'ok';
+   }else{
+      return 'erro';
+   }
+
+   
+
 }

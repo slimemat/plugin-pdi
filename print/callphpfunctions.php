@@ -148,6 +148,13 @@ if(isset($_POST['function'])){
 
         echo $return;
     }
+    else if($myfunction == 12){
+        $courseid = $_POST['courseid'];
+
+        $return = ocultarMostrarCurso($courseid);
+
+        echo $return;
+    }
 
 
 
