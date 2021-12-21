@@ -206,7 +206,18 @@ if(count($congrea)>0){
   </div>                
   "; 
 }
-else{ $congreaDiv = "Not installed"; }
+else{
+  $urlPluginTab = $CFG->wwwroot . "/admin/tool/installaddon/index.php";
+  $urlCongrea = "https://moodle.org/plugins/download.php/25256/mod_congrea_moodle311_2021100700.zip";
+  $congreaDiv = "<div class=\"card-body\">
+                    <div class=\"alert alert-warning\" role=\"alert\">
+                      The plugin needed to setup meetings was not detected in your moodle website! You can download it 
+                      <a href=\"$urlCongrea\" class=\"link-primary\">here</a>.
+                    </div>
+                  <p>After downloading the plugin ZIP file, go to the <a href=\"$urlPluginTab\">Plugin Installer</a> tab to proceed. After the installation is complete, you can return to this page to finish the setup.</p>
+                </div>                
+  "; 
+}
 
 
 //page
@@ -272,7 +283,7 @@ echo "<table id=\"dt-select\" class=\"table mydark-table my-pointer\" cellspacin
 
 echo "<br><hr>";
 
-echo "<h4>Meetings plugin (congrea)</h4>";
+echo "<h4 id='congrea-div'>Meetings plugin (congrea)</h4>";
 echo "$congreaDiv";
 
 echo "<div id='my-smallmsg'>Copied to form!</div>";

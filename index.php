@@ -57,6 +57,18 @@ if(has_capability('moodle/site:config', context_system::instance())){
     $strManageAdms = get_string('web_manage_adm', 'local_pdi');
     $btn_web_adm = "<a href='webadmin.php' class='pdi-nostyle'><button type='button' class='btn-pdiselect' value='adm'>$strManageAdms</button></a>";
 
+    $congrea = $DB->get_records('modules', ['name' => 'congrea']);
+    if(count($congrea) > 0){
+        $strCongrea = "Manage meetings plugin";
+        $btn_web_adm .= "<a href='webadmin.php#congrea-div' class='pdi-nostyle'><button type='button' class='btn-pdiselect' value='adm'>$strCongrea</button></a>";
+    }else{
+        $strCongrea = "Install meetings plugin congrea";
+        $btn_web_adm .= "<a href='webadmin.php#congrea-div' class='pdi-nostyle'><button type='button' class='btn-pdiselect' value='adm'>$strCongrea</button></a>";
+
+        $strWarnCongrea = "You still need to install the meetings plugin congrea";
+        \core\notification::add($strWarnCongrea , \core\output\notification::NOTIFY_ERROR);
+    }
+
 }
 else{
     $sql = "SELECT * FROM {local_pdi_user} LIMIT 3";

@@ -324,10 +324,11 @@
       $cend = $resVerCourse->cend;
       $cvisible = $resVerCourse->visible;
 
+      $urlCurso = $CFG->wwwroot . "/course/view.php?id=$courseid";
       $htmlReuniao = "<span class=\"badge bg-secondary\">Reunião criada</span>
                      <br>
                      <h5 class='my-font-family'>$cname</h5>
-                     <button type=\"button\" class=\"btn btn-primary btn-sm\" id='btn-ver-reuniao' data-cid='$courseid'>Ver reunião</button>                     
+                     <button type=\"button\" class=\"btn btn-primary btn-sm\" id='btn-ver-reuniao' data-cid='$courseid' data-url='$urlCurso'>Ver reunião</button>                     
       ";
       //ver se o curso terá opção de ocultar ou mostrar
       if($cvisible == 1){
@@ -336,7 +337,9 @@
          $htmlReuniao .= "<button type=\"button\" class=\"btn btn-secondary btn-sm\" id='btn-ocultar-curso' data-cid='$courseid' title='mostrar'> visibilidade: <i class=\"far fa-eye-slash\"></i></button>";
       }
 
-
+      $urlDocCongrea = "<a class=\"link-primary\" href='https://www.congrea.com/moodle-integration-manuals#adding-congrea-as-an-activity' target=\"_blank\">Como marcar a reunião?</a>";
+      $htmlReuniao .= "<a tabindex=\"0\" class=\"btn mybelow1\" role=\"button\" data-toggle=\"popover\" data-placement='right' data-trigger=\"focus\" title=\"?\" data-content=\"A reunião foi criada e pode ser configurada clicando no botão 'ver reunião'.\"><i class=\"far fa-question-circle my-help-pop\"></i></a>";
+      $htmlReuniao .= "<br><br><small class='my-font-family text-muted'>$urlDocCongrea</small>";
    }
    
 

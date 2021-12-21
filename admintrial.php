@@ -938,8 +938,10 @@ $("#my-tab2").on("click", "#btn-add-course", function(){
 
 //botões dentro da reunião criada
 $("#my-tab2").on("click", "#btn-ver-reuniao", function(){
-  alert("aaaa");
+  var urlCourse = $(this).attr('data-url');
+  window.location.href = urlCourse;
 });
+
 
 $("#my-tab2").on("click", "#btn-ocultar-curso", function(){
   var functionid = 12;
@@ -968,13 +970,6 @@ $("#my-tab2").on("click", "#btn-ocultar-curso", function(){
         alert('Algo deu errado ao tentar ocultar!');
     });
 });
-
-
-//btn-ver-reuniao
-$("#my-tab2").on("click", "#btn-ver-reuniao", function(){
-  
-});
-
 
 
 
