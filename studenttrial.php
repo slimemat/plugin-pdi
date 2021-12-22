@@ -787,6 +787,15 @@ $("#my-tab2-inner").on("click", ".btn-salvar-resp" ,function(){
 });
 
 
+//botões dentro da reunião criada
+$("#my-tab2").on("click", "#btn-ver-reuniao", function(){
+  var urlCourse = $(this).attr('data-url');
+  window.location.href = urlCourse;
+});
+
+
+
+
 });
 
 </script>

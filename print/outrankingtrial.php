@@ -395,8 +395,12 @@ function fetchTablesGrades($trialid, $currentuid){
             }
         }
 
-        $mediaNota = $somaNota / $q;
-        $mediaNota = number_format($mediaNota, 2, ',', '.');
+        if($q == 0){$mediaNota = "--";}
+        else{
+            $mediaNota = $somaNota / $q;
+            $mediaNota = number_format($mediaNota, 2, ',', '.');
+        }
+
 
         if($respTimecreated != null){
             $respTimecreated = gmdate("d/m/Y", $respTimecreated);
@@ -457,8 +461,12 @@ function fetchTablesGrades($trialid, $currentuid){
             }
         }
 
-        $mediaNota_av = $somaNota / $q;
-        $mediaNota_av = number_format($mediaNota_av, 2, ',', '.');
+        if($q == 0){$mediaNota_av = "--";}
+        else{
+            $mediaNota_av = $somaNota / $q;
+            $mediaNota_av = number_format($mediaNota_av, 2, ',', '.');
+        }
+
 
         if($respTimemod != null){
             $respTimemod = gmdate("d/m/Y", $respTimemod);
@@ -540,6 +548,9 @@ function fetchTablesGrades($trialid, $currentuid){
 function calcularMediaGeral($trialid, $currentuid, $evaluatedid){
     global $DB;
 
+    $respTimecreated = null;
+    $respTimemod = null;
+
     //quick query to get sector
     $sqlSec = "SELECT * FROM {local_pdi_sector_member} sm
     WHERE sm.userid = '$currentuid' AND sm.trialid = '$trialid'";
@@ -575,7 +586,10 @@ function calcularMediaGeral($trialid, $currentuid, $evaluatedid){
         }
     }
 
-    $mediaNota = $somaNota / $q;
+    if($q == 0){$mediaNota = "--";}
+    else{
+        $mediaNota = $somaNota / $q;
+    }
 
     if($respTimecreated == null){
         //do nothing 
@@ -612,8 +626,10 @@ function calcularMediaGeral($trialid, $currentuid, $evaluatedid){
         }
     }
 
-    $mediaNota_av = $somaNota / $q;
-
+    if($q == 0){$mediaNota_av = "--";}
+    else{
+        $mediaNota_av = $somaNota / $q;
+    }
 
     if($respTimemod == null){
         //do nothing

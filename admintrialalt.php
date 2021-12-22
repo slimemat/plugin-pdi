@@ -561,6 +561,13 @@ $(".my-youev").on("click", function(){
   var trialid = $(this).attr("data-trial");
   var functionid = 3; //verificar callphpfunctions.php para ver qual é a três
 
+  //esquema de mudar o estilo do selecionado
+  //estilo
+  $(".my-youev").each(function(){
+      $(this).removeClass("my-bg-greylight-round");
+    });
+    $(this).addClass("my-bg-greylight-round");
+
   var values = {
         'alunoid'  : alunoid,
         'sectorid' : sectorid,
@@ -844,6 +851,106 @@ function linkify(text) {
         return '<a href="' + url + '" target="_blank">' + url + '</a>';
     });
 }
+
+
+$("#my-tab2").on("click", "#btn-add-course", function(){
+  
+  var functionid = 11; //verificar callphpfunctions.php qual é a 11
+  var coursecatid = $("#form-create-course").attr("data-id-coursecat");
+  var coursename = $("#input-nome-course").val().trim();
+  var trialid = "" + <?= $_POST['hidden-trial-id'] ?> + "";
+
+  if(coursename.length < 5){
+    $("#input-nome-course").focus();
+    $("#my-smallmsg-error").fadeIn(200);
+    $("#my-smallmsg-error").css("display", "flex");
+    $("#my-smallmsg-error").delay(2000).fadeOut(400);
+
+    return false;
+  }
+
+  //ajax values
+  var values = {       
+        'coursecatid'  : coursecatid,
+        'coursename' : coursename,
+        'trialid'   : trialid,
+        'function' : functionid
+  };
+
+  //ajax
+  $.ajax({
+        method: 'POST',
+        url: 'print/callphpfunctions.php',
+        data: values,
+
+        beforeSend: function(){ 
+          $("#my-tab2 #btn-add-course").html("Criando...");
+          $("#my-tab2 #btn-add-course").prop("disabled",true);
+        }
+    })
+    .done(function(msg){
+      $("#my-tab2 #btn-add-course").html("Criar");
+      $("#my-tab2 #btn-add-course").prop("disabled",false);
+        if(msg == "ok"){
+          //atualizar        
+          //atualiza clicando no avaliado ativo, que tem essa classe
+          $("#my-tab2-inner .my-bg-greylight-round").click();
+          console.log("ok, atualizar reunião");
+        }
+        else{
+          console.log("DONE, but not ok");
+          console.log(msg);
+        }
+        
+    })
+    .fail(function(msg){
+      $("#my-tab2 #btn-add-course").html("Criar");
+      $("#my-tab2 #btn-add-course").prop("disabled",false);
+        alert('Algo deu errado ao carregar!');
+        console.log(msg);
+    });
+
+});
+
+
+//botões dentro da reunião criada
+$("#my-tab2").on("click", "#btn-ver-reuniao", function(){
+  var urlCourse = $(this).attr('data-url');
+  window.location.href = urlCourse;
+});
+
+
+$("#my-tab2").on("click", "#btn-ocultar-curso", function(){
+  var functionid = 12;
+  var courseid = $(this).attr('data-cid');
+
+  var values = {        
+        'function' : functionid,
+        'courseid' : courseid,
+  };
+
+  $.ajax({
+        method: 'POST',
+        url: 'print/callphpfunctions.php',
+        data: values,
+    })
+    .done(function(msg){
+        if(msg == "ok"){
+          //atualiza clicando no avaliado ativo, que tem essa classe
+          $("#my-tab2-inner .my-bg-greylight-round").click();
+        }
+        else{
+          alert("Não foi possível alterar a visibilidade!");
+        }
+    })
+    .fail(function(){
+        alert('Algo deu errado ao tentar ocultar!');
+    });
+});
+
+
+
+
 
 
 });

@@ -48,7 +48,7 @@ $PAGE->set_context(\context_system::instance());
 $PAGE->set_title("PDI Admin");
 $PAGE->set_heading('PDI Admin');
 $PAGE->requires->jquery();
-$PAGE->requires->js(new moodle_url($CFG->dirrroot . '/local/pdi/scripts/pdiscript.js'));
+$PAGE->requires->js(new moodle_url('/local/pdi/scripts/pdiscript.js'));
 
 global $USER, $DB;
 

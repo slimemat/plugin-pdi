@@ -139,6 +139,7 @@
 
     $resQDB = $DB->get_records_sql($sqlQDB);
 
+    $resQav = array();
     foreach($resQDB as $r){
 
       //o que o avaliador respondeu NESSA questão
@@ -278,6 +279,13 @@
       </form>
       ";
    }
+
+   $congrea = $DB->get_records('modules', ['name' => 'congrea']);
+      if(count($congrea)<1){ 
+         $htmlFormCourse = "<div class=\"alert alert-warning\" role=\"alert\">
+                              Contate um administrador para ativar as reuniões!
+                           </div>";
+      }
 
 //************************* **************************//
    //pdi_trial_evaluator pegar o id
@@ -711,7 +719,7 @@
  }
 
  function retornoPdiPorAvaliador($userid, $trialid){
-   global $USER, $DB;
+   global $USER, $DB, $CFG;
 
    //var
    $alunoid = $USER->id;
@@ -804,7 +812,77 @@
    <br>
    ";
 
-   //parte2
+   //parte2 (aluno pov)
+   $conteudoReuniao = 'Nenhuma reunião detectada.';
+
+   $congrea = $DB->get_records('modules', ['name' => 'congrea']);
+      if(count($congrea)<1){ 
+         $conteudoReuniao = "<div class=\"alert alert-warning\" role=\"alert\">
+                              As reuniões ainda não foram ativadas por um administrador!
+                           </div>";
+      }else{
+         //consultar os grupos do avaliador selecionado para o aluno ver a reunião
+         //pdi_trial_evaluator pegar o id (lembrando que essa função é chamada pelo aluno, por isso as variaveis mudam um pouco)
+         $trial_ev_id = "";
+         $sqlGetTrevId = "SELECT trev.id trevid, trev.cohortid, ev.id evid, ev.mdlid FROM {local_pdi_trial_evaluator} trev
+                           LEFT JOIN {local_pdi_evaluator} ev
+                           ON ev.id = trev.evaluatorid
+                           WHERE trev.trialid = '$trialid' AND ev.mdlid = '$evaluatorid'";
+         $resGetTrevId = $DB->get_records_sql($sqlGetTrevId);
+         $resGetTrevId = array_values($resGetTrevId);
+         $resGetTrevId = $resGetTrevId[0];
+
+         $cohortTrial = $resGetTrevId->cohortid;
+         $trial_ev_id = $resGetTrevId->trevid;
+
+
+         //verificar se já existe um curso para a reunião congrea
+         $sqlVerCourse = "SELECT c.id cid, c.category ccat, c.fullname cname, c.shortname cshortname, c.startdate cstart, c.enddate cend, c.visible,
+                           cc.id ccid, cc.name ccname, cff.id cffid, cff.shortname cffshortname, cfd.id cfdid, cfd.charvalue cfdcharvalue, cfd.value cfdvalue
+                           FROM {course} c
+                           LEFT JOIN {course_categories} cc
+                           ON cc.id = c.category
+                           LEFT JOIN {customfield_field} cff
+                           ON cff.shortname = 'pdi_trial_evaluator'
+                           LEFT JOIN {customfield_data} cfd
+                           ON cfd.fieldid = cff.id AND cfd.instanceid = c.id
+                           WHERE cc.name = 'categoria pdi' AND cc.idnumber = 'pdi_hidden_key' AND cfd.value = '$trial_ev_id'
+                           ";
+         $resVerCourse = $DB->get_records_sql($sqlVerCourse);
+
+         if(count($resVerCourse) < 1){
+            $conteudoReuniao = $conteudoReuniao; //mantém o valor
+         }
+         else{
+
+            $resVerCourse = array_values($resVerCourse);
+            $resVerCourse = $resVerCourse[0];
+
+            $courseid = $resVerCourse->cid;
+            $categoryid = $resVerCourse->ccat;
+            $cname = $resVerCourse->cname;
+            $cshortname = $resVerCourse->cshortname;
+            $cstart = $resVerCourse->cstart;
+            $cend = $resVerCourse->cend;
+            $cvisible = $resVerCourse->visible;
+
+            $urlCurso = $CFG->wwwroot . "/course/view.php?id=$courseid";
+            $conteudoReuniao = "<span class=\"badge bg-secondary\">Reunião criada</span>
+                           <br>
+                           <h5 class='my-font-family'>$cname</h5>
+                           <button type=\"button\" class=\"btn btn-primary btn-sm\" id='btn-ver-reuniao' data-cid='$courseid' data-url='$urlCurso'>Ver reunião</button>                     
+            ";
+            //ver se o curso terá opção de ocultar ou mostrar
+            if($cvisible == 1){
+               $conteudoReuniao .= "<button type=\"button\" class=\"btn btn-secondary btn-sm\" disabled>Aberto</button>";
+            }else{
+               $conteudoReuniao .= "<button type=\"button\" class=\"btn btn-secondary btn-sm\" disabled>Fechado</button>";
+            }
+
+            $conteudoReuniao .= "<a tabindex=\"0\" class=\"btn mybelow1\" role=\"button\" data-toggle=\"popover\" data-placement='right' data-trigger=\"focus\" title=\"?\" data-content=\"Clique em 'Ver reunião' para ser redirecionado.\"><i class=\"far fa-question-circle my-help-pop\"></i></a>";
+         }
+
+      }
 
    //marcar e objetivos
    $blocoHTML .= "
@@ -817,7 +895,7 @@
          <div class=\"card-body shadow-sm p-3 mb-5 bg-body rounded\">
                <div class=\"\">
                
-               conteúdo aqui
+               $conteudoReuniao
 
                </div>
          </div>

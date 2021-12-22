@@ -325,6 +325,8 @@ function verifyAdm($usernameAdm){
    $sql2 = "SELECT username, userrole FROM {local_pdi_user} WHERE username = '$userLogado'";
    $res2 = $DB->get_records_sql($sql2);
 
+   if(count($res2) == 0){return "no";}
+
    $userSql = $res2["$userLogado"];
 
    //verifica se o email cadastrado é o mesmo do usuário logado
