@@ -151,6 +151,18 @@ echo "<footer class='my-belowh1'>$dateInicioF - $dateFimF</footer>";
 
 
 //bloco com conteúdo gerado no começo da página
+
+if(time() < $trialStart){
+echo "
+<div class=\"alert alert-warning\" role=\"alert\">
+  <span>Você pode fazer alterações neste processo até dia $dateInicioF</span>
+  <div style='display: inline-block; float: right' class='text-right'>
+    <span id='btn-editar-trial' class=\"my-label-btn my-btn-pad my-darkback-hover\">Editar</span>
+    <span id='btn-excluir-trial' class=\"my-label-err-btn my-btn-pad my-darkback-hover\">Excluir</span>
+  </div>
+</div>";
+}
+
 echo "
 <div id='my-tab1' class='my-inside-container my-hidden'>
 
@@ -972,6 +984,14 @@ $("#my-tab2").on("click", "#btn-ocultar-curso", function(){
 });
 
 
+//btns de edição quando o processo está adiantado
+$("#btn-editar-trial").on("click", function(){
+  alert('editar');
+});
+
+$("#btn-excluir-trial").on("click", function(){
+  alert('excluir');
+});
 
 
 });

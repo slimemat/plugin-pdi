@@ -34,3 +34,31 @@ $string['current_admins'] = "Current admins";
 $string['new_admins'] = "New admins";
 $string['if_you_dont_know'] = "If you don't know the user's info you can check on Settings > Site administration > Users > Accounts > <a href='/moodle/admin/user.php'>Browse list of users</a>";
 $string['check_out_below'] = "or simply check out <a href='#checkouthere' class='pdi-nostyle' style='color: var(--myprimary);'>below</a>";
+
+$string['manage_meetings'] = "Manage meetings plugin";
+$string['warning_install_congrea'] = "You still need to install the meetings plugin congrea";
+$string['install_plugin_congrea'] = "Install meetings plugin congrea";
+$string['already_exists_check'] = "User already exists! Please, check the table.";
+$string['check_table_results'] = "Check the table for results";
+$string['invalid_user_check'] = "Invalid user! Please, check the available moodle users.";
+$string['admin_disabled'] = "Admin disabled.";
+$string['admin_enabled'] = "Admin enabled.";
+$string['admin_deleted'] = "Admin deleted.";
+$string['collapse'] = "collapse";
+$string['quickadd'] = "quick add";
+$string['disable'] = "Disable";
+$string['enable'] = "Enable";
+$string['delete'] = "Delete";
+$string['installed'] = "Installed";
+$string['if_have_no_keys'] = "If you haven't defined the api keys yet, you can do it";
+$string['here'] = "here";
+$string['congrea_not_detected'] = "The plugin needed to setup meetings was not detected in your moodle website! You can download it";
+
+$string['after_download_go_to'] = "After downloading the plugin ZIP file, go to the";
+$string['plugin_installer_tab'] = "Plugin Installer Tab";
+$string['to_proceed'] = "to proceed";
+$string['after_install_complete'] = "After the installation is complete, you can return to this page to finish the setup.";
+
+$string['meetings_plugin'] = "Meetings plugin (congrea)";
+$string['copied_to_form'] = "Copied to form!";
+$string['no_one_selected'] = "No one is selected!";

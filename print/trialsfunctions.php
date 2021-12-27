@@ -26,7 +26,7 @@ function mostrarBlocosTrial($offset, $rows){
     global $USER, $DB;
 
     //então, usar o setor para fazer outra pesquisa (sectorid)
-    $sql = "SELECT sm.id, mdb.timecreated, mdb.dbid, mdb.smemberid, sm.sectorid, sm.userid as userid_sector_member, sm.trialid,trev.cohortid, cm.userid as userid_cohort_member, t.title as trialtitle, td.isstarted as trialisstarted, td.startdate, td.enddate, us.firstname, us.lastname
+    $sql = "SELECT sm.id, mdb.timecreated, mdb.dbid, mdb.smemberid, sm.sectorid, sm.userid as userid_sector_member, sm.trialid,trev.cohortid, cm.userid as userid_cohort_member, t.title as trialtitle, t.timecreated ,td.isstarted as trialisstarted, td.startdate, td.enddate, us.firstname, us.lastname
     FROM {local_pdi_sect_mem_db} mdb
     LEFT JOIN {local_pdi_sector_member} sm
     ON sm.id = mdb.smemberid
@@ -40,7 +40,9 @@ function mostrarBlocosTrial($offset, $rows){
     ON td.trialid = t.id
     LEFT JOIN {user} us
     ON us.id = sm.userid
-    WHERE cm.userid = \"$USER->id\"";
+    WHERE cm.userid = \"$USER->id\"
+    ORDER BY td.startdate DESC, t.timecreated DESC
+    ";
 
     $res = $DB->get_records_sql($sql);
     //var_dump($res);
@@ -188,7 +190,7 @@ function mostrarTodosTrials($offset, $rows){
    $blocoHtml = '';
    $blocoReturn = '';
 
-   $sql = "SELECT t.id, t.title as trialtitle, td.isstarted as trialisstarted, td.startdate, td.enddate
+   $sql = "SELECT t.id, t.title as trialtitle, t.timecreated ,td.isstarted as trialisstarted, td.startdate, td.enddate
    FROM {local_pdi_sect_mem_db} mdb
    LEFT JOIN {local_pdi_sector_member} sm
    ON sm.id = mdb.smemberid
@@ -204,6 +206,7 @@ function mostrarTodosTrials($offset, $rows){
    ON us.id = sm.userid
    WHERE cm.userid = \"$USER->id\"
    GROUP BY t.id
+   ORDER BY td.startdate DESC, t.timecreated DESC 
    LIMIT $offset, $rows";
 
    $res = $DB->get_records_sql($sql);

@@ -468,7 +468,9 @@
                   WHERE s.userid = '$alunoid' AND s.idtrial = '$trialid' AND s.sectorid ='$sectorid'";
    $resVer = $DB->get_records_sql($sqlVer);
 
-   $anstatusid = $resVer[$alunoid]->id;
+   if(count($resVer)>0){
+      $anstatusid = $resVer[$alunoid]->id;
+   }else{$anstatusid = null;}
 
    if($anstatusid == null){
       return "<div class=\"card-body my-bg-light\">

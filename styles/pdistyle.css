@@ -10,6 +10,7 @@
     --info: #008196;
     --light-red: rgb(255, 85, 85);
     --white_20: #ffffff2a; 
+    --almostinvisible: #00000010;
 
     --myprimary: #1985A1;
     --mysecondary: #4C5C68;
@@ -910,8 +911,12 @@ li paginate_button{
     background-color: var(--mygreylight);
 }
 
+.my-darkback-hover:hover{
+    background-color: var(--almostinvisible);
+}
+
 .my-bg-greylight{
-    background-color: var(--mygreylight);
+    background-color: var(--almostinvisible);
 }
 .my-bg-greylight-round{
     background-color: var(--mygreylight);

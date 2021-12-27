@@ -37,6 +37,7 @@ function fetchTrials($offset, $rows){
             LEFT JOIN {local_pdi_evaluator} ev
             ON tev.evaluatorid = ev.id
             WHERE ev.mdlid = '$USER->id'
+            ORDER BY t.timecreated DESC
             LIMIT $offset, $rows";
     $res = $DB->get_records_sql($sql);
 

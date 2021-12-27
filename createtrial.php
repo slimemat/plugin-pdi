@@ -223,6 +223,7 @@ if($auth == "yes"){
 
 
 //para esconder o form
+$trialid = 0;
 if(isset($_SESSION['authadm']) and $_SESSION['authadm'] == 'yes'){
 
   if(isset($_REQUEST['newtrial']) and $_REQUEST['newtrial'] == "new"){
@@ -241,11 +242,21 @@ if(isset($_SESSION['authadm']) and $_SESSION['authadm'] == 'yes'){
     $insertTrial->timecreated = $mytime;
     $insertTrial->timemod = $mytime;
 
-    $DB->insert_record('local_pdi_trial', $insertTrial);
+    $trialid = $DB->insert_record('local_pdi_trial', $insertTrial);
+
+  }
+  else if(isset($_REQUEST['edittrial'])){
+    //edittrial deve conter o id da trial que está sendo editada
+    sleep(1);
+
+    //recupera os dados da url trial
+    $trialid = $_REQUEST['edittrial'];
+
+
   }
 
   $timeCreated = $_SESSION['mytime'];
-  $rSQL = "SELECT * FROM {local_pdi_trial} WHERE createdby = '$USER->id' and timecreated = $timeCreated";
+  $rSQL = "SELECT * FROM {local_pdi_trial} WHERE createdby = '$USER->id' and id = '$trialid'";
   $resultado = $DB->get_records_sql($rSQL);
 
   $trialID;

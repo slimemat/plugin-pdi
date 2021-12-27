@@ -43,6 +43,8 @@
  * @var stdClass $plugin
  */
 
+use core_table\external\dynamic\get;
+
 require_once('../../config.php');
 require_once('lib.php');
 require_once('print/outputmoodleusers.php');
@@ -81,15 +83,18 @@ else if($fromform = $mform->get_data()){
     $res = $DB->get_records_sql($sql);
 
     if(count($alreadyExist) > 0){
-      redirect($CFG->wwwroot . '/local/pdi/webadmin.php', 'User already exists! Please, check the table.');
+      $strAlreadyExists = get_string('already_exists_check', 'local_pdi');
+      redirect($CFG->wwwroot . '/local/pdi/webadmin.php', $strAlreadyExists);
     }
     else if(count($res) > 0){
       $DB->insert_record('local_pdi_user', $addAdmin);
     
-      redirect($CFG->wwwroot . '/local/pdi/webadmin.php', 'Check the table for results');
+      $strCheckResults = get_string('check_table_results', 'local_pdi');
+      redirect($CFG->wwwroot . '/local/pdi/webadmin.php', $strCheckResults);
     }
     else{
-      redirect($CFG->wwwroot . '/local/pdi/webadmin.php', 'Invalid user! Please, check the available moodle users.');
+      $strCheckUser = get_string('invalid_user_check', 'local_pdi');
+      redirect($CFG->wwwroot . '/local/pdi/webadmin.php', $strCheckUser);
     }
     
 }
@@ -104,7 +109,8 @@ if(isset($_GET['disableid'])){
   $updateUser->userrole = "disabled";
 
   $DB->update_record('local_pdi_user', $updateUser);
-  redirect($CFG->wwwroot . '/local/pdi/webadmin.php', 'Admin disabled.');
+  $strAdmDisabled = get_string('admin_disabled', 'local_pdi');
+  redirect($CFG->wwwroot . '/local/pdi/webadmin.php', $strAdmDisabled);
 }
 if(isset($_GET['enableid'])){
   $thisid = $_GET['enableid'];
@@ -114,25 +120,35 @@ if(isset($_GET['enableid'])){
   $updateUser->userrole = "0";
 
   $DB->update_record('local_pdi_user', $updateUser);
-  redirect($CFG->wwwroot . '/local/pdi/webadmin.php', 'Admin enabled.');
+  $strAdmEnabled = get_string('admin_enabled', 'local_pdi');
+  redirect($CFG->wwwroot . '/local/pdi/webadmin.php', $strAdmEnabled);
 }
 if(isset($_GET['deleteid'])){
   $thisid = $_GET['deleteid'];
 
   $select = "id = $thisid";
   $DB->delete_records_select('local_pdi_user', $select);
-  redirect($CFG->wwwroot . '/local/pdi/webadmin.php', 'Admin deleted.');
+  $strAdmDeleted = get_string('admin_deleted', 'local_pdi');
+  redirect($CFG->wwwroot . '/local/pdi/webadmin.php', $strAdmDeleted);
 }
 
 //page setup
 //btns
-$btn_adm_select_table = "<span type='button' id='btn-collap-select' class='btn-pdicollapse' value='collapse'>collapse</span>";
-$btn_user_select_table = "<span type='button' id='btn-collap-datatb' class='btn-pdicollapse' value='collapse'>collapse</span>";
-$btn_quick_add = "<span type='button' id='btn-quick-add' class='btn-quick-add' value='quick_add'>quick add</span>";
+$strCollapse = get_string('collapse', 'local_pdi');
+$strQuickAdd = get_string('quickadd', 'local_pdi');
+
+$btn_adm_select_table = "<span type='button' id='btn-collap-select' class='btn-pdicollapse' value='collapse'>$strCollapse</span>";
+$btn_user_select_table = "<span type='button' id='btn-collap-datatb' class='btn-pdicollapse' value='collapse'>$strCollapse</span>";
+$btn_quick_add = "<span type='button' id='btn-quick-add' class='btn-quick-add' value='quick_add'>$strQuickAdd</span>";
 
 //first table
 $admins = $DB->get_records('local_pdi_user');
 $html_table_body = "";
+
+//str
+$strDisable = get_string('disable', 'local_pdi');
+$strEnable = get_string('enable', 'local_pdi');
+$strDelete = get_string('delete', 'local_pdi');
 
 foreach($admins as $adm){
   $userid = $adm->id;
@@ -154,7 +170,7 @@ foreach($admins as $adm){
 
       <td class='remove-btn'>
       <a href='webadmin.php?disableid=$userid' 
-      class='mydisable-btn'>Disable</a></td>
+      class='mydisable-btn'>$strDisable</a></td>
       
     </tr>";
   }
@@ -169,10 +185,10 @@ foreach($admins as $adm){
 
       <td class='remove-btn'>
       <a href='webadmin.php?enableid=$userid' 
-      class='myenable-btn'>Enable</a>
+      class='myenable-btn'>$strEnable</a>
 
       <a href='#delete' onclick='deletePerson($userid)' 
-      class='mydisable-btn'>Delete</a>
+      class='mydisable-btn'>$strDelete</a>
       </td>
       
     </tr>";
@@ -196,13 +212,22 @@ $adm_select_table = "<table id='pditable-select' class=\"table mydark-table\">
 </tbody>
 </table>";
 
+//str
+$strInstalled = get_string('installed', 'local_pdi');
+$strIfHaveNoKeys = get_string('if_have_no_keys', 'local_pdi');
+$strHere = get_string('here', 'local_pdi');
+$strPluginNotDetected = get_string('congrea_not_detected', 'local_pdi');
+$strAfterDownloadingGoTo = get_string('after_download_go_to', 'local_pdi');
+$strPluginInstallerTab = get_string('plugin_installer_tab', 'local_pdi');
+$strToProceed = get_string('to_proceed', 'local_pdi');
+$strAfterTheInstallation = get_string('after_install_complete', 'local_pdi');
 
 //plugin concrea verify
 $congrea = $DB->get_records('modules', ['name' => 'congrea']);
 if(count($congrea)>0){ 
   $urlCongrea = $CFG->wwwroot . '/admin/settings.php?section=modsettingcongrea';
-  $congreaDiv = "<div class=\"card-body\"><h4><span class=\"badge bg-light text-dark rounded\">Installed <i class=\"fas fa-check\"></i></span></h4>
-                  <p>If you haven't defined the api keys yet, you can do it <a href=\"$urlCongrea\" class=\"link-primary\">here</a>.</p>
+  $congreaDiv = "<div class=\"card-body\"><h4><span class=\"badge bg-light text-dark rounded\">$strInstalled <i class=\"fas fa-check\"></i></span></h4>
+                  <p>$strIfHaveNoKeys <a href=\"$urlCongrea\" class=\"link-primary\">$strHere</a>.</p>
   </div>                
   "; 
 }
@@ -211,10 +236,9 @@ else{
   $urlCongrea = "https://moodle.org/plugins/download.php/25256/mod_congrea_moodle311_2021100700.zip";
   $congreaDiv = "<div class=\"card-body\">
                     <div class=\"alert alert-warning\" role=\"alert\">
-                      The plugin needed to setup meetings was not detected in your moodle website! You can download it 
-                      <a href=\"$urlCongrea\" class=\"link-primary\">here</a>.
+                      $strPluginNotDetected <a href=\"$urlCongrea\" class=\"link-primary\">$strHere</a>.
                     </div>
-                  <p>After downloading the plugin ZIP file, go to the <a href=\"$urlPluginTab\">Plugin Installer</a> tab to proceed. After the installation is complete, you can return to this page to finish the setup.</p>
+                  <p>$strAfterDownloadingGoTo <a href=\"$urlPluginTab\">$strPluginInstallerTab</a> $strToProceed. $strAfterTheInstallation</p>
                 </div>                
   "; 
 }
@@ -283,11 +307,16 @@ echo "<table id=\"dt-select\" class=\"table mydark-table my-pointer\" cellspacin
 
 echo "<br><hr>";
 
-echo "<h4 id='congrea-div'>Meetings plugin (congrea)</h4>";
+//str
+$strMeetingsPlugin = get_string('meetings_plugin', 'local_pdi');
+$strCopiedToForm = get_string('copied_to_form', 'local_pdi');
+$strNoOneIsSelected = get_string('no_one_selected', 'local_pdi');
+
+echo "<h4 id='congrea-div'>$strMeetingsPlugin</h4>";
 echo "$congreaDiv";
 
-echo "<div id='my-smallmsg'>Copied to form!</div>";
-echo "<div id ='my-smallmsg-error' class='my-smallmsg-error'>No one is selected!</div>";
+echo "<div id='my-smallmsg'>$strCopiedToForm</div>";
+echo "<div id ='my-smallmsg-error' class='my-smallmsg-error'>$strNoOneIsSelected</div>";
 echo "<div id='my-emptymsg' class='my-smallmsg-error'>You must fill in this!</div>";
 
 } //fechando o if de capability

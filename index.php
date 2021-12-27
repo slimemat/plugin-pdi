@@ -59,13 +59,13 @@ if(has_capability('moodle/site:config', context_system::instance())){
 
     $congrea = $DB->get_records('modules', ['name' => 'congrea']);
     if(count($congrea) > 0){
-        $strCongrea = "Manage meetings plugin";
+        $strCongrea = get_string('manage_meetings', 'local_pdi');
         $btn_web_adm .= "<a href='webadmin.php#congrea-div' class='pdi-nostyle'><button type='button' class='btn-pdiselect' value='adm'>$strCongrea</button></a>";
     }else{
-        $strCongrea = "Install meetings plugin congrea";
+        $strCongrea = get_string('install_plugin_congrea', 'local_pdi');
         $btn_web_adm .= "<a href='webadmin.php#congrea-div' class='pdi-nostyle'><button type='button' class='btn-pdiselect' value='adm'>$strCongrea</button></a>";
 
-        $strWarnCongrea = "You still need to install the meetings plugin congrea";
+        $strWarnCongrea = get_string('warning_install_congrea', 'local_pdi');
         \core\notification::add($strWarnCongrea , \core\output\notification::NOTIFY_ERROR);
     }
 
