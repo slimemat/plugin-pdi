@@ -71,7 +71,8 @@ if(isset($_POST['hidden-ids'])){
 
   //pegar o valor da trial atual
   $timeCreated = $_SESSION['mytime'];
-  $rSQL = "SELECT * FROM {local_pdi_trial} WHERE createdby = '$USER->id' and timecreated = $timeCreated";
+  $trialid = $_SESSION['edittrialid'];
+  $rSQL = "SELECT * FROM {local_pdi_trial} WHERE createdby = '$USER->id' and id = $trialid";
   $resultado = $DB->get_records_sql($rSQL);
   $trialID;
   foreach($resultado as $t){$trialID = $t->id;}
@@ -155,8 +156,9 @@ if(isset($_POST['hidden_sector'])){
   $hiddenSector = $_POST['hidden_sector'];
 
   //pegar o valor da trial atual
-  $timeCreated = $_SESSION['mytime'];
-  $rSQL = "SELECT * FROM {local_pdi_trial} WHERE createdby = '$USER->id' and timecreated = $timeCreated";
+  //$timeCreated = $_SESSION['mytime'];
+  $trialid = $_SESSION['edittrialid'];
+  $rSQL = "SELECT * FROM {local_pdi_trial} WHERE createdby = '$USER->id' and id = $trialid";
   $resultado = $DB->get_records_sql($rSQL);
   $trialID;
   foreach($resultado as $t){$trialID = $t->id;}

@@ -76,8 +76,9 @@ if(isset($_POST['hidden-ids'])){
       $username = $usernameArray[$i];
 
       //current trial
-      $timeCreated = $_SESSION['mytime'];
-      $rSQL = "SELECT * FROM {local_pdi_trial} WHERE createdby = '$USER->id' and timecreated = $timeCreated";
+      //$timeCreated = $_SESSION['mytime'];
+      $trialid = $_SESSION['edittrialid'];
+      $rSQL = "SELECT * FROM {local_pdi_trial} WHERE createdby = '$USER->id' and id = $trialid";
       $resultado = $DB->get_records_sql($rSQL);
       $trialID;
       foreach($resultado as $t){$trialID = $t->id;}
@@ -162,8 +163,9 @@ if(isset($_SESSION['authadm']) and $_SESSION['authadm'] == 'yes'){
 //////////////////fetch mdb datatable
 
 //current trial
-$timeCreated = $_SESSION['mytime'];
-  $rSQL = "SELECT * FROM {local_pdi_trial} WHERE createdby = '$USER->id' and timecreated = $timeCreated";
+//$timeCreated = $_SESSION['mytime'];
+$trialid = $_SESSION['edittrialid'];
+  $rSQL = "SELECT * FROM {local_pdi_trial} WHERE createdby = '$USER->id' and id = $trialid";
   $resultado = $DB->get_records_sql($rSQL);
 
   $trialID;

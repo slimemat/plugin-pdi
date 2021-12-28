@@ -63,12 +63,13 @@ verifyAdm($USER->username);
 if(isset($_POST['hidden-ids'])){
   $idArray = json_decode($_POST['hidden-ids']);
   $btnPick = $_POST['hidden-btn-pick'];
-  $timeCreated = $_SESSION['mytime'];
+  //$timeCreated = $_SESSION['mytime'];
+  $trialid = $_SESSION['edittrialid'];
 
 
   //verifica a trial criada no momento
   $tSql = "SELECT id, title, timecreated FROM {local_pdi_trial}
-  WHERE createdby = $USER->id and timecreated = $timeCreated";
+  WHERE createdby = $USER->id and id = $trialid";
   $tRes = $DB->get_records_sql($tSql);
   $trialID = "";
   foreach($tRes as $t){$trialID = $t->id;}
@@ -243,6 +244,7 @@ if(isset($_SESSION['authadm']) and $_SESSION['authadm'] == 'yes'){
     $insertTrial->timemod = $mytime;
 
     $trialid = $DB->insert_record('local_pdi_trial', $insertTrial);
+    $_SESSION['edittrialid'] = $trialid;
 
   }
   else if(isset($_REQUEST['edittrial'])){
@@ -251,8 +253,12 @@ if(isset($_SESSION['authadm']) and $_SESSION['authadm'] == 'yes'){
 
     //recupera os dados da url trial
     $trialid = $_REQUEST['edittrial'];
+    $_SESSION['edittrialid'] = $trialid;
 
 
+  }
+  else{
+    $trialid = $_SESSION['edittrialid'];
   }
 
   $timeCreated = $_SESSION['mytime'];

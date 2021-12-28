@@ -57,8 +57,10 @@ global $USER, $DB;
 verifyAdm($USER->username);
 
 /////////////////////////////////////////
-///////////////////////////////////////////////////
-/////////////////////////////////////////////////
+
+//verificar nome e datas para colocar no input já
+
+
 
 //page STARTS HERE
 echo $OUTPUT->header();
@@ -155,8 +157,8 @@ echo "
 
     <select id=\"sel-ev-type\" name=\"sel-ev-type\" class=\"my-large-input\">
         <option value=\"1\" selected>90 degrees</option>
-        <option value=\"2\">180 degrees</option>
-        <option value=\"3\">360 degrees</option>
+        <option value=\"2\" disabled>180 degrees</option>
+        <option value=\"3\" disabled>360 degrees</option>
     </select>
 </div>
 
