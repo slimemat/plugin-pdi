@@ -62,6 +62,9 @@ function fetchRankings($trialid, $currentuid){
         }
 
         //////////////////******************************parte MÉDIA */
+        if(!isset($avaliadoid)){
+            return json_encode("", JSON_UNESCAPED_UNICODE);
+        }
         
         //FAZER UMA FUNÇÃO QUE CALCULE A MÉDIA DOS DOIS LADOS
         $mediageral = calcularMediaGeral($trialid, $currentuid, $avaliadoid);
@@ -348,7 +351,14 @@ function fetchTablesGrades($trialid, $currentuid){
         $htmlDentro = "";
         $htmlConteudoTable = "";
         $listaNotasAluno = null;
-        
+
+        if(!isset($evaluatedid)){
+            return "<div class='card-body'>
+                    <span class='my-circle-title'><i class=\"fas fa-exclamation-triangle\"></i> Dados não definidos</span><br>
+                    <span class='my-font-family'>Isso pode significar que esse processo não foi salvo corretamente ou ainda está em desenvolvimento.</span>
+                    </div>
+                    ";
+        }        
 
         $sqlEvaluated = "SELECT id, firstname, lastname FROM {user} where id = '$evaluatedid'";
         $resEvaluated = $DB->get_records_sql($sqlEvaluated);

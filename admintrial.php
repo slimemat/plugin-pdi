@@ -109,12 +109,14 @@ if(isset($_SESSION['authadm']) and $_SESSION['authadm'] == 'yes'){
     $trialStart = '';
     $trialEnd = '';
     $trialEvType = '';
+    $trialIsstarted = '';
 
     foreach($resTrial as $r){
       $trialTitle = $r->title;
       $trialStart = $r->startdate;
       $trialEnd = $r->enddate;
       $trialEvType = $r->evtype;
+      $trialIsstarted = $r->isstarted;
     }
 
     $dateInicioF = gmdate("d/m/y", $trialStart);
@@ -152,10 +154,24 @@ echo "<footer class='my-belowh1'>$dateInicioF - $dateFimF</footer>";
 
 //bloco com conteúdo gerado no começo da página
 
-if(time() < $trialStart){
+if(time() < $trialStart and $trialIsstarted == 1){
 echo "
 <div class=\"alert alert-warning\" role=\"alert\">
   <span>Você pode fazer alterações neste processo até dia $dateInicioF</span>
+  <div style='display: inline-block; float: right' class='text-right'>
+    <span id='btn-editar-trial' class=\"my-label-btn my-btn-pad my-darkback-hover\">Editar</span>
+    <span id='btn-desativar-trial' class=\"my-label-err-btn my-btn-pad my-darkback-hover\">Desativar</span>
+  </div>
+</div>";
+}
+else if($trialIsstarted == 0){
+echo "
+<div class=\"alert alert-warning\" role=\"alert\">
+  <h5>
+    <b>Processo desativado</b>
+    <a tabindex=\"0\" class=\"btn mybelow1\" role=\"button\" data-toggle=\"popover\" data-placement='right' data-bs-trigger=\"hover focus\" data-content=\"Para reativar o processo, clique em editar e salve na última etapa\"><i class=\"far fa-question-circle my-help-pop\"></i></a>  
+  </h5>
+  <span>O mesmo estava marcado para dia $dateInicioF (Não ocorrerá desativado)</span>
   <div style='display: inline-block; float: right' class='text-right'>
     <span id='btn-editar-trial' class=\"my-label-btn my-btn-pad my-darkback-hover\">Editar</span>
     <span id='btn-excluir-trial' class=\"my-label-err-btn my-btn-pad my-darkback-hover\">Excluir</span>
@@ -271,6 +287,13 @@ echo "<form id=\"frm-anstatus-id\" name=\"frm-anstatus-id\" class='hidden' metho
 echo "<input type=\"hidden\" name=\"hidden-anstatus-id\" id=\"hidden-anstatus-id\" value=\"\">";
 echo "</form>";
 
+//hidden form hidden-trial-id (post no js dessa página)
+echo "
+<form id='hidden-trial-id-frm' name='hidden-trial-id-frm' class='hidden' method='post' action='admintrial.php'>
+  <input type='hidden' name='hidden-trial-id' id='hidden-trial-id' value=''>
+</form>
+";
+
 echo "</div>"; //div mygrey-bg ends
 
 }
@@ -278,7 +301,8 @@ echo "</div>"; //div mygrey-bg ends
 //js do bootstrap
 echo "
 <script src=\"bootstrap/js/addons/datatables.min.js\" type=\"text/javascript\"></script>
-<script src=\"bootstrap/js/addons/datatables-select.min.js\" type=\"text/javascript\"></script>";
+<script src=\"bootstrap/js/addons/datatables-select.min.js\" type=\"text/javascript\"></script>
+";
 
 
 echo $OUTPUT->footer();
@@ -986,12 +1010,102 @@ $("#my-tab2").on("click", "#btn-ocultar-curso", function(){
 
 //btns de edição quando o processo está adiantado
 $("#btn-editar-trial").on("click", function(){
-  alert('editar');
+  //pegar a trial atual e montar a url
+  var trialid = "<?= $trialid ?>";
+  
+  let url = "createtrial.php?edittrial="+trialid;
+
+  window.location.href = url;
+
+});
+
+$("#btn-desativar-trial").on("click", function(){
+  var trialid = "<?= $trialid ?>";
+
+  if (confirm('Desativar esse processo?')) {
+  //APAGAR
+  console.log('desativar');
+
+  var functionid = 14;
+
+  var values = {        
+        'function' : functionid,
+        'trialid' : trialid,
+  };
+
+  $.ajax({
+        method: 'POST',
+        url: 'print/callphpfunctions.php',
+        data: values,
+    })
+    .done(function(msg){
+      console.log(msg);
+      if(msg == "1"){
+        console.log("Desativado");
+        
+        let form = $("#hidden-trial-id-frm");
+        $("#hidden-trial-id").val(trialid);
+        form.submit();
+
+      }
+      else{
+        console.log(msg);
+      }
+    })
+    .fail(function(){
+        alert('Algo deu errado ao desativar!');
+    });
+
+  } else {
+    // Do nothing!
+    console.log('cancelou');
+  }
+
 });
 
 $("#btn-excluir-trial").on("click", function(){
-  alert('excluir');
+  var trialid = "<?= $trialid ?>";
+
+  if (confirm('Excluir esse processo?\nTodos dados dos avaliadores relacionados serão perdidos!')) {
+  //APAGAR
+  console.log('apagar');
+
+  var functionid = 14;
+
+  var values = {        
+        'function' : functionid,
+        'trialid' : trialid,
+  };
+
+  $.ajax({
+        method: 'POST',
+        url: 'print/callphpfunctions.php',
+        data: values,
+    })
+    .done(function(msg){
+      console.log(msg);
+      if(msg == "1"){
+        console.log("Excluído");
+        
+        window.location.href = "pdiadmin.php";
+
+      }
+      else{
+        console.log(msg);
+      }
+    })
+    .fail(function(){
+        alert('Algo deu errado ao Excluir!');
+    });
+
+  } else {
+    // Do nothing!
+    console.log('cancelou');
+  }
+
 });
+
+
 
 
 });

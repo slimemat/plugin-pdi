@@ -27,14 +27,17 @@ global $USER, $DB;
 
 if(isset($_POST['hidden-start']))
 {
-
+    date_default_timezone_set('America/Sao_Paulo');
   //trial
+  $trialid = $_SESSION['edittrialid'];
 
-  $timeCreated = $_POST['hidden-mytime'];
-  $rSQL = "SELECT * FROM {local_pdi_trial} WHERE createdby = '$USER->id' and timecreated = $timeCreated";
+  //trecho ambíguo, porém ainda não alterar
+  //$timeCreated = $_POST['hidden-mytime']; ---->
+  $rSQL = "SELECT * FROM {local_pdi_trial} WHERE createdby = '$USER->id' and id = $trialid";
   $resultado = $DB->get_records_sql($rSQL);
   $trialID;
   foreach($resultado as $t){$trialID = $t->id;}
+  //---->
 
   $trialName = $_POST['hidden-name'];
   $starttime = $_POST['hidden-start'];

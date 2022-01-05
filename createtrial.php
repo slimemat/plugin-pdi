@@ -261,7 +261,7 @@ if(isset($_SESSION['authadm']) and $_SESSION['authadm'] == 'yes'){
     $trialid = $_SESSION['edittrialid'];
   }
 
-  $timeCreated = $_SESSION['mytime'];
+  //$timeCreated = $_SESSION['mytime'];
   $rSQL = "SELECT * FROM {local_pdi_trial} WHERE createdby = '$USER->id' and id = '$trialid'";
   $resultado = $DB->get_records_sql($rSQL);
 

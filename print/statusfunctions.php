@@ -34,6 +34,13 @@
     //current user id (logged in)
     $evaluatorid = $USER->id;
 
+    if($alunoid == "" or !isset($alunoid)){
+       return "<div class='card-body'>
+       <span class='my-circle-title'><i class=\"fas fa-exclamation-triangle\"></i> Dados não definidos</span><br>
+       <span class='my-font-family'>Isso pode significar que esse processo não foi salvo corretamente ou ainda está em desenvolvimento.</span>
+       </div>";
+    }
+
     //***** PARTE ALUNO *****/
     $sqlAluno = "SELECT u.id, u.firstname, u.lastname, u.username, u.email 
                     FROM {user} u WHERE u.id = '$alunoid'";

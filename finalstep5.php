@@ -57,9 +57,7 @@ global $USER, $DB;
 verifyAdm($USER->username);
 
 /////////////////////////////////////////
-
-//verificar nome e datas para colocar no input já
-
+$trialid = $_SESSION['edittrialid'];
 
 
 //page STARTS HERE
@@ -156,7 +154,7 @@ echo "
     <label for='sel-ev-type' class='my-label'>Tipo de avaliação:</label> <br>
 
     <select id=\"sel-ev-type\" name=\"sel-ev-type\" class=\"my-large-input\">
-        <option value=\"1\" selected>90 degrees</option>
+        <option value=\"1\">90 degrees</option>
         <option value=\"2\" disabled>180 degrees</option>
         <option value=\"3\" disabled>360 degrees</option>
     </select>
@@ -181,7 +179,7 @@ echo "<input type=\"hidden\" name=\"hidden-name\" id=\"hidden-name\" value=\"\">
 echo "<input type=\"hidden\" name=\"hidden-end\" id=\"hidden-end\" value=\"\">";
 echo "<input type=\"hidden\" name=\"hidden-type\" id=\"hidden-type\" value=\"\">";
 echo "<input type=\"hidden\" name=\"hidden-started\" id=\"hidden-started\" value=\"\">";
-echo "<input type=\"hidden\" name=\"hidden-mytime\" id=\"hidden-mytime\" value=\"". $_SESSION['mytime']."\">";
+//echo "<input type=\"hidden\" name=\"hidden-mytime\" id=\"hidden-mytime\" value=\"". $_SESSION['mytime']."\">";
 echo "</form>";
 
 echo "<input type='button' id='id_back_btn' class='div-save-btn my-grey-btn'
@@ -224,12 +222,19 @@ document.getElementsByName("due-date")[0].setAttribute('min', today);
 
 //pegar data
 $('#id_save_btn').on('click', function(){
-  var date = new Date($('#start-date').val());
+
+  var todaynow = new Date().setHours(0,0,0,0);
+
+  var startdateF = yearMonthDayToMonthDayYear($('#start-date').val());
+  var date = new Date(startdateF);  
   var day = date.getDate();
   var month = date.getMonth() + 1;
   var year = date.getFullYear();
+
+  var startdate0Hours = date.setHours(0,0,0,0);
   
-  var date2 = new Date($('#due-date').val());
+  var duedateF = yearMonthDayToMonthDayYear($('#due-date').val());
+  var date2 = new Date(duedateF);
   var day2 = date2.getDate();
   var month2 = date2.getMonth() + 1;
   var year2 = date2.getFullYear();
@@ -257,6 +262,12 @@ $('#id_save_btn').on('click', function(){
     $("#due-date").val(null);
     return false;
   }
+  else if(startdate0Hours < todaynow){
+    alert('A data inicial não pode ser anterior a hoje');
+    $("#start-date").focus();
+    $("#start-date").val(null);
+    return false;
+  }
   else{
     /*
     alert("UMA AVALIAÇÃO DO TIPO "+ evtype + " SERÁ MARCADA PARA O DIA: \n"+ 
@@ -272,6 +283,7 @@ $('#id_save_btn').on('click', function(){
     $("#hidden-end").val(unixenddate);
     $("#hidden-type").val(evtypeid);
     $("#hidden-started").val("0");
+
 
     //pequeno ajax
     //ajax
@@ -299,12 +311,15 @@ $('#id_save_btn').on('click', function(){
 
 //save and start
 $('#id_save_next_btn').on('click', function(){
-  var date = new Date($('#start-date').val());
+
+  var startdateF = yearMonthDayToMonthDayYear($('#start-date').val());
+  var date = new Date(startdateF);
   var day = date.getDate();
   var month = date.getMonth() + 1;
   var year = date.getFullYear();
   
-  var date2 = new Date($('#due-date').val());
+  var duedateF = yearMonthDayToMonthDayYear($('#due-date').val());
+  var date2 = new Date(duedateF);
   var day2 = date2.getDate();
   var month2 = date2.getMonth() + 1;
   var year2 = date2.getFullYear();
@@ -367,6 +382,12 @@ $('#id_save_next_btn').on('click', function(){
 });
 
 
+/////////////////////////////
+//verificar campos como nome e data se já existentes e alterar na hora
+var trialid = '<?= $trialid ?>';
+atribuirCamposSalvos(trialid);
+
+
 
 }); //fimm onready
 
@@ -378,6 +399,78 @@ $("#id_back_btn").on("click", function(){
 });
 
 
+function atribuirCamposSalvos(trialid){
+  var functionid = 13;
+
+  var values = {        
+        'function' : functionid,
+        'trialid' : trialid,
+  };
+
+  $.ajax({
+        method: 'POST',
+        url: 'print/callphpfunctions.php',
+        data: values,
+    })
+    .done(function(msg){
+        console.log(msg);
+
+        const objTrial = JSON.parse(msg);
+
+        let id = objTrial.id;
+        let title = objTrial.title;
+        let startdate = objTrial.startdate;
+        let enddate = objTrial.enddate;
+        let evtype = objTrial.evtype;
+
+        $("#final-name").val(title); //TITULO
+
+        //data inicial
+        startdate = unixDateStringCorrector(startdate);
+        $("#start-date").val(startdate); //DATA INCIAL
+
+        //data final
+        enddate = unixDateStringCorrector(enddate);
+        $("#due-date").val(enddate);
+
+        //tipo de trial
+        if(evtype == 1){$("#sel-ev-type").val("1").change();}
+        else if(evtype == 2){$("#sel-ev-type").val("2").change();}
+        else if(evtype ==3){$("#sel-ev-type").val("3").change();}
+
+    })
+    .fail(function(){
+        alert('Algo deu errado ao tentar recuperar os dados!');
+    });
+}
+
+//pega uma string unix e tranforma no formato de data correto para o calendario
+function unixDateStringCorrector(datestring){
+  var unixHoje = new Date().getTime() + "";
+  unixHoje = unixHoje.substr(0, 10);
+
+  var dateF = new Date(datestring * 1000);
+  let year = dateF.getFullYear();
+  let month = (dateF.getMonth() + 1) + "";
+  let day = (dateF.getDate()) + "";
+
+  if(month.length < 2){month = '0' + month;}
+  if (day.length < 2){day = '0' + day;}
+  
+  var dateForInput = year + "-" + month + "-" + day;
+  
+  return dateForInput;
+}
+
+function yearMonthDayToMonthDayYear(str_yyyy_mm_dd){
+  var arrDate = str_yyyy_mm_dd.split("-");
+  let day = arrDate[2];
+  let month = arrDate[1];
+  let year = arrDate[0];
+
+  var newDateString = month + "-" + day + "-" + year;
+  return newDateString;
+}
 
 
 </script>

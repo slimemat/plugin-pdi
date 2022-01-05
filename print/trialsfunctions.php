@@ -446,3 +446,56 @@ function getOneStudentTrial($trialid){
 
 }
 
+
+function getNameAndDetails($trialid){
+   global $DB;
+
+   $sql = "SELECT t.id, t.title, td.startdate, td.enddate, td.evtype 
+            FROM {local_pdi_trial} t
+            LEFT JOIN {local_pdi_trial_detail} td
+            ON td.trialid = t.id
+            WHERE t.id = '$trialid'";
+   $res = $DB->get_records_sql($sql);
+   $res = $res["$trialid"];
+   $res = json_encode($res);
+
+   return $res;
+}
+
+function deleteTrial($trialid){
+   global $DB;
+
+   $sql = "SELECT t.id, t.trialid, t.isstarted
+            FROM {local_pdi_trial_detail} t
+            WHERE t.trialid = $trialid";
+   $res = $DB->get_records_sql($sql);
+   $res = array_values($res);
+   $res = $res[0];
+
+   $id = $res->id;
+   $isstarted = $res->isstarted;
+
+   if($isstarted){
+      //colocar para zero como forma de desativar
+      $updateTD = new stdClass();
+      $updateTD->id = $id;
+      $updateTD->isstarted = 0;
+
+      $resup = $DB->update_record('local_pdi_trial_detail', $updateTD);
+
+      return $resup;
+
+   }else{
+      //se o isstarted não for true
+      $select = "id = $id";
+      $resdel = $DB->delete_records_select('local_pdi_trial_detail', $select);
+
+      $select2 = "id = $trialid";
+      var_dump($select2);
+      $resdel2 = $DB->delete_records_select('local_pdi_trial', $select2);
+
+      return $resdel2;
+   }
+
+}
+

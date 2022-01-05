@@ -155,6 +155,20 @@ if(isset($_POST['function'])){
 
         echo $return;
     }
+    else if($myfunction == 13){
+        $trialid = $_POST['trialid'];
+
+        $return = getNameAndDetails($trialid);
+
+        echo $return;
+    }
+    else if($myfunction == 14){
+        $trialid = $_POST['trialid'];
+
+        $return = deleteTrial($trialid);
+
+        echo $return;
+    }
 
 
 
