@@ -1,4 +1,5 @@
-require(['jquery'], function($){
+//require(['jquery'], function($){
+console.log("loading pdi popup script...");
 
 $(document).ready(function(){
 
@@ -308,4 +309,4 @@ document.getElementById("pdi-logo-span").onclick = function() {
 
 
 
-}); //fim jquery
+//}); //fim jquery

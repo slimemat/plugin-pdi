@@ -35,10 +35,10 @@ class insert_member extends moodleform {
         $mform->setDefault('studname', '');        //Default value
 
         //receber valores do nome do grupo dessa pessoa
-        $sql_im = "SELECT mdl_local_pdi_group.groupname FROM mdl_local_pdi_group 
-                    INNER JOIN mdl_local_pdi_user 
-                    ON mdl_local_pdi_group.userid = mdl_local_pdi_user.id
-                    WHERE mdl_local_pdi_user.username = '$USER->username'";
+        $sql_im = "SELECT lpg.groupname FROM {local_pdi_group} lpg 
+                    INNER JOIN {local_pdi_user} lpu 
+                    ON lpg.userid = lpu.id
+                    WHERE lpu.username = '$USER->username'";
 
         $res_im = $DB->get_records_sql($sql_im);
         

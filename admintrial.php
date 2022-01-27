@@ -223,8 +223,8 @@ $html_notas
 ///////////////////////////////trabalhando nessa tela
 ///////////////////////////////////////////////////////
 ///////////////////////////////////
-$userid_pic = '4';
-$imgURL = new moodle_url('/user/pix.php/'.$userid_pic.'/f1.jpg');
+//$userid_pic = '4';
+//$imgURL = new moodle_url('/user/pix.php/'.$userid_pic.'/f1.jpg');
 
 ///TESTE COM IMAGENS
 ///////////////////////
@@ -452,7 +452,7 @@ $("#big-back-btn").on("click", function(){
 $("#btn_salvar").on("click", function(){
     //alert('salvar');
 
-    //para os escritos
+    //para as escritos
     $(".answer").each(function(){
         var txtAnswer = ""+ $(this).val() + "";
         var inputID = $(this).attr("id");
@@ -573,6 +573,7 @@ function saveDaAnswer(txtanswer, questid, anstatusid) {
     })
     .done(function(msg){
         var resposta = msg;
+        console.log(resposta);
         var originalColor = $("#btn_salvar").css("background");
 
         //mudar a cor
@@ -1013,7 +1014,7 @@ $("#btn-editar-trial").on("click", function(){
   //pegar a trial atual e montar a url
   var trialid = "<?= $trialid ?>";
   
-  let url = "createtrial.php?edittrial="+trialid;
+  let url = "finalstep5.php?edittrial="+trialid;
 
   window.location.href = url;
 
@@ -1084,15 +1085,9 @@ $("#btn-excluir-trial").on("click", function(){
     })
     .done(function(msg){
       console.log(msg);
-      if(msg == "1"){
         console.log("Excluído");
-        
         window.location.href = "pdiadmin.php";
 
-      }
-      else{
-        console.log(msg);
-      }
     })
     .fail(function(){
         alert('Algo deu errado ao Excluir!');

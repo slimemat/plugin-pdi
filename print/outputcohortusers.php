@@ -28,13 +28,13 @@ global $DB;
 
 $out_cohortID = $_POST['out_cohortID']; //post aqui
 
-$outCohortUsers_sql = "SELECT mdl_cohort_members.userid, mdl_user.firstname, mdl_user.lastname 
-FROM mdl_cohort
-INNER JOIN mdl_cohort_members
-ON mdl_cohort_members.cohortid = mdl_cohort.id 
-INNER JOIN mdl_user
-ON mdl_user.id = mdl_cohort_members.userid
-WHERE mdl_cohort.id = '$out_cohortID'";
+$outCohortUsers_sql = "SELECT cm.userid, u.firstname, u.lastname 
+FROM {cohort} c
+INNER JOIN {cohort_members} cm
+ON cm.cohortid = c.id 
+INNER JOIN {user} u
+ON u.id = cm.userid
+WHERE c.id = '$out_cohortID'";
 
 $outCohortUsers_res = $DB->get_records_sql($outCohortUsers_sql);
 

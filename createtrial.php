@@ -48,7 +48,7 @@ $PAGE->set_context(\context_system::instance());
 $PAGE->set_title("PDI Admin");
 $PAGE->set_heading('PDI Admin');
 $PAGE->requires->jquery();
-$PAGE->requires->js(new moodle_url('/local/pdi/scripts/pdiscript.js'));
+//$PAGE->requires->js(new moodle_url('/local/pdi/scripts/pdiscript.js'));
 
 global $USER, $DB;
 
@@ -76,7 +76,7 @@ if(isset($_POST['hidden-ids'])){
   
   
   foreach($idArray as $r){
-    $sql = "SELECT id, username, email FROM mdl_user WHERE id = '$r'";
+    $sql = "SELECT id, username, email FROM {user} WHERE id = '$r'";
     $res = $DB->get_records_sql($sql);
 
     foreach($res as $row){
@@ -147,16 +147,6 @@ if(isset($_POST['hidden-ids'])){
 }
 
 
-//students available table
-/*$sql_students = "SELECT mdl_local_pdi_student.id, 
-                        mdl_local_pdi_student.studname,
-                        mdl_local_pdi_student.studemail,
-                        mdl_user.institution,
-                        mdl_user.firstname,
-                        mdl_user.lastname
-                        FROM mdl_local_pdi_student INNER JOIN mdl_user 
-                        ON mdl_local_pdi_student.studname = mdl_user.username";
-*/
 
 ///////////////////////////////////////////////////
 //verifica os coortes
@@ -180,13 +170,13 @@ if(isset($_REQUEST['out_cohortID']) and $_REQUEST['out_cohortID'] != ""){
 $out_cohortID = $_REQUEST['out_cohortID'];
 
 //pré-página
-$outCohortUsers_sql = "SELECT mdl_cohort_members.userid, mdl_user.firstname, mdl_user.lastname 
-FROM mdl_cohort
-INNER JOIN mdl_cohort_members
-ON mdl_cohort_members.cohortid = mdl_cohort.id 
-INNER JOIN mdl_user
-ON mdl_user.id = mdl_cohort_members.userid
-WHERE mdl_cohort.id = '$out_cohortID'";
+$outCohortUsers_sql = "SELECT cm.userid, u.firstname, u.lastname 
+FROM {cohort} c
+INNER JOIN {cohort_members} cm
+ON cm.cohortid = c.id 
+INNER JOIN {user} u
+ON u.id = cm.userid
+WHERE c.id = '$out_cohortID'";
 
 $outCohortUsers_res = $DB->get_records_sql($outCohortUsers_sql);
 
@@ -270,16 +260,16 @@ if(isset($_SESSION['authadm']) and $_SESSION['authadm'] == 'yes'){
 
     //////print da lista de avaliadores disponiveis
     //////TABELA MDB DATATABLE fetch
-  $dtSql = "SELECT mdl_user.id, mdl_user.username, mdl_user.firstname, mdl_user.lastname, mdl_user.email, mdl_user.institution,
-  mdl_local_pdi_evaluator.id as evID, mdl_local_pdi_trial_evaluator.id as triEvID, mdl_local_pdi_trial_evaluator.trialid
-  FROM mdl_user
-  LEFT JOIN mdl_local_pdi_evaluator 
-  ON mdl_user.id = mdl_local_pdi_evaluator.mdlid 
-  LEFT JOIN mdl_local_pdi_trial_evaluator 
-  ON mdl_local_pdi_trial_evaluator.evaluatorid = mdl_local_pdi_evaluator.id
-  WHERE mdl_local_pdi_trial_evaluator.trialid IS NULL
-  AND mdl_user.email != 'root@localhost'
-  OR mdl_local_pdi_trial_evaluator.trialid != $trialID";
+  $dtSql = "SELECT u.id, u.username, u.firstname, u.lastname, u.email, u.institution,
+  lpev.id as evID, lptv.id as triEvID, lptv.trialid
+  FROM {user} u
+  LEFT JOIN {local_pdi_evaluator} lpev 
+  ON u.id = lpev.mdlid 
+  LEFT JOIN {local_pdi_trial_evaluator} lptv 
+  ON lptv.evaluatorid = lpev.id
+  WHERE lptv.trialid IS NULL
+  AND u.email != 'root@localhost'
+  OR lptv.trialid != $trialID";
   $dtRes = $DB->get_records_sql($dtSql);
 
 

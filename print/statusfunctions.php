@@ -105,11 +105,12 @@
 
 
     //part 1 bloco
+    $imgURL = new moodle_url('/user/pix.php/'.$alunoid.'/f1.jpg');
     $blocoHTML .= "
     <div class=\"d-flex bd-highlight my-padding-sm\" style=\"background-color: var(--mysecondary)\">
 
       <div class='flex-grow-1'>
-         <img src=\"http://localhost/moodle/user/pix.php/$alunoid/f1.jpg\" class=\"my-circle\">
+         <img src=\"$imgURL\" class=\"my-circle\">
          <h5 class='my-label-bg margin-top my-white'>$alunoFirstname $alunoLastname</h5>
       </div>
       <div class='my-white'>
@@ -238,7 +239,7 @@
 
    
    //*** form para criar um course com o plugin congrea ***/
-   $sqlVeCat = "SELECT * FROM mdl_course_categories cc WHERE cc.name = 'categoria pdi' and cc.idnumber = 'pdi_hidden_key'";
+   $sqlVeCat = "SELECT * FROM {course_categories} cc WHERE cc.name = 'categoria pdi' and cc.idnumber = 'pdi_hidden_key'";
    $resVeCat = $DB->get_records_sql($sqlVeCat);
    $htmlFormCourse = '';
 
@@ -250,7 +251,7 @@
       $res = $DB->insert_record('course_categories', $addCat);
       echo "<script>console.log('pdi inseriu categoria:' + $res)</script>";
 
-      $sqlVeCat = "SELECT * FROM mdl_course_categories cc WHERE cc.name = 'categoria pdi' and cc.idnumber = 'pdi_hidden_key'";
+      $sqlVeCat = "SELECT * FROM {course_categories} cc WHERE cc.name = 'categoria pdi' and cc.idnumber = 'pdi_hidden_key'";
       $resVeCat = $DB->get_records_sql($sqlVeCat);
 
       $resVeCat = array_values($resVeCat);
@@ -711,10 +712,11 @@
 
          $sectorid = $resSec[$uid]->sectorid;
 
+         $imgURL = new moodle_url('/user/pix.php/'.$uid.'/f1.jpg');
 
          $html .= "
                <div class=\"my-margin-box2 my-avaliador\" data-uid=\"$uid\" data-trialid=\"$trialid\" data-sectorid=\"$sectorid\">
-                  <img src=\"http://localhost/moodle/user/pix.php/$uid/f1.jpg\" class=\"my-circle\">
+                  <img src=\"$imgURL\" class=\"my-circle\">
                   <div class=\"my-sidetext\">
                         <span class=\"my-label-bg2\">$fullname</span> <br>                     
                   </div>
@@ -804,11 +806,12 @@
 
     //string bloco
     //part 1 bloco
+    $imgURL = new moodle_url('/user/pix.php/'.$alunoid.'/f1.jpg');
     $blocoHTML .= "
     <div class=\"d-flex bd-highlight my-padding-sm\" style=\"background-color: var(--mysecondary)\">
 
       <div class='flex-grow-1'>
-         <img src=\"http://localhost/moodle/user/pix.php/$alunoid/f1.jpg\" class=\"my-circle\">
+         <img src=\"$imgURL\" class=\"my-circle\">
          <h5 class='my-label-bg margin-top my-white'>$alunoFirstname $alunoLastname</h5>
       </div>
       <div class='my-white'>

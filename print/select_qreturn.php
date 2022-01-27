@@ -30,10 +30,10 @@ if(isset($_POST['dbhidden-id']))
     $databaseId = $_POST['dbhidden-id'];
     $databaseName = $_POST['dbhidden-name'];
 
-    $sql = "SELECT question.id, question.name, question.questiontext, question.qtype, questindb.databaseid, db.name as dbname FROM mdl_local_pdi_question question 
-    INNER JOIN mdl_local_pdi_questindb questindb
+    $sql = "SELECT question.id, question.name, question.questiontext, question.qtype, questindb.databaseid, db.name as dbname FROM {local_pdi_question} question 
+    INNER JOIN {local_pdi_questindb} questindb
     ON questindb.questionid = question.id
-    INNER JOIN mdl_local_pdi_question_db db
+    INNER JOIN {local_pdi_question_db} db
     ON db.id = questindb.databaseid
     WHERE questindb.databaseid = '$databaseId' or db.name = '$databaseName'";
 

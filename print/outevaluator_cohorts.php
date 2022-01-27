@@ -24,10 +24,10 @@
 global $DB;
 
 //pré-página
-$outevacohort_sql = "SELECT mdl_user.id, mdl_user.username, mdl_user.firstname, mdl_user.lastname, mdl_user.email FROM mdl_user
-                        INNER JOIN mdl_local_pdi_evaluator
-                        ON mdl_user.id = mdl_local_pdi_evaluator.mdlid
-                        WHERE `email` != 'root@localhost'";
+$outevacohort_sql = "SELECT u.id, u.username, u.firstname, u.lastname, u.email FROM {user} u
+                        INNER JOIN {local_pdi_evaluator} lpv
+                        ON u.id = lpv.mdlid
+                        WHERE u.email != 'root@localhost'";
 $outres = $DB->get_records_sql($outevacohort_sql);
 
 $outevacohort_list;

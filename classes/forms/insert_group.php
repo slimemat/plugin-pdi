@@ -40,10 +40,10 @@ class insert_group extends moodleform {
 
         $choices = array();
 
-        $sql = "SELECT mdl_local_pdi_evaluator.id, mdl_user.username 
-        FROM mdl_local_pdi_evaluator 
-        INNER JOIN mdl_user 
-        ON mdl_user.id = mdl_local_pdi_evaluator.mdlid";
+        $sql = "SELECT lpv.id, u.username 
+        FROM {local_pdi_evaluator} lpv 
+        INNER JOIN {user} u 
+        ON u.id = lpv.mdlid";
 
         $res = $DB->get_records_sql($sql);
 

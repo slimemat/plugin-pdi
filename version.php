@@ -26,5 +26,5 @@
 defined('MOODLE_INTERNAL') || die();
 
 $plugin->component = 'local_pdi';
-$plugin->version = 2021102902; //current version
+$plugin->version = 2022012603; //current version
 $plugin->requires = 2016052300; // Moodle version

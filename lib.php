@@ -40,12 +40,14 @@
       
       if($var == "page-my-index"){
 
+         $PAGE->requires->jquery();
          $PAGE->requires->js('/local/pdi/scripts/pdipopup.js');
 
          return "
          \n<link rel=\"stylesheet\" href=\"../local/pdi/styles/pdipopup.css\"> 
          \n<link rel=\"stylesheet\" href=\"https://use.fontawesome.com/releases/v5.11.2/css/all.css\">";
       }
+
    }
  }
 
@@ -67,6 +69,27 @@
          $retorno = mostrarPopup();
          echo $retorno;
    
+      }
+
+
+      //verificar paginas do pdi
+      $mystring = $PAGE->url;
+      $findme   = '/local/pdi';
+      $pos = strpos($mystring, $findme);
+
+      // Note o uso de ===.  Simples == não funcionaria como esperado
+      if (!$pos === false) {
+         //retorna false quando não acha, retorna um número da posição quando acha
+
+         //script que oculta a div do edumy
+         echo "
+         <script>
+            if ($('#ccnSearchOverlayWrap').length) {
+                  $('#ccnSearchOverlayWrap').attr('style', 'height: 0% !important');
+                  console.log('pdi: changed style of #ccnSearchOverlayWrap');
+            }                       
+               
+         </script>";
       }
       
    }

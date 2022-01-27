@@ -53,10 +53,10 @@ else if($fromform = $mform->get_data()){
     $addStudent->studname = $fromform->studname;
     $addStudent->studemail = $fromform->studemail;
 
-    $websql = "SELECT studname, studemail FROM mdl_local_pdi_student WHERE studname = '$addStudent->studname' or studemail = '$addStudent->studemail'";
+    $websql = "SELECT studname, studemail FROM {local_pdi_student} WHERE studname = '$addStudent->studname' or studemail = '$addStudent->studemail'";
     $alreadyExist = $DB->get_records_sql($websql);
 
-    $sql = "SELECT `email`, `username` FROM `mdl_user` WHERE email = '$addStudent->studemail' and username = '$USER->username'";
+    $sql = "SELECT `email`, `username` FROM {user} WHERE email = '$addStudent->studemail' and username = '$USER->username'";
     $res = $DB->get_records_sql($sql);
 
     if(count($alreadyExist) > 0){

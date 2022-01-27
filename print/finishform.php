@@ -33,12 +33,12 @@ if(isset($_POST['hidden-qtrialid']))
     $tempoUnix = time();
 
     //pega os setores que foram usados nesse processo
-    $sql= "SELECT sm.sectorid, smdb.dbid , q.id qid, q.name, sm.trialid FROM mdl_local_pdi_sector_member sm 
-    LEFT JOIN mdl_local_pdi_sect_mem_db smdb
+    $sql= "SELECT sm.sectorid, smdb.dbid , q.id qid, q.name, sm.trialid FROM {local_pdi_sector_member} sm 
+    LEFT JOIN {local_pdi_sect_mem_db} smdb
     ON smdb.smemberid = sm.id
-    LEFT JOIN mdl_local_pdi_questindb qindb
+    LEFT JOIN {local_pdi_questindb} qindb
     ON qindb.databaseid = smdb.dbid
-    LEFT JOIN mdl_local_pdi_question q
+    LEFT JOIN {local_pdi_question} q
     ON q.id = qindb.questionid
     WHERE sm.trialid = '$trial_id'
     GROUP BY sm.sectorid";

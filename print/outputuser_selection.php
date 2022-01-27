@@ -24,7 +24,7 @@
 global $DB;
 
 //pré-página
-$outputuser_sel_sql = "SELECT `id`, `username`, `firstname`, `lastname`, `email`,  `institution` FROM `mdl_user` WHERE `email` != 'root@localhost'";
+$outputuser_sel_sql = "SELECT `id`, `username`, `firstname`, `lastname`, `email`,  `institution` FROM {user} WHERE `email` != 'root@localhost'";
 $outputuser_sel_avUsers = $DB->get_records_sql($outputuser_sel_sql);
 
 $outmoodle_list_simple;

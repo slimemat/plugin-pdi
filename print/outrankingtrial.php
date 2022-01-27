@@ -288,7 +288,7 @@ function fetchTablesGrades($trialid, $currentuid){
     
 
     //quick query to get sector
-    $sqlSec = "SELECT * FROM mdl_local_pdi_sector_member sm
+    $sqlSec = "SELECT * FROM {local_pdi_sector_member} sm
     WHERE sm.userid = '$currentuid' AND sm.trialid = '$trialid'";
     $resSec = $DB->get_records_sql($sqlSec);
     foreach($resSec as $rsc){
@@ -422,14 +422,14 @@ function fetchTablesGrades($trialid, $currentuid){
 
         //**********Média que o avaliador deu pro aluno */
 
-        //pega os valores referentes ao avaliado do each que o AVALIADOR respondeu
+        //pega os valores referentes ao avaliado do each que o AVALIADOR respondeu (finalizado, não salvo)
         $sqlAvaliador = "SELECT eatr.id, eatr.answeredbyid answer_by_evaluator, eatr.timemodified, q.name, q.questiontext ,q.qtype, qa.fraction nota, qa.answer, ans.userid evaluatedid, ans.idtrial, ans.sectorid, ans.isfinished
-        FROM mdl_local_pdi_evanswer_trial eatr
-        LEFT JOIN mdl_local_pdi_question q
+        FROM {local_pdi_evanswer_trial} eatr
+        LEFT JOIN {local_pdi_question} q
         ON q.id = eatr.idquestion
-        LEFT JOIN mdl_local_pdi_question_answers qa
+        LEFT JOIN {local_pdi_question_answers} qa
         ON qa.id = eatr.answer
-        LEFT JOIN mdl_local_pdi_answer_status ans
+        LEFT JOIN {local_pdi_answer_status} ans
         ON ans.id = eatr.idanstatus
         WHERE eatr.answeredbyid = '$currentuid' AND ans.idtrial = '$trialid' AND ans.userid = '$evaluatedid'";
 
@@ -596,7 +596,7 @@ function calcularMediaGeral($trialid, $currentuid, $evaluatedid){
         }
     }
 
-    if($q == 0){$mediaNota = "--";}
+    if($q == 0){$mediaNota = "Não avaliado por nota";}
     else{
         $mediaNota = $somaNota / $q;
     }
@@ -612,12 +612,12 @@ function calcularMediaGeral($trialid, $currentuid, $evaluatedid){
 
     //pega os valores referentes ao avaliado do each que o AVALIADOR respondeu
     $sqlAvaliador = "SELECT eatr.id, eatr.answeredbyid answer_by_evaluator, eatr.timemodified, q.name, q.qtype, qa.fraction nota, qa.answer, ans.userid evaluatedid, ans.idtrial, ans.sectorid, ans.isfinished
-    FROM mdl_local_pdi_evanswer_trial eatr
-    LEFT JOIN mdl_local_pdi_question q
+    FROM {local_pdi_evanswer_trial} eatr
+    LEFT JOIN {local_pdi_question} q
     ON q.id = eatr.idquestion
-    LEFT JOIN mdl_local_pdi_question_answers qa
+    LEFT JOIN {local_pdi_question_answers} qa
     ON qa.id = eatr.answer
-    LEFT JOIN mdl_local_pdi_answer_status ans
+    LEFT JOIN {local_pdi_answer_status} ans
     ON ans.id = eatr.idanstatus
     WHERE eatr.answeredbyid = '$currentuid' AND ans.idtrial = '$trialid' AND ans.userid = '$evaluatedid'";
 
@@ -636,7 +636,7 @@ function calcularMediaGeral($trialid, $currentuid, $evaluatedid){
         }
     }
 
-    if($q == 0){$mediaNota_av = "--";}
+    if($q == 0){$mediaNota_av = "Não avaliado por nota";}
     else{
         $mediaNota_av = $somaNota / $q;
     }
@@ -650,14 +650,20 @@ function calcularMediaGeral($trialid, $currentuid, $evaluatedid){
     if($mediaNota === "--"){
         return "não respondeu";
     }
-    else if($mediaNota_av === "--"){
-        return "não foi avaliado";
+    else if($mediaNota_av === "Não avaliado por nota"){
+        return "não foi avaliado por nota";
     }
 
     /////////////////
     $media_dasMedias = null;
 
+    //se chegou aqui, já vai fazer a média
+    if(!is_numeric($mediaNota)){return "Aguardando resposta";}
+    if(!is_numeric($mediaNota_av)){return "Aguardando avaliação";}
+
     $media_dasMedias = ($mediaNota + $mediaNota_av) / 2;
+
+    echo "<script>console.log('media_dasMedias: $media_dasMedias / mediaNota: $mediaNota  / mediaNota_av: $mediaNota_av');</script>";
 
     $media_dasMedias = number_format($media_dasMedias, 2, ',', '.');
 

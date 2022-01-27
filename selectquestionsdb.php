@@ -48,7 +48,7 @@ $PAGE->set_context(\context_system::instance());
 $PAGE->set_title("PDI Admin");
 $PAGE->set_heading('PDI Admin');
 $PAGE->requires->jquery();
-$PAGE->requires->js(new moodle_url('/local/pdi/scripts/pdiscript.js'));
+//$PAGE->requires->js(new moodle_url('/local/pdi/scripts/pdiscript.js'));
 
 global $USER, $DB;
 
@@ -64,7 +64,7 @@ if(isset($_POST['hidden-ids'])){
   $btnPick = $_POST['hidden-btn-pick'];
   
   foreach($idArray as $r){
-    $sql = "SELECT id, username, email FROM mdl_user WHERE id = '$r'";
+    $sql = "SELECT id, username, email FROM {user} WHERE id = '$r'";
     $res = $DB->get_records_sql($sql);
 
     foreach($res as $row){

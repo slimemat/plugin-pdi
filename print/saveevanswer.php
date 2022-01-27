@@ -31,13 +31,16 @@ if(isset($_POST['hidden-questid']))
     $anstatus_id = $_POST['hidden-asntatusid'];
     $answer_txt = $_POST['hidden-qanswer'];
     $answeredby_id = $_POST['hidden-answeredby'];
+    $trial_id = $_POST['hidden-trialid'];
 
     $sqlVerificar = "SELECT * FROM {local_pdi_evanswer_trial} x
-    WHERE x.answeredbyid = '$answeredby_id' and x.idquestion = '$question_id' and x.idanstatus = '$trial_id'";
+    WHERE x.answeredbyid = '$answeredby_id' and x.idquestion = '$question_id' and x.idanstatus = '$anstatus_id'";
     $resVerificar = $DB->get_records_sql($sqlVerificar);
 
     //se já existir, update deverá ser feito
     if(count($resVerificar) > 0){
+
+        //die("atualizaria");
         
         //update
         $status = 0;
@@ -57,6 +60,8 @@ if(isset($_POST['hidden-questid']))
 
     }
     else{
+
+        //die("irá inserir");
 
         $status=0;
         

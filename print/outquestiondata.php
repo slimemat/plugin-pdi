@@ -26,8 +26,8 @@
      global $DB;
 
      $sql = "SELECT sec.id, sec.sectorname, sec.timecreated, mem.id as memid, mem.sectorid as sid, mem.trialid, mem.userid 
-     FROM mdl_local_pdi_sector sec
-     LEFT JOIN mdl_local_pdi_sector_member mem
+     FROM {local_pdi_sector} sec
+     LEFT JOIN {local_pdi_sector_member} mem
      ON mem.sectorid = sec.id
      WHERE mem.trialid = '$trialID'";
 
@@ -41,8 +41,8 @@
         <option value=\"0\" disabled selected>-</option>";
 
         //fazer foreach das databases no sector_member
-        $sqliSecDB = "SELECT memdb.id, memdb.smemberid, memdb.dbid, db.name as dbname FROM mdl_local_pdi_sect_mem_db memdb
-                        INNER JOIN mdl_local_pdi_question_db db
+        $sqliSecDB = "SELECT memdb.id, memdb.smemberid, memdb.dbid, db.name as dbname FROM {local_pdi_sect_mem_db} memdb
+                        INNER JOIN {local_pdi_question_db} db
                         ON memdb.dbid = db.id
                         WHERE memdb.smemberid = '$sec->memid'";
         $resSecDB = $DB->get_records_sql($sqliSecDB);
@@ -56,7 +56,7 @@
         $db_id_list .= "0)";
 
         //fazer foreach das databases
-        $sqldb = "SELECT * FROM mdl_local_pdi_question_db WHERE id NOT IN $db_id_list";
+        $sqldb = "SELECT * FROM {local_pdi_question_db} WHERE id NOT IN $db_id_list";
         $resultdb = $DB->get_records_sql($sqldb);
         
         foreach($resultdb as $db){
@@ -73,9 +73,9 @@
         $i++;
      }
 
-     return $dataList;
+     if(!isset($dataList)){echo "<div class=\"alert alert-warning\" role=\"alert\">Complete o passo anterior antes de prosseguir!</div>";}
+     else{
+        return $dataList;
+     }
  }
 
- function fetchDatabase(){
-     
- }

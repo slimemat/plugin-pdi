@@ -62,11 +62,11 @@ if(isset($_POST['hidden-questid']))
         //fazer uma consulta para ver se essa pergunta deve ser salvo em outro setor dessa trial
 
         $sql = "SELECT sm.sectorid, smdb.dbid , q.id qid, q.name, sm.trialid FROM {local_pdi_sector_member} sm 
-        LEFT JOIN mdl_local_pdi_sect_mem_db smdb
+        LEFT JOIN {local_pdi_sect_mem_db} smdb
         ON smdb.smemberid = sm.id
-        LEFT JOIN mdl_local_pdi_questindb qindb
+        LEFT JOIN {local_pdi_questindb} qindb
         ON qindb.databaseid = smdb.dbid
-        LEFT JOIN mdl_local_pdi_question q
+        LEFT JOIN {local_pdi_question} q
         ON q.id = qindb.questionid
         WHERE q.id = '$question_id' and sm.trialid = '$trial_id'";
 

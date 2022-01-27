@@ -31,10 +31,13 @@ if(isset($_POST['hidden-qtype']))
 
     //trial
     $timeCreated = $_POST['hidden-mytime'];
+
     $rSQL = "SELECT * FROM {local_pdi_trial} WHERE createdby = '$USER->id' and timecreated = $timeCreated";
     $resultado = $DB->get_records_sql($rSQL);
     $trialID;
     foreach($resultado as $t){$trialID = $t->id;}
+
+    if(!isset($trialID)){$trialID = $_SESSION['edittrialid'];}
 
 
     $unixTime = time();
@@ -48,7 +51,7 @@ if(isset($_POST['hidden-qtype']))
     $dbid = $_POST['hidden-qdbid'];
 
     //verificar banco de questões
-    $dbSql = "SELECT * FROM mdl_local_pdi_question_db WHERE id='$dbid' OR name='$dbname'";
+    $dbSql = "SELECT * FROM {local_pdi_question_db} WHERE id='$dbid' OR name='$dbname'";
     $dbRes = $DB->get_records_sql($dbSql);
 
     $existiaDB = false;

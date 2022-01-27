@@ -47,7 +47,7 @@ $PAGE->set_context(\context_system::instance());
 $PAGE->set_title("PDI Admin");
 $PAGE->set_heading('PDI Admin');
 $PAGE->requires->jquery();
-$PAGE->requires->js(new moodle_url('/local/pdi/scripts/pdiscript.js'));
+//$PAGE->requires->js(new moodle_url('/local/pdi/scripts/pdiscript.js'));
 
 global $USER, $DB;
 
@@ -75,6 +75,18 @@ if($auth == "yes"){
     echo "<footer>That is a page for plugin admins only.</footer><br>";
     \core\notification::add("You are not registered as a plugin admin!", \core\output\notification::NOTIFY_ERROR);
     echo "<span><a href='index.php' class='pdi-nostyle'>back</a></span>";
+}
+
+//editar chegando por aqui
+if(isset($_REQUEST['edittrial'])){
+  //edittrial deve conter o id da trial que está sendo editada
+  sleep(1);
+
+  //recupera os dados da url trial
+  $trialid = $_REQUEST['edittrial'];
+  $_SESSION['edittrialid'] = $trialid;
+
+
 }
 
 
@@ -425,9 +437,21 @@ function atribuirCamposSalvos(trialid){
 
         $("#final-name").val(title); //TITULO
 
+        //data inicial fix
+        if(startdate == null){
+          var unixTime = new Date().getTime() + "";
+          startdate = unixTime.substr(0, 10);          
+        }
         //data inicial
         startdate = unixDateStringCorrector(startdate);
+
         $("#start-date").val(startdate); //DATA INCIAL
+
+        //data final fix
+        if(enddate == null){
+          var unixTime = new Date().getTime() + "";
+          enddate = unixTime.substr(0, 10);          
+        }
 
         //data final
         enddate = unixDateStringCorrector(enddate);

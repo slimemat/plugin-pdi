@@ -1,7 +1,6 @@
 //alert('hello world, js active');
 
 //everything that requires jquery should go inside
-
 require(['jquery'], function($){
 
     //btn table pdi adm

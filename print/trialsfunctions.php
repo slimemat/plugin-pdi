@@ -472,6 +472,14 @@ function deleteTrial($trialid){
    $res = array_values($res);
    $res = $res[0];
 
+   //se não foi possível pegar os detalhes, apagar agora
+   if($res == null){
+      $select0 = "id = $trialid";
+      $resdel0 = $DB->delete_records_select('local_pdi_trial', $select0);
+
+      return $resdel0;
+   }
+
    $id = $res->id;
    $isstarted = $res->isstarted;
 
@@ -491,7 +499,6 @@ function deleteTrial($trialid){
       $resdel = $DB->delete_records_select('local_pdi_trial_detail', $select);
 
       $select2 = "id = $trialid";
-      var_dump($select2);
       $resdel2 = $DB->delete_records_select('local_pdi_trial', $select2);
 
       return $resdel2;

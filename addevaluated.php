@@ -49,7 +49,7 @@ $PAGE->set_context(\context_system::instance());
 $PAGE->set_title("PDI Admin");
 $PAGE->set_heading('PDI Admin');
 $PAGE->requires->jquery();
-$PAGE->requires->js(new moodle_url('/local/pdi/scripts/pdiscript.js'));
+//$PAGE->requires->js(new moodle_url('/local/pdi/scripts/pdiscript.js'));
 
 global $USER, $DB;
 
@@ -86,10 +86,10 @@ if(isset($_POST['hidden-ids'])){
       $cSQL = "SELECT tv.id, tv.timemod, ev.id as evID, ev.mdlid, tv.trialid ,tv.cohortid FROM {local_pdi_evaluator} ev
               LEFT JOIN {local_pdi_trial_evaluator} tv
               ON tv.evaluatorid = ev.id
-              LEFT JOIN mdl_user
-              ON mdl_user.id = ev.mdlid
+              LEFT JOIN {user} u
+              ON u.id = ev.mdlid
               WHERE tv.trialid = '$trialID'
-              AND mdl_user.username = '$username'";
+              AND u.username = '$username'";
       $cRes = $DB->get_records_sql($cSQL);
 
       $id; //id pk da tabela
@@ -174,14 +174,14 @@ $trialid = $_SESSION['edittrialid'];
 
 ////avaliadores desse processo
 $aSQL = "SELECT evaluator.id as evaid, evaluator.evarole, evaluator.evasector, evaluator.evatimeadd, evaluator.mdlid, trev.id as trevID, trev.trialid, trev.cohortid,
-mdl_user.id, mdl_user.username, mdl_user.email, mdl_user.firstname, mdl_user.lastname, mdl_user.institution, mdl_cohort.name as cohortname
-FROM mdl_local_pdi_evaluator evaluator
-LEFT JOIN mdl_local_pdi_trial_evaluator trev
+u.id, u.username, u.email, u.firstname, u.lastname, u.institution, c.name as cohortname
+FROM {local_pdi_evaluator} evaluator
+LEFT JOIN {local_pdi_trial_evaluator} trev
 ON trev.evaluatorid = evaluator.id
-LEFT JOIN mdl_user
-ON evaluator.mdlid = mdl_user.id
-LEFT JOIN mdl_cohort
-ON mdl_cohort.id = trev.cohortid
+LEFT JOIN {user} u
+ON evaluator.mdlid = u.id
+LEFT JOIN {cohort} c
+ON c.id = trev.cohortid
 WHERE trev.trialid = $trialID
 GROUP BY evaluator.id";
 

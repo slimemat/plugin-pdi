@@ -48,7 +48,7 @@ $PAGE->set_context(\context_system::instance());
 $PAGE->set_title("PDI Questões");
 $PAGE->set_heading('PDI Questões');
 $PAGE->requires->jquery();
-$PAGE->requires->js(new moodle_url($CFG->dirrroot . '/local/pdi/scripts/pdiscript.js'));
+//$PAGE->requires->js(new moodle_url($CFG->dirrroot . '/local/pdi/scripts/pdiscript.js'));
 
 global $USER, $DB;
 
@@ -70,7 +70,7 @@ if(isset($_POST['txtCatname'])){
     $addCat->sortorder = 0;
     $addCat->idnumber = null;
 
-    $sql = "SELECT * FROM mdl_local_pdi_question_categ WHERE name='$txtCatName' AND contextid= 1";
+    $sql = "SELECT * FROM {local_pdi_question_categ} WHERE name='$txtCatName' AND contextid= 1";
     $res = $DB->get_records_sql($sql);
 
     if(count($res) > 0){

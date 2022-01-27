@@ -121,7 +121,6 @@ echo "<br><br>";
 echo "<div id='my-centralizadora'>";
 echo "<div id='div-dashboard-list'>"; //div dashboard list
 
-
 /////////////////
 /////////////printado aqui com o conteudo dinamico criado em cima dessa página
 

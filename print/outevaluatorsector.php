@@ -36,15 +36,15 @@
 
     //fazer a inserção de valores 0 nos setores de quem não foi atribuido ainda
     $xxxSql = "SELECT ev.mdlid, tv.trialid, tv.evaluatorid
-    FROM mdl_local_pdi_trial_evaluator tv
-    LEFT JOIN mdl_local_pdi_evaluator ev
+    FROM {local_pdi_trial_evaluator} tv
+    LEFT JOIN {local_pdi_evaluator} ev
     ON tv.evaluatorid = ev.id
     WHERE tv.trialid = '$trialID'";
 
     $xxxResult = $DB->get_records_sql($xxxSql);
 
     foreach($xxxResult as $xtv){
-        $yyySql = "SELECT * FROM mdl_local_pdi_sector_member sm
+        $yyySql = "SELECT * FROM {local_pdi_sector_member} sm
         WHERE sm.trialid = '$xtv->trialid'
         AND sm.userid = '$xtv->mdlid'";
 
@@ -65,37 +65,37 @@
 
 
     //começa
-    $sql = "SELECT mdl_user.id, mdl_user.username, mdl_user.firstname, mdl_user.lastname, mdl_user.email, mdl_local_pdi_sector_member.sectorid, mdl_local_pdi_sector.sectorname, mdl_local_pdi_sector_member.trialid, mdl_local_pdi_trial_evaluator.trialid as trevid
-    FROM `mdl_user` 
-    RIGHT JOIN mdl_local_pdi_evaluator
-    ON mdl_user.id = mdl_local_pdi_evaluator.mdlid
-    LEFT JOIN mdl_local_pdi_sector_member
-    ON mdl_local_pdi_sector_member.userid = mdl_user.id
-    LEFT JOIN mdl_local_pdi_sector
-    ON mdl_local_pdi_sector.id = mdl_local_pdi_sector_member.sectorid
-    LEFT JOIN mdl_local_pdi_trial_evaluator
-    ON mdl_local_pdi_trial_evaluator.trialid = mdl_local_pdi_sector_member.trialid
-    WHERE mdl_local_pdi_trial_evaluator.trialid = '$trialID'
-    GROUP BY mdl_user.id
+    $sql = "SELECT u.id, u.username, u.firstname, u.lastname, u.email, lpsm.sectorid, lps.sectorname, lpsm.trialid, lptv.trialid as trevid
+    FROM {user} u
+    RIGHT JOIN {local_pdi_evaluator} lpv
+    ON u.id = lpv.mdlid
+    LEFT JOIN {local_pdi_sector_member} lpsm
+    ON lpsm.userid = u.id
+    LEFT JOIN {local_pdi_sector} lps
+    ON lps.id = lpsm.sectorid
+    LEFT JOIN {local_pdi_trial_evaluator} lptv
+    ON lptv.trialid = lpsm.trialid
+    WHERE lptv.trialid = '$trialID'
+    GROUP BY u.id
     
     ";
 
     $outputuser_sel_avUsers = $DB->get_records_sql($sql);
 
     if(count($outputuser_sel_avUsers) < 1){
-        $sql = "SELECT mdl_user.id, mdl_user.username, mdl_user.firstname, mdl_user.lastname, mdl_user.email, mdl_local_pdi_sector_member.sectorid, mdl_local_pdi_sector.sectorname, mdl_local_pdi_sector_member.trialid, mdl_local_pdi_trial_evaluator.trialid as trevid
-        FROM `mdl_user` 
-        RIGHT JOIN mdl_local_pdi_evaluator
-        ON mdl_user.id = mdl_local_pdi_evaluator.mdlid
-        LEFT JOIN mdl_local_pdi_trial_evaluator
-        ON mdl_local_pdi_trial_evaluator.evaluatorid = mdl_local_pdi_evaluator.id
-        LEFT JOIN mdl_local_pdi_sector_member
-        ON mdl_local_pdi_sector_member.trialid = mdl_local_pdi_trial_evaluator.trialid
-        LEFT JOIN mdl_local_pdi_sector
-        ON mdl_local_pdi_sector.id = mdl_local_pdi_sector_member.sectorid
-        WHERE mdl_local_pdi_trial_evaluator.trialid = '$trialID'
-        OR mdl_local_pdi_sector_member.trialid = '$trialID'
-        GROUP BY mdl_user.id";
+        $sql = "SELECT u.id, u.username, u.firstname, u.lastname, u.email, lpsm.sectorid, lps.sectorname, lpsm.trialid, lptv.trialid as trevid
+        FROM {user} u 
+        RIGHT JOIN {local_pdi_evaluator} lpv
+        ON u.id = lpv.mdlid
+        LEFT JOIN {local_pdi_trial_evaluator} lptv
+        ON lptv.evaluatorid = lpv.id
+        LEFT JOIN {local_pdi_sector_member} lpsm
+        ON lpsm.trialid = lptv.trialid
+        LEFT JOIN {local_pdi_sector} lps
+        ON lps.id = lpsm.sectorid
+        WHERE lptv.trialid = '$trialID'
+        OR lpsm.trialid = '$trialID'
+        GROUP BY u.id";
 
         $outputuser_sel_avUsers = $DB->get_records_sql($sql);
     }

@@ -189,8 +189,8 @@ $html_notas
 ///////////////////////////////trabalhando nessa tela
 ///////////////////////////////////////////////////////
 ///////////////////////////////////
-$userid_pic = '4';
-$imgURL = new moodle_url('/user/pix.php/'.$userid_pic.'/f1.jpg');
+//$userid_pic = '4';
+//$imgURL = new moodle_url('/user/pix.php/'.$userid_pic.'/f1.jpg');
 
 ///TESTE COM IMAGENS
 ///////////////////////

@@ -31,16 +31,16 @@ if(isset($_POST['hidden-trialid']))
     $currentuserid = $_POST['hidden-currentuserid'];
 
     $sql = "SELECT q.id as question_id, q.name as question_name, q.questiontext as question_text, q.qtype as question_type, qindb.databaseid, smdb.id as id_sect_mem_db, smdb.smemberid, sm.sectorid, sm.trialid, trev.id as trialevid, trev.cohortid, cm.userid as userid_in_cohort
-    FROM mdl_local_pdi_questindb qindb
-    LEFT JOIN mdl_local_pdi_question q
+    FROM {local_pdi_questindb} qindb
+    LEFT JOIN {local_pdi_question} q
     ON q.id = qindb.questionid
-    LEFT JOIN mdl_local_pdi_sect_mem_db smdb
+    LEFT JOIN {local_pdi_sect_mem_db} smdb
     ON smdb.dbid = qindb.databaseid
-    LEFT JOIN mdl_local_pdi_sector_member sm
+    LEFT JOIN {local_pdi_sector_member} sm
     ON sm.id = smdb.smemberid
-    LEFT JOIN mdl_local_pdi_trial_evaluator trev
+    LEFT JOIN {local_pdi_trial_evaluator} trev
     ON trev.trialid = sm.trialid
-    LEFT JOIN mdl_cohort_members cm
+    LEFT JOIN {cohort_members} cm
     ON cm.cohortid = trev.cohortid
     WHERE cm.userid = '$currentuserid' and sm.trialid = '$trialid'
     GROUP BY question_id
@@ -49,7 +49,7 @@ if(isset($_POST['hidden-trialid']))
     $res = $DB->get_records_sql($sql);
 
     //selecionar o titulo do processo
-    $trialSQL = "SELECT title from mdl_local_pdi_trial t where t.id = '$trialid'";
+    $trialSQL = "SELECT title from {local_pdi_trial} t where t.id = '$trialid'";
     $trialRES = $DB->get_records_sql($trialSQL);
     $trialNAME = "";
     foreach($trialRES as $tr){$trialNAME = $tr->title;}
@@ -92,7 +92,7 @@ if(isset($_POST['hidden-trialid']))
         else if($qtype == "essay"){
 
             //see if theres an answer saved
-            $savedSQL = "SELECT * FROM mdl_local_pdi_answer_trial ant 
+            $savedSQL = "SELECT * FROM {local_pdi_answer_trial} ant 
                             WHERE ant.answeredbyid = '$currentuserid' AND ant.idquestion = '$qid' AND ant.idtrial = '$trialid'";
             $savedRES = $DB->get_records_sql($savedSQL);
             
@@ -111,14 +111,14 @@ if(isset($_POST['hidden-trialid']))
         else if($qtype == "multichoice"){
             
             //since it's multichoice, the option must be get from the database
-            $mcSQL = "select * from mdl_local_pdi_question_answers WHERE question = $qid";
+            $mcSQL = "select * from {local_pdi_question_answers} WHERE question = $qid";
             $mcRES = $DB->get_records_sql($mcSQL);
             
             $htmlInside .= "
             <form action='' class='answer-choice' method='post' data-sector='$qsector' id='$qid'>";
 
             //see if theres an answer saved
-            $savedSQL = "SELECT * FROM mdl_local_pdi_answer_trial ant 
+            $savedSQL = "SELECT * FROM {local_pdi_answer_trial} ant 
                             WHERE ant.answeredbyid = '$currentuserid' AND ant.idquestion = '$qid' AND ant.idtrial = '$trialid'";
             $savedRES = $DB->get_records_sql($savedSQL);
 
@@ -163,14 +163,14 @@ if(isset($_POST['hidden-trialid']))
         else if($qtype == "range"){
 
             //since it's range, the options will also be get from the db
-            $rSQL = "SELECT * FROM mdl_local_pdi_question_answers WHERE question = '$qid'";
+            $rSQL = "SELECT * FROM {local_pdi_question_answers} WHERE question = '$qid'";
             $rRES = $DB->get_records_sql($rSQL);
 
             $htmlInside .= "
             <form action='' class='answer-choice' method='post' data-sector='$qsector' id='$qid'>";
 
             //see if theres an answer saved
-            $savedSQL = "SELECT * FROM mdl_local_pdi_answer_trial ant 
+            $savedSQL = "SELECT * FROM {local_pdi_answer_trial} ant 
                             WHERE ant.answeredbyid = '$currentuserid' AND ant.idquestion = '$qid' AND ant.idtrial = '$trialid'";
             $savedRES = $DB->get_records_sql($savedSQL);
 
