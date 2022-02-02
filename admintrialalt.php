@@ -929,7 +929,8 @@ $("#my-tab2").on("click", "#btn-add-course", function(){
 //botões dentro da reunião criada
 $("#my-tab2").on("click", "#btn-ver-reuniao", function(){
   var urlCourse = $(this).attr('data-url');
-  window.location.href = urlCourse;
+  //window.location.href = urlCourse;
+  window.open(urlCourse, '_blank');
 });
 
 

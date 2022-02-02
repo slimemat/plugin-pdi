@@ -57,7 +57,7 @@ global $USER, $DB;
 verifyAdm($USER->username);
 
 /////////////////////////////////////////
-$trialid = $_SESSION['edittrialid'];
+if(isset($_SESSION['edittrialid'])){$trialid = $_SESSION['edittrialid'];}
 
 
 //page STARTS HERE

@@ -429,22 +429,10 @@ $frmRangeAns= "
       <table id='tbl-range'>
         <tr>
             <td class='td-bigger'>
-                <label for='txtQanswer4'>Scale 0</label> <br>
+                <label for='txtQanswer4'>Scale 1</label> <br>
                 <input class='txtQanswer range-opt' type='text' name='txtQanswer4' placeholder='ex: extremely unlikely'> <br>
             </td>
             <td class='td-smaller'>
-                <label for='selQvalue4'>Number</label> <br>
-                <select class='custom-select my-sel-range' name='selQvalue4'>
-                <option value=\"0\" selected=''>0</option>
-                </select> 
-            </td>
-        </tr>
-        <tr>
-            <td class='td-bigger'>
-                <label for='txtQanswer4'>Scale 1</label> <br>
-                <input class='txtQanswer range-opt' type='text' name='txtQanswer4' placeholder='ex: unlikely'> <br>
-            </td>
-            <td class='td-smaller2'>
                 <label for='selQvalue4'>Number</label> <br>
                 <select class='custom-select my-sel-range' name='selQvalue4'>
                 <option value=\"1\" selected=''>1</option>
@@ -454,12 +442,24 @@ $frmRangeAns= "
         <tr>
             <td class='td-bigger'>
                 <label for='txtQanswer4'>Scale 2</label> <br>
+                <input class='txtQanswer range-opt' type='text' name='txtQanswer4' placeholder='ex: unlikely'> <br>
+            </td>
+            <td class='td-smaller2'>
+                <label for='selQvalue4'>Number</label> <br>
+                <select class='custom-select my-sel-range' name='selQvalue4'>
+                <option value=\"2\" selected=''>2</option>
+                </select> 
+            </td>
+        </tr>
+        <tr>
+            <td class='td-bigger'>
+                <label for='txtQanswer4'>Scale 3</label> <br>
                 <input class='txtQanswer range-opt' type='text' name='txtQanswer4'> <br>
             </td>
             <td class='td-smaller3'>
                 <label for='selQvalue4'>Number</label> <br>
                 <select class='custom-select my-sel-range' name='selQvalue4'>
-                <option value=\"2\" selected=''>2</option>
+                <option value=\"3\" selected=''>3</option>
                 </select> 
             </td>
         </tr>
@@ -584,7 +584,7 @@ echo "
                         <option value=\"1\">short answer</option>
                         <option value=\"2\" selected>essay answer</option>
                         <option value=\"3\">multiple choice</option>
-                        <option value=\"4\">range answer (0 - 10)</option>
+                        <option value=\"4\">range answer (1 - 10)</option>
                     </select>
                 </form>
 
@@ -1581,7 +1581,7 @@ $("#btn-add-ans-range").on("click", function(){
     tblid = "rangetblid"+blockIndex+"";
 
     //criar um bloco
-    optionBlock = "<table id='"+tblid+"'><tr><td class='td-bigger'><label for='txtQanswer"+blockIndex +"'>Scale "+ (blockIndex-1) +"</label> <br><input class='txtQanswer range-opt' type='text' name='txtQanswer"+blockIndex +"'> <br></td><td class='td-smaller'><label for='selQvalue"+blockIndex+"'>Number</label> <br><select class='custom-select my-sel-range' name='selQvalue"+blockIndex+"'><option value='"+ (blockIndex-1) +"' selected=''>"+ (blockIndex-1) +"</option></select></td></tr><table>";
+    optionBlock = "<table id='"+tblid+"'><tr><td class='td-bigger'><label for='txtQanswer"+blockIndex +"'>Scale "+ (blockIndex) +"</label> <br><input class='txtQanswer range-opt' type='text' name='txtQanswer"+blockIndex +"'> <br></td><td class='td-smaller'><label for='selQvalue"+blockIndex+"'>Number</label> <br><select class='custom-select my-sel-range' name='selQvalue"+blockIndex+"'><option value='"+ (blockIndex) +"' selected=''>"+ (blockIndex) +"</option></select></td></tr><table>";
 
     //add no html
     $( "#tbl-limit-range")

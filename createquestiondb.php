@@ -422,29 +422,17 @@ $frmRangeAns= "
     <textarea class='form-control' type='text' id='txtQname4' name='txtQname4' placeholder='pergunta (escala) que o avaliador lê'></textarea> <br>
 
     <label for='txtQText4'>Enunciado questão (funcionário)</label> <br>
-    <textarea class=\"form-control\" id=\"txtQText4\" name='txtQText4' rows=\"6\" placeholder='pergunta (escala) que o funcionário lê\n\nDe 0 a 5, como VOCÊ se avalia?'></textarea> <br>
+    <textarea class=\"form-control\" id=\"txtQText4\" name='txtQText4' rows=\"6\" placeholder='pergunta (escala) que o funcionário lê\n\nDe 1 a 5, como VOCÊ se avalia?'></textarea> <br>
 
     <div>
      <div class='div-scroll' id='div-scroll-range'>
       <table id='tbl-range'>
         <tr>
             <td class='td-bigger'>
-                <label for='txtQanswer4'>Scale 0</label> <br>
+                <label for='txtQanswer4'>Scale 1</label> <br>
                 <input class='txtQanswer range-opt' type='text' name='txtQanswer4' placeholder='ex: extremely unlikely'> <br>
             </td>
             <td class='td-smaller'>
-                <label for='selQvalue4'>Number</label> <br>
-                <select class='custom-select my-sel-range' name='selQvalue4'>
-                <option value=\"0\" selected=''>0</option>
-                </select> 
-            </td>
-        </tr>
-        <tr>
-            <td class='td-bigger'>
-                <label for='txtQanswer4'>Scale 1</label> <br>
-                <input class='txtQanswer range-opt' type='text' name='txtQanswer4' placeholder='ex: unlikely'> <br>
-            </td>
-            <td class='td-smaller2'>
                 <label for='selQvalue4'>Number</label> <br>
                 <select class='custom-select my-sel-range' name='selQvalue4'>
                 <option value=\"1\" selected=''>1</option>
@@ -454,12 +442,24 @@ $frmRangeAns= "
         <tr>
             <td class='td-bigger'>
                 <label for='txtQanswer4'>Scale 2</label> <br>
+                <input class='txtQanswer range-opt' type='text' name='txtQanswer4' placeholder='ex: unlikely'> <br>
+            </td>
+            <td class='td-smaller2'>
+                <label for='selQvalue4'>Number</label> <br>
+                <select class='custom-select my-sel-range' name='selQvalue4'>
+                <option value=\"2\" selected=''>2</option>
+                </select> 
+            </td>
+        </tr>
+        <tr>
+            <td class='td-bigger'>
+                <label for='txtQanswer4'>Scale 3</label> <br>
                 <input class='txtQanswer range-opt' type='text' name='txtQanswer4'> <br>
             </td>
             <td class='td-smaller3'>
                 <label for='selQvalue4'>Number</label> <br>
                 <select class='custom-select my-sel-range' name='selQvalue4'>
-                <option value=\"2\" selected=''>2</option>
+                <option value=\"3\" selected=''>3</option>
                 </select> 
             </td>
         </tr>
@@ -617,7 +617,7 @@ echo "
                         <option value=\"1\">short answer</option>
                         <option value=\"2\" selected>essay answer</option>
                         <option value=\"3\">multiple choice</option>
-                        <option value=\"4\">range answer (0 - 10)</option>
+                        <option value=\"4\">range answer (1 - 10)</option>
                     </select>
                 </form>
 
@@ -661,7 +661,8 @@ echo "<input type=\"hidden\" name=\"hidden-qtype\" id=\"hidden-qtype\" value=\"\
 echo "<input type=\"hidden\" name=\"hidden-qcat\" id=\"hidden-qcat\" value=\"\">";
 echo "<input type=\"hidden\" name=\"hidden-qanswers\" id=\"hidden-qanswers\" value=\"\">";
 echo "<input type=\"hidden\" name=\"hidden-qvalues\" id=\"hidden-qvalues\" value=\"\">";
-echo "<input type=\"hidden\" name=\"hidden-mytime\" id=\"hidden-mytime\" value=\"".$_SESSION['mytime']."\">";
+//echo "<input type=\"hidden\" name=\"hidden-mytime\" id=\"hidden-mytime\" value=\"".$_SESSION['mytime']."\">";
+echo "<input type=\"hidden\" name=\"hidden-mytime\" id=\"hidden-mytime\" value=\"".$_SESSION['edittrialid']."\">";
 echo "<input type=\"hidden\" name=\"hidden-qdbname\" id=\"hidden-qdbname\" value=\"\">";
 echo "<input type=\"hidden\" name=\"hidden-qdbid\" id=\"hidden-qdbid\" value=\"0\">";
 echo "</form>";
@@ -1624,7 +1625,7 @@ $("#btn-add-ans-range").on("click", function(){
     tblid = "rangetblid"+blockIndex+"";
 
     //criar um bloco
-    optionBlock = "<table id='"+tblid+"'><tr><td class='td-bigger'><label for='txtQanswer"+blockIndex +"'>Scale "+ (blockIndex-1) +"</label> <br><input class='txtQanswer range-opt' type='text' name='txtQanswer"+blockIndex +"'> <br></td><td class='td-smaller'><label for='selQvalue"+blockIndex+"'>Number</label> <br><select class='custom-select my-sel-range' name='selQvalue"+blockIndex+"'><option value='"+ (blockIndex-1) +"' selected=''>"+ (blockIndex-1) +"</option></select></td></tr><table>";
+    optionBlock = "<table id='"+tblid+"'><tr><td class='td-bigger'><label for='txtQanswer"+blockIndex +"'>Scale "+ (blockIndex) +"</label> <br><input class='txtQanswer range-opt' type='text' name='txtQanswer"+blockIndex +"'> <br></td><td class='td-smaller'><label for='selQvalue"+blockIndex+"'>Number</label> <br><select class='custom-select my-sel-range' name='selQvalue"+blockIndex+"'><option value='"+ (blockIndex) +"' selected=''>"+ (blockIndex) +"</option></select></td></tr><table>";
 
     //add no html
     $( "#tbl-limit-range")
