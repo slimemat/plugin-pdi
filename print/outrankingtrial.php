@@ -276,6 +276,7 @@ function fetchTablesGrades($trialid, $currentuid){
 
     $imgAvaliador = new moodle_url('/user/pix.php/'.$currentuid.'/f1.jpg');
     $sectorid = null;
+    $sectorMemberId = null;
     $listaNotasAluno = null;
 
     //quick query to get evaluator data (note that $currentuid may only refer to the evaluator, not necessary the logged user)
@@ -293,6 +294,7 @@ function fetchTablesGrades($trialid, $currentuid){
     $resSec = $DB->get_records_sql($sqlSec);
     foreach($resSec as $rsc){
         $sectorid = $rsc->sectorid;
+        $sectorMemberId = $rsc->userid;
     }
 
 
@@ -513,6 +515,20 @@ function fetchTablesGrades($trialid, $currentuid){
             </table>
             </div>
             <hr class='my-padding-sm my-margin-lados'>";
+        }
+
+        //verificar se a pessoa chamando é avaliador para esconder a média até ele responder
+        if($is_only_aluno == false){
+            $sql = "SELECT * FROM {local_pdi_answer_status} lpas WHERE lpas.sectorid ='$sectorid' and lpas.userid ='$evaluatedid' and lpas.idtrial='$trialid'";
+            $res = $DB->get_records_sql($sql);
+            $res = array_values($res);
+            if(count($res)>0){
+                $res = $res[0];
+                $isfinished = $res->isfinished;
+                if($isfinished == 1){ //significa que só o aluno respondeu, então ocultar pro avaliador a média
+                    $mediaNota = "<span title='É necessário finalizar a avaliação para ver a nota'><i class=\"far fa-question-circle my-help-pop\"></i></span>";
+                }
+            }
         }
 
         $htmlBlock .= "
