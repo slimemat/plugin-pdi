@@ -249,7 +249,7 @@ echo $OUTPUT->header();
 
 echo "<div id='myblue-bg'>";
 echo "<span><a href='index.php' class='pdi-nostyle my-marginr'>back</a></span>";
-echo "<span><a href='/moodle/index.php' class='pdi-nostyle my-marginr'>dashboard</a></span>";
+echo "<span><a href='index.php' class='pdi-nostyle my-marginr'>dashboard</a></span>";
 echo "<span><a href='#newadminsid' class='pdi-nostyle'>add admin</a></span>";
 echo "<div class='mypush'><span class='mylogo'>PDI</span></div>";
 echo "</div><br>";

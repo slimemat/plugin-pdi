@@ -463,6 +463,22 @@ li paginate_button{
     margin-left: auto;
 }
 
+.my-secondary-btn-off{
+    background-color: var(--mygreylight) !important;
+    color: var(--white) !important;
+    font-family: "Poppins" !important;
+    border: none !important;
+    border-radius: 0;
+}
+.my-secondary-btn-off:active{
+    background-color: var(--mygrey) !important;
+    color: var(--white) !important;
+    transition: ease 200ms;
+}
+.my-secondary-btn-off:focus{
+    outline: 1px solid var(--myblack) !important;    
+}
+
 .my-secondary-btn{
     background-color: var(--mysecondary) !important;
     color: var(--white) !important;

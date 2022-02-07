@@ -359,6 +359,42 @@
    }
    
 
+   //fazer uma consulta usando o avaliador e o aluno para ver os processos que eles têm em comum, e então trazer os objetivos
+   $res = consultaReachedGoals($alunoid, $evaluatorid);
+
+   //passar por N goals possíveis, aqui ele vê todos de um aluno por vez
+   $htmlGoalalcancado = "";
+
+   foreach($res as $r){
+      $goalid = $r->id;
+      $goaltitle = strip_tags($r->title);
+      $goaldesc = strip_tags($r->description);
+      $goalstatus = $r->status;
+      $trialtitle = $r->trialtitle;
+
+      //só mostra se esse for o status
+      if($goalstatus == "alcancado"){
+
+         //consulda dos N feedbacks possíveis para cada goal
+         $htmlAcordeonFeed = alunoGoalReply($goalid);
+
+         $htmlGoalalcancado .= "<div class=\"align-top bg-white mb-2 mr-2 my-padding-sm rounded\" style=\"width: 18rem; display: inline-block\">
+                              <small class='text-muted'>$trialtitle</small>
+                              <small class='text-muted'> | </small>
+                              <small class='text-muted'>objetivo: Alcançado <i class=\"fas fa-check\"></i></small>
+                              <hr>
+                              <h5 id=\"h-goal-$goalid\" class=\"card-title my-bold lbl-obj-onoff\">$goaltitle</h5>
+                              <p id=\"p-goal-$goalid\" class=\"card-text lbl-obj-onoff\" style=\"white-space: pre-wrap;\">$goaldesc</p>
+                              <hr>
+                              $htmlAcordeonFeed 
+
+                              </div>";
+      }
+
+   }
+
+   if(strlen($htmlGoalalcancado) < 1){$htmlGoalalcancado="<div class=\"alert alert-primary\" role=\"alert\"><h4>Nada aqui!</h4><p>Você não marcou objetivos como alcançados para esse usuário.</p></div>";}
+
 
    //marcar e objetivos
    $blocoHTML .= "
@@ -403,9 +439,23 @@
             </div>
 
 
+            <div class='text-right'>
+               <input type=\"button\" value=\"Atual\" class=\"my-secondary-btn my-btn-pad\" id=\"btn-goal-atual\" style=\"\">
+               <input type=\"button\" value=\"Alcançados\" class=\"my-secondary-btn-off my-btn-pad\" id=\"btn-goal-alcancado\" style=\"\">
+            </div>
+            <div class='p-1 my-bg-secondary'></div>
+
             <div id=\"horizontal-scroll\" class='my-scroll-h row my-bg-light'>
 
-               <div id=\"div-cards\" class=\"\"></div>
+               <div id=\"div-cards\" class=\"\">
+            
+               </div>         
+
+            </div>
+
+            <div id=\"horizontal-scroll-alcancado\" class='my-scroll-h row my-bg-light d-none'>
+
+               <div id=\"div-cards-alcancado\" class=\"\">$htmlGoalalcancado</div>
 
                               
 
@@ -436,8 +486,10 @@
                   WHERE s.userid = '$alunoid' AND s.idtrial = '$trialid' AND s.sectorid ='$sectorid'";
       $resVer = $DB->get_records_sql($sqlVer);
 
-      $anstatusid = $resVer[$alunoid]->id;
-
+      $anstatusid = null;
+      if(count($resVer)>0){
+         $anstatusid = $resVer[$alunoid]->id;
+      }
       
       if($anstatusid == null){
          echo "Falha ao adicionar!\nA pessoa em questão não finalizou suas respostas";
@@ -500,44 +552,100 @@
          $rId = $r->id;
          $rTitle = $r->title;
          $rDesc = $r->description;
+         $rStatus = $r->status;
 
          $rTitle = strip_tags($rTitle);
          $rDesc = strip_tags($rDesc);
 
+         if($rStatus != 'alcancado'){
 
-         $htmlBlock .= "<div class=\"align-top bg-white mb-2 mr-2 my-padding-sm rounded\" style=\"width: 18rem; display: inline-block\"> 
-                           <h5 id=\"h-goal-$rId\" class=\"card-title my-bold lbl-obj-onoff\">$rTitle</h5> 
+            $htmlBlock .= "<div class=\"align-top bg-white mb-2 mr-2 my-padding-sm rounded\" style=\"width: 18rem; display: inline-block\"> 
+                              <h5 id=\"h-goal-$rId\" class=\"card-title my-bold lbl-obj-onoff\">$rTitle</h5> 
 
-                           <div class=\"mb-3\">
-                              <label id=\"lbl-input-$rId\" for=\"input-edit-$rId\" class=\"form-label hidden\">Editar nome:</label>
-                              <input type=\"text\" id=\"input-edit-$rId\" class=\"form-control rounded hidden\" value=\"$rTitle\" maxlength=\"30\">      
-                           </div>
+                              <div class=\"mb-3\">
+                                 <label id=\"lbl-input-$rId\" for=\"input-edit-$rId\" class=\"form-label hidden\">Editar nome:</label>
+                                 <input type=\"text\" id=\"input-edit-$rId\" class=\"form-control rounded hidden\" value=\"$rTitle\" maxlength=\"30\">      
+                              </div>
 
-                           <p id=\"p-goal-$rId\" class=\"card-text lbl-obj-onoff\" style=\"white-space: pre-wrap;\">$rDesc</p>
+                              <p id=\"p-goal-$rId\" class=\"card-text lbl-obj-onoff\" style=\"white-space: pre-wrap;\">$rDesc</p>
 
-                           <div class=\"mb-3\">
-                              <label id=\"lbl-text-$rId\" for=\"text-edit-$rId\" class=\"form-label hidden\">Editar descrição:</label>
-                              <textarea id=\"text-edit-$rId\" class=\"form-control rounded hidden\" rows=\"3\" maxlength=\"256\">$rDesc</textarea>
-                           </div>
+                              <div class=\"mb-3\">
+                                 <label id=\"lbl-text-$rId\" for=\"text-edit-$rId\" class=\"form-label hidden\">Editar descrição:</label>
+                                 <textarea id=\"text-edit-$rId\" class=\"form-control rounded hidden\" rows=\"3\" maxlength=\"256\">$rDesc</textarea>
+                              </div>
 
-                           <button type=\"button\" id=\"btn-edit-goal-$rId\" class=\"btn btn-primary btn-edit-goal\" data-idgoal=\"$rId\">
-                           <i class=\"fas fa-pencil-alt\"></i>
-                           </button>
+                              <button type=\"button\" id=\"btn-edit-goal-$rId\" class=\"btn btn-primary btn-edit-goal\" data-idgoal=\"$rId\">
+                              <i class=\"fas fa-pencil-alt\"></i>
+                              </button>
 
-                           <button type=\"button\" id=\"btn-cancel-goal-$rId\" class=\"btn btn-primary btn-cancel-goal hidden\" data-idgoal=\"$rId\">
-                           <i class=\"fas fa-times\"></i>
-                           </button>
+                              <button type=\"button\" id=\"btn-cancel-goal-$rId\" class=\"btn btn-primary btn-cancel-goal hidden\" data-idgoal=\"$rId\">
+                              <i class=\"fas fa-times\"></i>
+                              </button>
 
-                           <button type=\"button\" id=\"btn-save-goal-$rId\" class=\"btn btn-success btn-save-goal hidden\" data-idgoal=\"$rId\">
-                           <i class=\"far fa-save\"></i>
-                           </button>
+                              <button type=\"button\" id=\"btn-save-goal-$rId\" class=\"btn btn-success btn-save-goal hidden\" data-idgoal=\"$rId\">
+                              <i class=\"far fa-save\"></i>
+                              </button>
 
-                           <hr>
-                           $htmlAcordeon
-                           
+                              <hr>
+                              $htmlAcordeon
+                              
 
-                        </div>";
+                           </div>";
+         }
       }
+
+      //os goals de outro processo
+      $res = consultaOutrosGoals($trialid, $alunoid, $USER->id);
+
+      $htmlOtherGoals = "";
+
+      foreach($res as $r){
+         $goalid = $r->id;
+         $goaltitle = strip_tags($r->title);
+         $goaldesc = strip_tags($r->description);
+         $goalstatus = $r->status;
+         $trialtitle = $r->trialtitle;
+   
+         if($goalstatus != "alcancado"){
+            $htmlAcordeonFeed = alunoGoalReply($goalid);
+   
+            $htmlOtherGoals .= "<div class=\"align-top bg-white mb-2 mr-2 my-padding-sm rounded\" style=\"width: 18rem; display: inline-block\"> 
+            <h5 id=\"h-goal-$goalid\" class=\"card-title my-bold lbl-obj-onoff\">$goaltitle</h5> 
+   
+            <div class=\"mb-3\">
+               <label id=\"lbl-input-$goalid\" for=\"input-edit-$goalid\" class=\"form-label hidden\">Editar nome:</label>
+               <input type=\"text\" id=\"input-edit-$goalid\" class=\"form-control rounded hidden\" value=\"$goaltitle\" maxlength=\"30\">      
+            </div>
+   
+            <p id=\"p-goal-$goalid\" class=\"card-text lbl-obj-onoff\" style=\"white-space: pre-wrap;\">$goaldesc</p>
+   
+            <div class=\"mb-3\">
+               <label id=\"lbl-text-$goalid\" for=\"text-edit-$goalid\" class=\"form-label hidden\">Editar descrição:</label>
+               <textarea id=\"text-edit-$goalid\" class=\"form-control rounded hidden\" rows=\"3\" maxlength=\"256\">$goaldesc</textarea>
+            </div>
+   
+            <button type=\"button\" id=\"btn-edit-goal-$goalid\" class=\"btn btn-primary btn-edit-goal\" data-idgoal=\"$goalid\">
+            <i class=\"fas fa-pencil-alt\"></i>
+            </button>
+   
+            <button type=\"button\" id=\"btn-cancel-goal-$goalid\" class=\"btn btn-primary btn-cancel-goal hidden\" data-idgoal=\"$goalid\">
+            <i class=\"fas fa-times\"></i>
+            </button>
+   
+            <button type=\"button\" id=\"btn-save-goal-$goalid\" class=\"btn btn-success btn-save-goal hidden\" data-idgoal=\"$goalid\">
+            <i class=\"far fa-save\"></i>
+            </button>
+   
+            <hr>
+            $htmlAcordeonFeed
+            
+   
+         </div>";
+         }
+   
+      }
+
+      $htmlBlock .= $htmlOtherGoals;
 
       return $htmlBlock;
 
@@ -896,7 +1004,45 @@
 
       }
 
-   //marcar e objetivos
+      //fazer uma consulta usando o avaliador e o aluno para ver os processos que eles têm em comum, e então trazer os objetivos
+   $res = consultaReachedGoals($alunoid, $evaluatorid);
+
+   //passar por N goals possíveis, aqui ele vê todos de um aluno por vez
+   $htmlGoalalcancado = "";
+
+   foreach($res as $r){
+      $goalid = $r->id;
+      $goaltitle = strip_tags($r->title);
+      $goaldesc = strip_tags($r->description);
+      $goalstatus = $r->status;
+      $trialtitle = $r->trialtitle;
+
+      //só mostra se esse for o status
+      if($goalstatus == "alcancado"){
+
+         //consulda dos N feedbacks possíveis para cada goal
+         $htmlAcordeonFeed = alunoGoalReply($goalid);
+
+         $htmlGoalalcancado .= "<div class=\"align-top bg-white mb-2 mr-2 my-padding-sm rounded\" style=\"width: 18rem; display: inline-block\">
+                              <small class='text-muted'>$trialtitle</small>
+                              <small class='text-muted'> | </small>
+                              <small class='text-muted'>objetivo: Alcançado <i class=\"fas fa-check\"></i></small>
+                              <hr>
+                              <h5 id=\"h-goal-$goalid\" class=\"card-title my-bold lbl-obj-onoff\">$goaltitle</h5>
+                              <p id=\"p-goal-$goalid\" class=\"card-text lbl-obj-onoff\" style=\"white-space: pre-wrap;\">$goaldesc</p>
+                              <hr>
+                              $htmlAcordeonFeed 
+
+                              </div>";
+      }
+
+   }
+
+   if(strlen($htmlGoalalcancado) < 1){$htmlGoalalcancado="<div class=\"alert alert-primary\" role=\"alert\"><h4>Nada aqui!</h4><p>Você não marcou objetivos como alcançados para esse usuário.</p></div>";}
+
+
+
+   //marcar e objetivos (interface aluno)
    $blocoHTML .= "
    <div id='my-tab2-inner3'>
       <!--Archor points-->
@@ -923,8 +1069,18 @@
                <span class='my-font-family text-muted'>os objetivos criados aparecem aqui:</span>
 
             </div>
+
+            <div class='text-right'>
+               <input type=\"button\" value=\"Atual\" class=\"my-secondary-btn my-btn-pad\" id=\"btn-goal-atual\" style=\"\">
+               <input type=\"button\" value=\"Alcançados\" class=\"my-secondary-btn-off my-btn-pad\" id=\"btn-goal-alcancado\" style=\"\">
+            </div>
+            <div class='p-1 my-bg-secondary'></div>
+
             <div id=\"horizontal-scroll\" class='my-scroll-h row my-bg-light'>
                <div id=\"div-cards\" class=\"\"></div>
+            </div>
+            <div id=\"horizontal-scroll-alcancado\" class='my-scroll-h row my-bg-light d-none'>
+               <div id=\"div-cards-alcancado\" class=\"\">$htmlGoalalcancado</div>                           
             </div>
          </div>
       </div>
@@ -936,7 +1092,7 @@
  }
 
 
- function fetchBlocosObjetivoForAluno($avaliadorid, $trialid, $sectorid){
+function fetchBlocosObjetivoForAluno($avaliadorid, $trialid, $sectorid){
    global $USER, $DB;
 
    $alunoid = $USER->id;
@@ -972,20 +1128,24 @@
 
             $rTitle = strip_tags($r->title);
             $rDesc = strip_tags($r->description);
+            $rStatus = $r->status;
 
-            $htmlBlock .= "<div class=\"align-top bg-white mb-2 mr-2 my-padding-sm rounded\" style=\"width: 18rem; display: inline-block\"> 
-                              <h5 id=\"h-goal-$r->id\" class=\"card-title my-bold lbl-obj-onoff\">$rTitle</h5> 
+            if($rStatus != "alcancado"){
 
-                              <p id=\"p-goal-$r->id\" class=\"card-text lbl-obj-onoff\" style=\"white-space: pre-wrap;\">$rDesc</p>
+               $htmlBlock .= "<div class=\"align-top bg-white mb-2 mr-2 my-padding-sm rounded\" style=\"width: 18rem; display: inline-block\"> 
+                                 <h5 id=\"h-goal-$r->id\" class=\"card-title my-bold lbl-obj-onoff\">$rTitle</h5> 
 
-                              <hr>
-                              <div class='my-mention2'>
-                                 <small class='my-label-btn btn-add-resp' data-goalid='$r->id'>adicionar resposta</small>
-                              </div>
-                              $htmlAcordeon
-                              
+                                 <p id=\"p-goal-$r->id\" class=\"card-text lbl-obj-onoff\" style=\"white-space: pre-wrap;\">$rDesc</p>
 
-                           </div>";
+                                 <hr>
+                                 <div class='my-mention2'>
+                                    <small class='my-label-btn btn-add-resp' data-goalid='$r->id'>adicionar resposta</small>
+                                 </div>
+                                 $htmlAcordeon
+                                 
+
+                              </div>";
+            }
          }
       }else{
          $htmlBlock .= "<div class=\"align-top bg-white mb-2 mr-2 my-padding-sm rounded\" style=\"width: 18rem; display: inline-block\"> 
@@ -1235,5 +1395,39 @@ function ocultarMostrarCurso($courseid){
    }
 
    
+
+}
+
+function consultaOutrosGoals($trialid, $alunoid, $evaluatorid){
+   global $DB;
+
+   //fazer uma consulta usando o avaliador e o aluno para ver os processos que eles têm em comum, e então trazer os objetivos
+   $sql= "SELECT goal.*, anstatus.userid evaluatedid, anstatus.idtrial, trial.title trialtitle, trial.timecreated trialcreated, trial.timemod trialmod
+            FROM {local_pdi_goals} goal
+            LEFT JOIN {local_pdi_answer_status} anstatus
+            ON goal.idanstatus = anstatus.id
+            LEFT JOIN {local_pdi_trial} trial
+            ON trial.id = anstatus.idtrial
+            WHERE anstatus.idtrial != '$trialid' and anstatus.userid = '$alunoid' and createdby = '$evaluatorid'";
+   $res= $DB->get_records_sql($sql);
+
+   return $res;
+
+}
+
+function consultaReachedGoals($alunoid, $evaluatorid){
+   global $DB;
+
+   //traz todos completos do aluno e avaliador juntos em qualquer processo
+   $sql= "SELECT goal.*, anstatus.userid evaluatedid, anstatus.idtrial, trial.title trialtitle, trial.timecreated trialcreated, trial.timemod trialmod
+            FROM {local_pdi_goals} goal
+            LEFT JOIN {local_pdi_answer_status} anstatus
+            ON goal.idanstatus = anstatus.id
+            LEFT JOIN {local_pdi_trial} trial
+            ON trial.id = anstatus.idtrial
+            WHERE goal.status = 'alcancado' and anstatus.userid = '$alunoid' and createdbyid = '$evaluatorid'";
+   $res= $DB->get_records_sql($sql);
+
+   return $res;
 
 }

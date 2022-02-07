@@ -1101,6 +1101,27 @@ $("#btn-excluir-trial").on("click", function(){
 
 });
 
+//botão btn goal objetivo anterior troca de div
+$("#my-tab2").on("click", "#btn-goal-alcancado", function(){
+  $(this).removeClass("my-secondary-btn-off");
+  $(this).addClass("my-secondary-btn");
+  $("#btn-goal-atual").removeClass("my-secondary-btn");
+  $("#btn-goal-atual").addClass("my-secondary-btn-off");
+
+  $("#horizontal-scroll").addClass("d-none");
+  $("#horizontal-scroll-alcancado").removeClass("d-none");
+});
+
+//botão btn goal anterior alcancado troca de div
+$("#my-tab2").on("click", "#btn-goal-atual", function(){
+  $(this).removeClass("my-secondary-btn-off");
+  $(this).addClass("my-secondary-btn");
+  $("#btn-goal-alcancado").removeClass("my-secondary-btn");
+  $("#btn-goal-alcancado").addClass("my-secondary-btn-off");
+
+  $("#horizontal-scroll-alcancado").addClass("d-none");
+  $("#horizontal-scroll").removeClass("d-none");
+});
 
 
 
