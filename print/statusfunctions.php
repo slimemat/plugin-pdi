@@ -574,15 +574,26 @@
                                  <textarea id=\"text-edit-$rId\" class=\"form-control rounded hidden\" rows=\"3\" maxlength=\"256\">$rDesc</textarea>
                               </div>
 
-                              <button type=\"button\" id=\"btn-edit-goal-$rId\" class=\"btn btn-primary btn-edit-goal\" data-idgoal=\"$rId\">
-                              <i class=\"fas fa-pencil-alt\"></i>
-                              </button>
+                              <div class='justify-content-between btn-toolbar'> 
+                                 
+                                    <button type=\"button\" id=\"btn-edit-goal-$rId\" class=\"btn btn-outline-primary btn-edit-goal\" data-idgoal=\"$rId\">
+                                    <i class=\"fas fa-pencil-alt\"></i>
+                                    </button>
+                                 
 
-                              <button type=\"button\" id=\"btn-cancel-goal-$rId\" class=\"btn btn-primary btn-cancel-goal hidden\" data-idgoal=\"$rId\">
+                                    
+                                    <button type='button' id='btn-achieve-goal-$rId' title='Marcar como alcançado' class='btn-achieve-goal btn btn-outline-success flex-fill mx-1' data-idgoal='$rId'>
+                                    <i class='fas fa-rocket'></i>
+                                    </button>
+                                 
+                              </div>
+                     
+
+                              <button type=\"button\" id=\"btn-cancel-goal-$rId\" class=\"btn btn-outline-primary btn-cancel-goal hidden\" data-idgoal=\"$rId\">
                               <i class=\"fas fa-times\"></i>
                               </button>
 
-                              <button type=\"button\" id=\"btn-save-goal-$rId\" class=\"btn btn-success btn-save-goal hidden\" data-idgoal=\"$rId\">
+                              <button type=\"button\" id=\"btn-save-goal-$rId\" class=\"btn btn-outline-success btn-save-goal hidden\" data-idgoal=\"$rId\">
                               <i class=\"far fa-save\"></i>
                               </button>
 
@@ -624,9 +635,19 @@
                <textarea id=\"text-edit-$goalid\" class=\"form-control rounded hidden\" rows=\"3\" maxlength=\"256\">$goaldesc</textarea>
             </div>
    
-            <button type=\"button\" id=\"btn-edit-goal-$goalid\" class=\"btn btn-primary btn-edit-goal\" data-idgoal=\"$goalid\">
-            <i class=\"fas fa-pencil-alt\"></i>
-            </button>
+            <div class='justify-content-between btn-toolbar'> 
+                                 
+                  <button type=\"button\" id=\"btn-edit-goal-$rId\" class=\"btn btn-outline-primary btn-edit-goal\" data-idgoal=\"$rId\">
+                  <i class=\"fas fa-pencil-alt\"></i>
+                  </button>
+               
+
+                  
+                  <button type='button' id='btn-achieve-goal-$rId' title='Marcar como alcançado' class='btn-achieve-goal btn btn-outline-success flex-fill mx-1' data-idgoal='$rId'>
+                  <i class='fas fa-rocket'></i>
+                  </button>
+                                 
+            </div>
    
             <button type=\"button\" id=\"btn-cancel-goal-$goalid\" class=\"btn btn-primary btn-cancel-goal hidden\" data-idgoal=\"$goalid\">
             <i class=\"fas fa-times\"></i>
@@ -1430,4 +1451,20 @@ function consultaReachedGoals($alunoid, $evaluatorid){
 
    return $res;
 
+}
+
+function achieveGoal($goalid){
+   global $DB;
+
+   $upGoal = new stdClass();
+   $upGoal->id = $goalid;
+   $upGoal->status = 'alcancado';
+
+   $res = $DB->update_record('local_pdi_goals', $upGoal);
+
+   if($res){
+      return 'ok';
+   }else{
+      return 'erro';
+   }
 }

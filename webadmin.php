@@ -221,15 +221,32 @@ $strAfterDownloadingGoTo = get_string('after_download_go_to', 'local_pdi');
 $strPluginInstallerTab = get_string('plugin_installer_tab', 'local_pdi');
 $strToProceed = get_string('to_proceed', 'local_pdi');
 $strAfterTheInstallation = get_string('after_install_complete', 'local_pdi');
+$strPluginSettings = get_string('plugin_settings', 'local_pdi');
+$strMissingKeys = get_string('missing_keys', 'local_pdi');
+
+$strCongraStatus = verifyCongreaStatus();
 
 //plugin concrea verify
 $congrea = $DB->get_records('modules', ['name' => 'congrea']);
 if(count($congrea)>0){ 
   $urlCongrea = $CFG->wwwroot . '/admin/settings.php?section=modsettingcongrea';
-  $congreaDiv = "<div class=\"card-body\"><h4><span class=\"badge bg-light text-dark rounded\">$strInstalled <i class=\"fas fa-check\"></i></span></h4>
-                  <p>$strIfHaveNoKeys <a href=\"$urlCongrea\" class=\"link-primary\">$strHere</a>.</p>
-  </div>                
-  "; 
+
+  $key = get_config('mod_congrea', 'cgapi');
+  $secret = get_config('mod_congrea', 'cgsecretpassword');
+  if(strlen($key) < 1 or strlen($secret) < 1){
+      $congreaDiv = "<div class=\"card-body\">
+                      <h4><span class=\"badge bg-light text-dark rounded\">$strInstalled <i class=\"fas fa-check\"></i></span></h4>
+                      <h4><span class=\"badge bg-warning text-dark rounded\">$strMissingKeys <i class=\"fas fa-exclamation-triangle\"></i></span></h4>
+                      <p>$strIfHaveNoKeys <a href=\"$urlCongrea\" class=\"link-primary\" target=\"_blank\">$strHere</a>.</p>
+                    </div>                
+  ";
+  }else{
+      $congreaDiv = "<div class=\"card-body\"><h4><span class=\"badge bg-light text-dark rounded\">$strInstalled <i class=\"fas fa-check\"></i></span></h4>
+      <a href=\"$urlCongrea\" class=\"link-primary\" target=\"_blank\">$strPluginSettings</a>
+      <p>Congrea: $strCongraStatus</p>
+    </div>                
+    ";
+  }
 }
 else{
   $urlPluginTab = $CFG->wwwroot . "/admin/tool/installaddon/index.php";
@@ -314,6 +331,7 @@ $strNoOneIsSelected = get_string('no_one_selected', 'local_pdi');
 
 echo "<h4 id='congrea-div'>$strMeetingsPlugin</h4>";
 echo "$congreaDiv";
+
 
 echo "<div id='my-smallmsg'>$strCopiedToForm</div>";
 echo "<div id ='my-smallmsg-error' class='my-smallmsg-error'>$strNoOneIsSelected</div>";

@@ -702,6 +702,7 @@ $("#my-tab2").on("click", ".btn-edit-goal", function(){
   $("#lbl-text-"+idgoal+"").show(100);
   $("#text-edit-"+idgoal+"").show(100);
 
+  $("#btn-achieve-goal-"+idgoal+"").hide(200);
   $("#btn-edit-goal-"+idgoal+"").hide(200);
   $("#btn-cancel-goal-"+idgoal+"").show(200);
   $("#btn-save-goal-"+idgoal+"").show(200);
@@ -730,6 +731,7 @@ $("#my-tab2").on("click", ".btn-cancel-goal", function(){
   $("#btn-cancel-goal-"+idgoal+"").hide(200);
   $("#btn-save-goal-"+idgoal+"").hide(200);
   $("#btn-edit-goal-"+idgoal+"").show(200);
+  $("#btn-achieve-goal-"+idgoal+"").show(200);
 
   //mostrar os bloquinhos de novo
   fetchBlocosGoal(alunoid, sectorid, trialid)   
@@ -790,6 +792,43 @@ $("#my-tab2").on("click", ".btn-save-goal", function(){
     .fail(function(){
         alert('Algo deu errado ao salvar!');
     });
+
+});
+
+
+//botão de alcançar/achieve goals/objetivo
+$("#my-tab2").on("click", ".btn-achieve-goal", function(){
+  var idgoal = $(this).attr("data-idgoal");
+  var functionid = 15; //verificar 15 no callphpfunctions.php
+
+  //var
+  var alunoid = $("#hidden-aluno-id").val();
+  var sectorid = $("#hidden-sector-id").val();
+  var trialid = $("#hidden-trial-id").val();
+
+  if (!window.confirm("Marcar esse objetivo como alcançado?")){return false;}
+
+  //ajax values
+  var values = {'idgoal'  : idgoal,
+                'function': functionid};
+
+  //ajax
+  $.ajax({
+        method: 'POST',
+        url: 'print/callphpfunctions.php',
+        data: values,
+    })
+    .done(function(msg){
+      if(msg != 'ok'){alert("Erro ao marcar!");}
+      //atualizados
+      //fetchBlocosGoal(alunoid, sectorid, trialid);
+      $("#my-tab2-inner .my-bg-greylight-round").click(); //para atualizar a mini página do user selecionado
+        
+    })
+    .fail(function(){
+        alert('Algo deu errado ao carregar!');
+    });
+  
 
 });
 

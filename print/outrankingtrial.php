@@ -99,10 +99,28 @@ function fetchDataQuestions($trialid, $currentuid){
 
     //foreach database, repeat the structure
     foreach($res as $r){
+        //var
+        $dbid = $r->dbid;
+
+        //verificar se há bancos
+        if($dbid == null){
+            //fazer algo para deixar colocar bancos
+            $isTrialStarted = isTrialStarted($trialid);
+            if(!$isTrialStarted){
+                $htmlBlock .= '
+                <div class="alert alert-secondary" role="alert">
+                <h5>
+                  <b>Edição do banco de questões deve ser feita</b>
+                </h5>
+                <span>É necessário atribuir ou criar questões antes de iniciar o processo!</span>
+                <a href="selectquestionsdb.php?edittrialid='.$trialid.'"><button type="button" class="btn btn-outline-primary btn-lg">Ir para tela de Banco de Questões →</button></a>
+              </div>';
+                return $htmlBlock;
+            }
+        }
+
 
         $htmlBlock .= "<h5 class='my-font-family my-padding-sm'>Perguntas do $r->dbname</h5>";
-
-        $dbid = $r->dbid;
 
         $sqlQuest = "SELECT qindb.id qindbid, db.name dbname, qindb.questionid, q.name qname, q.questiontext qtext, qcat.name catname 
         FROM {local_pdi_question_db} db
@@ -147,6 +165,29 @@ function fetchDataQuestions($trialid, $currentuid){
 
     return $htmlBlock;
 
+}
+
+function isTrialStarted($trialid){
+    global $DB;
+
+    $sql= "SELECT t.id, t.title, t.timecreated, t.timemod, td.startdate, td.enddate, td.evtype, td.isstarted 
+                FROM {local_pdi_trial} t
+                LEFT JOIN {local_pdi_trial_detail} td
+                ON td.trialid = t.id
+                WHERE t.id = '$trialid'";
+    $res = $DB->get_records_sql($sql);
+    $res = array_values($res);
+    $res = $res[0];
+
+    $trialStart = $res->startdate;
+    $trialIsstarted = $res->isstarted;
+
+    if(time() < $trialStart and $trialIsstarted == 1){return false;}
+    else if($trialIsstarted == 0){return false;}
+    else{
+        return true;
+    }
+    
 }
 
 function fetchStatusAvaliados($trialid, $currentuid){

@@ -169,6 +169,13 @@ if(isset($_POST['function'])){
 
         echo $return;
     }
+    else if($myfunction == 15){
+        $goalid = $_POST['idgoal'];
+
+        $return = achieveGoal($goalid);
+
+        echo $return;
+    }
 
 
 

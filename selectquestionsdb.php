@@ -94,6 +94,7 @@ if(isset($_POST['hidden-ids'])){
   
 }
 
+
 ///////////////////////////////////////////////////
 /////////////////////////////////////////////////
 
@@ -112,6 +113,10 @@ if($auth == "yes"){
     echo "<footer>That is a page for plugin admins only.</footer><br>";
     \core\notification::add("You are not registered as a plugin admin!", \core\output\notification::NOTIFY_ERROR);
     echo "<span><a href='index.php' class='pdi-nostyle'>back</a></span>";
+}
+
+if(isset($_REQUEST['edittrialid'])){
+  $_SESSION['edittrialid'] = $_REQUEST['edittrialid'];
 }
 
 

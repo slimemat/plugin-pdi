@@ -364,3 +364,50 @@ function verifyAdm($usernameAdm){
    }
 }
 
+function verifyCongreaStatus(){
+
+   $apikey = get_config('mod_congrea', 'cgapi');
+   $secretkey = get_config('mod_congrea', 'cgsecretpassword');
+
+   $plantext = "";
+
+   if (!empty($apikey && $secretkey)) {
+      $url = 'https://api.congrea.net/backend/getplan';
+      $ch = curl_init();
+      curl_setopt($ch, CURLOPT_URL, $url);
+      curl_setopt($ch, CURLOPT_HEADER, false);
+      curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+          'Content-Type: application/json',
+          'x-api-key:' . $apikey,
+          'x-congrea-secret:' . $secretkey,
+      ));
+      curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+      curl_setopt($ch, CURLOPT_PROXY, false);
+      $plandetails = curl_exec($ch);
+      curl_close($ch);
+      if (!$plandetails) {
+          $plantext = get_string('nofetchplandetails', 'congrea');
+      } else {
+          $plandetails = json_decode($plandetails);
+          if (isset($plandetails->Message)) {
+              $plantext = get_string('invalidkey', 'congrea');
+          } else if (isset($plandetails->recording)) {
+              if (!$plandetails->recording) {
+                  set_config('enablerecording', 0, 'mod_congrea');
+                  set_config('allowoverride', 0, 'mod_congrea');
+                  $plandetails->recordingstr = get_string('withoutrecording', 'congrea');
+              } else {
+                  $plandetails->recordingstr = get_string('withrecording', 'congrea');
+              }
+              $plantext = get_string('plandetails', 'congrea', $plandetails);
+          } else {
+              $plantext = get_string('legacyplan', 'congrea');
+              set_config('enablerecording', 0, 'mod_congrea');
+              set_config('allowoverride', 0, 'mod_congrea');
+          }
+      }
+  }
+
+  return $plantext;
+}
+

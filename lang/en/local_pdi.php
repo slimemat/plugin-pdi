@@ -50,9 +50,11 @@ $string['disable'] = "Disable";
 $string['enable'] = "Enable";
 $string['delete'] = "Delete";
 $string['installed'] = "Installed";
-$string['if_have_no_keys'] = "If you haven't defined the api keys yet, you can do it";
+$string['if_have_no_keys'] = "You haven't defined the api keys yet, you can do it";
 $string['here'] = "here";
 $string['congrea_not_detected'] = "The plugin needed to setup meetings was not detected in your moodle website! You can download it";
+$string['plugin_settings'] = "Plugin settings";
+$string['missing_keys'] = 'missing keys';
 
 $string['after_download_go_to'] = "After downloading the plugin ZIP file, go to the";
 $string['plugin_installer_tab'] = "Plugin Installer Tab";
