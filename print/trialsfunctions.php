@@ -326,6 +326,7 @@ function searchStudentTrials($pesquisa){
 
    $blocoHtml = '';
    $blocoReturn = '';
+   $time = time();
 
    $sql = "SELECT t.id, t.title as trialtitle, td.isstarted as trialisstarted, td.startdate, td.enddate
    FROM {local_pdi_sect_mem_db} mdb
@@ -341,7 +342,7 @@ function searchStudentTrials($pesquisa){
    ON td.trialid = t.id
    LEFT JOIN {user} us
    ON us.id = sm.userid
-   WHERE cm.userid = \"$USER->id\" AND t.title LIKE '%$pesquisa%'
+   WHERE cm.userid = \"$USER->id\" AND t.title LIKE '%$pesquisa%' and td.startdate <= '$time'
    GROUP BY t.id
    LIMIT 0, 6";
 
@@ -392,7 +393,7 @@ function searchStudentTrials($pesquisa){
 
          $blocoHtml .= "
              
-             <span class='my-round-card' id='trial_$tid' data-idtrial='$tid'>
+             <div class='my-round-card' id='trial_$tid' data-idtrial='$tid'>
              <span class=\"my-circle\" style=\"background-color: var(--myerror); color: var(--myblack);\">✖</span>
              
              ";
@@ -403,13 +404,13 @@ function searchStudentTrials($pesquisa){
 
              $blocoHtml .= "$avaliadores 
              <br><small class='my-font-family'>$dateInicioF - $dateFimF</small>
-             </span></span>";
+             </span></div>";
       }
       else{
          
          $blocoHtml .= "  
              
-             <span class='my-round-card' id='trial_$tid' data-idtrial='$tid'>
+             <div class='my-round-card' id='trial_$tid' data-idtrial='$tid'>
              <span class=\"my-circle\" style=\"background-color: var(--mysuccess); color: var(--myblack);\">✔</span>
              
              ";
@@ -420,7 +421,7 @@ function searchStudentTrials($pesquisa){
 
              $blocoHtml .= "$avaliadores
                <br><small class='my-font-family'>$dateInicioF - $dateFimF</small>
-              </span></span>";
+              </span></div>";
       }
 
    }

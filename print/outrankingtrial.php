@@ -228,6 +228,9 @@ function fetchStatusAvaliados($trialid, $currentuid){
         $personlname = "";
         $personFullname = "";
 
+        //get extra data about the evaluation status
+        $evaluatorFinishedStatus = getEvAnswerStatus($personid, $trialid, $sector, $currentuid);
+
         //get extra data about this person
         $sqlPerson = "SELECT u.id, u.firstname, u.lastname FROM {user} u WHERE u.id='$personid'";
         $resPerson = $DB->get_records_sql($sqlPerson);
@@ -271,10 +274,15 @@ function fetchStatusAvaliados($trialid, $currentuid){
         if(count($resStatus) > 0){
 
             //respondido
-            $respondido_content = $dateAnswered;
+            if($timeAnswered == 0){
+                $respondido_content = "-";
+            }
+            else{
+                $respondido_content = $dateAnswered;
+            }
 
             //avaliado
-            if($finishedStatus == '2'){
+            if($evaluatorFinishedStatus >= 1){
                 $avaliado_content = $dateMod;
             }else{
                 $avaliado_content = "-";
@@ -495,8 +503,15 @@ function fetchTablesGrades($trialid, $currentuid){
 
                 $indexTbl = $q + 1;
 
-                $notaAluno = $listaNotasAluno[$q][0];
-                $mediaDuas = ($notaAluno + $qnota_av) / 2;
+                //setup var
+                $notaAluno = "-";
+
+                if(isset($listaNotasAluno[$q][0])){ //verificar se existe, porque o avaliador pode ter respondido e o aluno não ainda
+                    $notaAluno = $listaNotasAluno[$q][0];
+                    $mediaDuas = ($notaAluno + $qnota_av) / 2;
+                }
+
+                if(!is_numeric($notaAluno)){ $mediaDuas = "-"; }
 
                 if($is_only_aluno){ $qname_av = $ra->questiontext; } //se for o aluno chamando essa função, alterar aqui
 
@@ -566,7 +581,10 @@ function fetchTablesGrades($trialid, $currentuid){
             if(count($res)>0){
                 $res = $res[0];
                 $isfinished = $res->isfinished;
-                if($isfinished == 1){ //significa que só o aluno respondeu, então ocultar pro avaliador a média
+
+                $evaluator_isfinished = getEvanswerStatus($evaluatedid, $trialid, $sectorid, $USER->id); //user->id por nesse trecho é apenas avaliadores que chegam
+
+                if($isfinished == 1 and $evaluator_isfinished < 1){ //significa que só o aluno respondeu, então ocultar pro avaliador a média
                     $mediaNota = "<span title='É necessário finalizar a avaliação para ver a nota'><i class=\"far fa-question-circle my-help-pop\"></i></span>";
                 }
             }
@@ -731,4 +749,34 @@ function calcularMediaGeral($trialid, $currentuid, $evaluatedid){
 
     return $media_dasMedias;
          
+}
+
+function getEvAnswerStatus($evaluatedid, $trialid, $sectorid, $userid){
+    global $DB;
+
+    //var
+    $sectorMemberID = 0;
+    $evaluator_is_finished = 0;
+    if(is_null($evaluatedid)){$evaluatedid = 0;}
+
+    $sql = "SELECT * FROM {local_pdi_sector_member}
+            WHERE sectorid = '$sectorid' and trialid = '$trialid' and userid = '$userid'";
+    $res = $DB->get_records_sql($sql);
+
+    if(count($res)>0){
+        $res = array_values($res); $res = $res[0];
+        $sectorMemberID = $res->id;
+    }
+
+    $sql = "SELECT * from {local_pdi_evanswer_status} evstatus
+    WHERE evstatus.secmemberid = '$sectorMemberID' AND evstatus.evaluatedid = $evaluatedid";
+    $res = $DB->get_records_sql($sql);
+
+
+    if(count($res)>0){
+        $res = array_values($res); $res = $res[0];
+        $evaluator_is_finished = $res->isfinished; //geralmente recebe 1
+    }
+
+    return $evaluator_is_finished;
 }

@@ -25,6 +25,9 @@ require_once('../../../config.php');
 
 global $USER, $DB;
 
+//ESTÁ INSERINDO EM VEZ DE FAZER UPDATE, LEMBRA QUE ELE SEMPRE CRIA ZERADO AGORA
+
+
 if(isset($_POST['hidden-qtrialid']))
 {
     $trial_id = $_POST['hidden-qtrialid'];
@@ -47,6 +50,10 @@ if(isset($_POST['hidden-qtrialid']))
 
     //para cada setor
     $status = 0;
+
+    
+/*
+//não faz mais isso, pois os records já são criados com placeholder 0 pro avaliador poder responder antes
     foreach($res as $r){
         $addFinishStatus = new stdClass();
         $addFinishStatus->userid = $current_userid;
@@ -57,6 +64,43 @@ if(isset($_POST['hidden-qtrialid']))
         $addFinishStatus->timemodified = $tempoUnix;
 
         $status = $DB->insert_record('local_pdi_answer_status', $addFinishStatus);
+    }
+*/
+
+    foreach($res as $r){
+        $sectorid = $r->sectorid;
+
+        $sql = "SELECT * FROM {local_pdi_answer_status}
+        WHERE userid = '$current_userid' AND idtrial = '$trial_id' and sectorid = $sectorid";
+        $resInner = $DB->get_records_sql($sql);
+
+        if(count($resInner)>0){
+            $resInner = array_values($resInner); $resInner = $resInner[0];
+            $answerStatusID = $resInner->id;
+            $upFinishStatus = new stdClass();
+            $upFinishStatus->id = $answerStatusID;
+            $upFinishStatus->userid = $current_userid;
+            $upFinishStatus->idtrial = $trial_id;
+            $upFinishStatus->sectorid = $r->sectorid;
+            $upFinishStatus->isfinished = $isfinished;
+            $upFinishStatus->timecreated = $tempoUnix;
+            $upFinishStatus->timemodified = $tempoUnix;
+
+            $status = $DB->update_record('local_pdi_answer_status', $upFinishStatus);
+            
+        }
+        else{
+            $addFinishStatus = new stdClass();
+            $addFinishStatus->userid = $current_userid;
+            $addFinishStatus->idtrial = $trial_id;
+            $addFinishStatus->sectorid = $r->sectorid;
+            $addFinishStatus->isfinished = $isfinished;
+            $addFinishStatus->timecreated = $tempoUnix;
+            $addFinishStatus->timemodified = $tempoUnix;
+
+            $status = $DB->insert_record('local_pdi_answer_status', $addFinishStatus);
+        }
+    
     }
 
     if($status > 0){

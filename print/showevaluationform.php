@@ -58,9 +58,7 @@ if(isset($_POST['hidden-anstatus-id']))
                         on smdb.dbid = qindb.databaseid
                         LEFT JOIN {local_pdi_sector_member} sm
                         ON sm.id = smdb.smemberid
-                        LEFT JOIN {local_pdi_answer_trial} anstrial
-                        on anstrial.answeredbyid = '$answeredbyid'
-                        WHERE anstrial.sectorid = '$sectorid' AND sm.trialid ='$trialid' AND sm.userid = '$currentuserid'
+                        WHERE sm.sectorid = '$sectorid' AND sm.trialid ='$trialid' AND sm.userid = '$currentuserid'
                         GROUP BY q.id";
     
     $resPerguntas = $DB->get_records_sql($sqlPerguntas);

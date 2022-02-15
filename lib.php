@@ -219,6 +219,7 @@ function mostrarPopup(){
             //verificar se esse está marcado como respondido
             //não importa o setor, então está agrupado
             $respondido = 0;
+            $timecreated = 0;
 
             $respSQL = "SELECT * FROM {local_pdi_answer_status} pas
                         WHERE pas.userid = '$USER->id'
@@ -227,11 +228,11 @@ function mostrarPopup(){
             $respRes = $DB->get_records_sql($respSQL);
 
             if(count($respRes)>0){
-               foreach($respRes as $rs){ $respondido = $rs->isfinished; }
+               foreach($respRes as $rs){ $respondido = $rs->isfinished; $timecreated = $rs->timecreated;}
             }
             
 
-            if($respondido == 0){
+            if($respondido == 0 or $timecreated == 0){
             
                if($xtrialid != $lastTrialid){
                   $blocoHtml .= "</span>";

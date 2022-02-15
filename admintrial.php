@@ -99,6 +99,8 @@ if(isset($_SESSION['authadm']) and $_SESSION['authadm'] == 'yes'){
 
 //some before page coding
   if(isset($_POST['hidden-trial-id'])){
+    //var
+    $uid = $USER->id; 
 
     //parte 1, dados do processo
     $trialid = $_POST['hidden-trial-id'];
@@ -123,13 +125,35 @@ if(isset($_SESSION['authadm']) and $_SESSION['authadm'] == 'yes'){
     $dateFimF = gmdate("d/m/y", $trialEnd);
 
     //parte 2, part of the code that will let the evaluator evaluate before it is answered
-    if(time() < $trialStart and $trialIsstarted == 1){
+    if(time() >= $trialStart and $trialIsstarted == 1){
+
+      $sectorid = getCurrentSector($trialid, $uid);
+      $students = getCurrentStudents($trialid, $uid);
+
+      //verify which students have already answered
+      foreach($students as $s){
+        $studentid = $s->userid;
+        $isStatusTableCreated = isStatusTableCreated($studentid, $trialid);
+
+        if($isStatusTableCreated == false){
+          $createStatusHolder = new stdClass();
+          $createStatusHolder->userid = $studentid;
+          $createStatusHolder->idtrial = $trialid;
+          $createStatusHolder->sectorid = $sectorid;
+          $createStatusHolder->isfinished = 0;
+          $createStatusHolder->timecreated = 0;
+          $createStatusHolder->timemodified = 0;
+
+          $result = $DB->insert_record('local_pdi_answer_status', $createStatusHolder);
+        }
+      }
+      
       
     }
 
     //parte 3, quem respondeu meu setor
 
-    $uid = $USER->id; 
+    
     $blocoResponderam = getWhoAnsweredByTrial($uid, $trialid);
     
   }
@@ -185,6 +209,7 @@ echo "
   </div>
 </div>";
 }
+
 
 echo "
 <div id='my-tab1' class='my-inside-container my-hidden'>
@@ -409,7 +434,9 @@ $(".my-answer-this").on("click", function(){
   //$("#my-tab1-inner-formdiv").show();
 
   //ajax
-  var dados = $("#frm-anstatus-id").serialize();
+  //var dados = $("#frm-anstatus-id").serialize();
+
+  var dados = {'hidden-anstatus-id'  : blockID};
 
   $.ajax({
       method: 'POST',
@@ -425,6 +452,9 @@ $(".my-answer-this").on("click", function(){
       //checar o php e ver se é possível criar a função lá
   })
   .done(function(msg){
+
+    console.log(msg);
+
       $("#big-back-btn").removeClass("my-hidden-2");
 
       $("#nome-do-avaliado").show();

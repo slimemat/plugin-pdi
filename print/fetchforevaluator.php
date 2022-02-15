@@ -124,7 +124,7 @@ function getWhoAnsweredByTrial($evaid, $trialid){
     //returns html block
     //evaid is the evaluator moodle id
 
-    $sql = "SELECT ans.*, sm.userid evaid, u.username answeruname, u.firstname answerfname, u.lastname answerlname 
+    $sql = "SELECT ans.*, sm.userid evaid, sm.id smid, u.username answeruname, u.firstname answerfname, u.lastname answerlname 
     FROM {local_pdi_answer_status} ans
     LEFT JOIN {local_pdi_sector_member} sm
     ON sm.sectorid = ans.sectorid
@@ -140,7 +140,39 @@ function getWhoAnsweredByTrial($evaid, $trialid){
 
         //se for verdade, acrescentar no bloco
         $is_finished = $r->isfinished;
-        if($is_finished == '1'){
+        $timemod = $r->timemodified;
+        $timecreated = $r->timecreated;
+        $studentID = $r->userid;
+        $sectormemberID = $r->smid;
+
+        $sql = "SELECT * from {local_pdi_evanswer_status} evstatus
+        WHERE evstatus.secmemberid = '$sectormemberID' AND evstatus.evaluatedid = $studentID";
+        $resEvStatus = $DB->get_records_sql($sql);
+
+        $evaluator_is_finished = 0;
+
+        if(count($resEvStatus)>0){
+            $resEvStatus = array_values($resEvStatus); $resEvStatus = $resEvStatus[0];
+            $evaluator_is_finished = $resEvStatus->isfinished; //geralmente recebe 1
+        }
+
+
+
+        if($is_finished == '0' and $timemod == 0){
+
+            $whoAnsFullname = "$r->answerfname" . " " . "$r->answerlname";
+            $ansDate = "Não";
+
+            $blocoHtml .= "
+            <div class='my-margin-box my-padding-sm my-answer-this' data-anstatusid='$r->id' >
+                <span class='my-label-bg'>$whoAnsFullname</span> <br>
+                <span class='my-label'><span class='my-disabled'>terminou:</span> $ansDate</span> <br>
+                <span class='my-label my-pointer'><b>Clicar para responder</b></span> <br><br>
+            </div>
+            ";
+
+        }
+        else if($is_finished == '1' and $evaluator_is_finished == 0){
 
             $whoAnsFullname = "$r->answerfname" . " " . "$r->answerlname";
             $ansDate = gmdate("d/m/y", $r->timecreated);
@@ -154,6 +186,7 @@ function getWhoAnsweredByTrial($evaid, $trialid){
             ";
 
         }
+        
     }
 
     return $blocoHtml;
@@ -180,11 +213,83 @@ function howManyAnsweredByTrial($evaid, $trialid){
     $count = 0;
 
     foreach($res as $r){
-
-        $count++;
+        //var
+        $isfinished = $r->isfinished;
+        $timecreated = $r->timecreated;
+        if($isfinished == 1){
+            if($timecreated != 0){
+                $count++;
+            }
+        }
+        
     }
 
     return $count;
+
+}
+
+function getCurrentSector($trialid, $uid){
+    global $DB;
+
+    $sql = "SELECT secmem.* FROM {local_pdi_sector_member} secmem
+            WHERE secmem.trialid = '$trialid' and secmem.userid = '$uid'";
+    $res = $DB->get_records_sql($sql);
+
+    $res= array_values($res);
+    if(count($res)>0){
+        $res = $res[0];
+        $sectorid = $res->sectorid;
+        return $sectorid;
+    }
+    else{
+        return false;
+    }
+}
+
+function getCurrentStudents($trialid, $uid){
+    global $DB;
+
+    $sql = "SELECT * FROM {local_pdi_evaluator} evaluator
+    WHERE evaluator.mdlid = '$uid'";
+    $res = $DB->get_records_sql($sql);
+    $res = array_values($res); $res = $res[0];
+
+    $evaluatorid = $res->id;
+
+    $sql = "SELECT * FROM {local_pdi_trial_evaluator} trev
+            WHERE trev.trialid = '$trialid' and trev.evaluatorid ='$evaluatorid'";
+    $res = $DB->get_records_sql($sql);
+    $res = array_values($res); $res = $res[0];
+
+    $cohortid = $res->cohortid;
+
+    $sql = "SELECT cm.id cmid, cm.userid, u.username, u.firstname, u.lastname, u.email 
+            FROM {cohort_members} cm
+            LEFT JOIN {user} u
+            ON cm.userid = u.id
+            WHERE cm.cohortid = '$cohortid'";
+    $res = $DB->get_records_sql($sql);
+
+    return $res; //return the array with all the user objects inside
+
+}
+
+function isStatusTableCreated($userid, $trialid){
+    global $DB;
+
+    //returns either false or the obj
+
+    $sql = "SELECT * FROM {local_pdi_answer_status} ans
+            WHERE ans.userid = '$userid' AND ans.idtrial = '$trialid'";
+    $res = $DB->get_records_sql($sql);
+
+    if(count($res)<1){return false;}
+    else{
+        $res = array_values($res);
+        $res = $res[0];
+        return $res;
+    }
+
 
 }
 

@@ -64,10 +64,10 @@ if(isset($_POST['hidden-answeredby']))
     //modificar o status das respostas do avaliado para 2
     //0 -> não respondido
     //1 -> respondido
-    //2 -> respondido e avaliado
+    //2 -> respondido e avaliado (WILL BE DEPRECATED)
     $updateStatusAvaliado = new stdClass();
     $updateStatusAvaliado->id = $anstatusID;
-    $updateStatusAvaliado->isfinished = 2;
+    $updateStatusAvaliado->isfinished = 1;
     $updateStatusAvaliado->timemodified = time();
 
     $DB->update_record('local_pdi_answer_status', $updateStatusAvaliado);
